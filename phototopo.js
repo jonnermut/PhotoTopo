@@ -217,6 +217,7 @@ function Point(route, x, y, type, position){
 		circle.attr(styles.handle);
 		if (this.route.autoColor){
 			circle.attr('fill', this.route.autoColor);
+			circle.attr('stroke', this.route.autoColorBorder);
 		}
 
 		function dragStart(){
@@ -530,10 +531,11 @@ Point.prototype.setStyle = function(){
 				});
 			});
 			*/
-		// if any point on the selected route
 		} else if (this.route === this.route.phototopo.selectedRoute){
+			// if any point on the selected route
 			this.circle.animate(styles.handleSelected, 100);
 		} else {
+			// if any other point on another route
 			this.circle.animate(styles.handle, 100);
 			if (this.route.autoColor){
 				this.circle.animate({'fill': this.route.autoColor}, 100);
@@ -707,6 +709,11 @@ function Path(point1, point2){
 
 	this.curve      = phototopo.canvas.path(path);
 	this.outline.attr(phototopo.styles.outline);
+	if (this.point1.route.autoColorBorder){
+		this.outline.attr('stroke', this.point1.route.autoColorBorder);
+	}
+	
+	
 	this.ghost.attr  (phototopo.styles.ghost);
 	this.curve.attr  (phototopo.styles.stroke);
 
@@ -1013,6 +1020,12 @@ Route.prototype.select = function(selectedPoint){
 	}
 	
 	phototopo.selectedRoute = this;
+	
+	if (this.label.label && this.points.length > 0){
+		this.points[0].setLabel('selected start '+this.label.classes, this.label.label);
+	}
+
+	
 	if (!selectedPoint){
 		if (this.points.length > 0){
 			selectedPoint = this.points[this.points.length-1];
@@ -1042,9 +1055,7 @@ Route.prototype.select = function(selectedPoint){
 			this.points[0].circle.attr(styles.handleSelected).toFront();
 		}
 	}
-	if (this.label.label && this.points.length > 0){
-		this.points[0].setLabel('selected start '+this.label.classes, this.label.label);
-	}
+	
 	phototopo.updateHint();
 	phototopo.updateCursor();
 
@@ -1056,6 +1067,7 @@ Route.prototype.select = function(selectedPoint){
 Route.prototype.deselect = function(){
 
 	var autoColor = this.autoColor,
+	autoColorBorder = this.autoColorBorder,
 	phototopo = this.phototopo,
 	c;
 
@@ -1073,6 +1085,7 @@ Route.prototype.deselect = function(){
 
 		if (autoColor){
 			this.paths[c].curve.attr('stroke', autoColor);
+			this.paths[c].outline.attr('stroke', autoColorBorder);
 		}
 	}
 	if (phototopo.options.editable === true){
@@ -1080,6 +1093,7 @@ Route.prototype.deselect = function(){
 			this.points[c].circle.attr(phototopo.styles.handle);
 			if (autoColor){
 				this.points[c].circle.attr('fill', autoColor);
+				this.points[c].circle.attr('stroke', autoColorBorder);
 			}
 		}
 	}
@@ -1153,6 +1167,7 @@ function PhotoTopo(opts){
 		label,
 		tempEl,
 		autoColor,
+		autoColorBorder,
 		labelsdiv,
 		viewScale, parts, points;
 	
@@ -1246,14 +1261,14 @@ function PhotoTopo(opts){
 
 	this.styles = {
 		outline: {
-			'stroke': 'black',
+			'stroke': 'black', // default if it can't inherit from label colour
 			'stroke-width': this.options.thickness * 1.7,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1 
 		},
 		outlineSelected: {
-			'stroke': 'white'
+			'stroke': 'white' // default if it can't inherit from label colour
 		},
 		ghost: {
 			'stroke': 'red',
@@ -1271,10 +1286,10 @@ function PhotoTopo(opts){
 		},
 		strokeSelected: {
 			'stroke-width': this.options.thickness,
-			'stroke': '#3D80DF'
+			'stroke': '#3D80DF' // default if it can't inherit from label colour
 		},
 		handle: {
-			'stroke': 'black',
+			'stroke': 'black', // default if it can't inherit from label colour
 			'r': this.options.thickness * 1.2,
 			'fill': 'yellow',
 			'stroke-width': this.options.thickness * 0.4
@@ -1284,10 +1299,10 @@ function PhotoTopo(opts){
 		},
 		handleSelected: {
 			'fill': '#3D80DF',
-			'stroke': 'white'
+			'stroke': 'white' // default if it can't inherit from label colour
 		},
 		handleSelectedActive: {
-			'fill': '#fff'
+			'fill': '#fff' // same as handle selected stroke colour
 		}
 	};
 
@@ -1327,8 +1342,10 @@ function PhotoTopo(opts){
 				tempEl = $("<div class='"+label.classes+"'>");
 				this.labelsEl.appendChild(tempEl[0]);
 				autoColor = tempEl.css('background-color');
+				autoColorBorder = tempEl.css('border-top-color');
 				this.labelsEl.removeChild(tempEl[0]);
 				this.routes[data.id].autoColor = autoColor;
+				this.routes[data.id].autoColorBorder = autoColorBorder;
 			}
 		}
 		if (data.points){
