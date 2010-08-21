@@ -373,6 +373,30 @@ td.elite, .elite {
 </ul>
 
 <script>
+var routes = [
+ {
+   "id": "route1",
+   "points": "80 180,70 110 draw,130 30 jumpoff"
+  },
+  {
+   "id": "route2",
+   "points": "160 327,220 301 hidden,257 279,278 248,243 221 hidden,220 207,150 150 draw,153 82 belay,182 21"
+  },
+  {
+   "id": "route3",
+   "points": "305 307,299 234 bolt,315 177 bolt,293 123 bolt,284 79 bolt,274 36"
+  },
+  {
+   "id": "route4",
+   "points": "360 300,370 220,360 150,360 110"
+  },
+  {
+   "id": "route5",
+   "points": "360 300,370 220,400 170"
+  }
+]
+
+
  jQuery(function(){
          var pt = new PhotoTopo({
                  elementId: 'phototopo2',
@@ -400,29 +424,7 @@ td.elite, .elite {
 						 classes: $('#'+routeId +' td:nth-child(4) *').attr('class')
 					 });
 				 },
-                 routes: [
- {
-   "id": "route1",
-   "points": "80 180,70 110 draw,130 30 jumpoff"
-  },
-  {
-   "id": "route2",
-   "points": "160 327,220 301 hidden,257 279,278 248,243 221 hidden,220 207,150 150 draw,153 82 belay,182 21"
-  },
-  {
-   "id": "route3",
-   "points": "305 307,299 234 bolt,315 177 bolt,293 123 bolt,284 79 bolt,274 36"
-  },
-  {
-   "id": "route4",
-   "points": "360 300,370 220,360 150,360 110"
-  },
-  {
-   "id": "route5",
-   "points": "360 300,370 220,400 170"
-  }
-
-                 ]
+                 routes: routes
          });
  	$('#route_table tr').hover(
 		function(){
@@ -449,62 +451,40 @@ td.elite, .elite {
 <h3>Test 2.1: Scaled down version</h3>
 <div id="phototopo21" style="width: 300px;"></div>
 <script>
- jQuery(function(){
-         var pt = new PhotoTopo({
-                 elementId: 'phototopo21',
-                 width: 250,
-                 height: 200,
-				viewScale: 0.5,				 
+jQuery(function(){
+	var pt = new PhotoTopo({
+		elementId: 'phototopo21',
+		width: 250,
+		height: 200,
+		viewScale: 0.5,				 
 		editable: false,
 		seperateRoutes: true,
+		showPointTypes: false,
 		autoColors: true,
-				 thickness: 2,
-                 imageUrl: "phototopo-example.jpg",
-				 onmouseover: function(route){
-					 $('#'+route.id).addClass('selected');
-					 route.select();
-				 },
-				 onmouseout: function(route){
-					 $('#'+route.id).removeClass('selected');
-					 route.deselect();
-				 },
-				 onclick: function(route){
-					 alert('route "'+route.id+'" clicked');
-				 },
-				 getlabel: function(routeId){
-					  var ret = {
-						 label:   $('#'+routeId +' td:nth-child(3)').text(),
-						 classes: $('#'+routeId +' td:nth-child(5) *').attr('class')
-					 };
-					 return ret;
-				 },
-                 routes: [
- {
-   "id": "route1",
-   "points": "80 180,70 110 crux,130 30"
-  },
-  {
-   "id": "route2",
-   "points": "160 280,170 110,310 20"
-  },
-  {
-   "id": "route3",
-   "points": "360 300,370 220 warning,310 150,230 30"
-  },
-  {
-   "id": "route4",
-   "points": "360 300,370 220,360 150,360 110"
-  },
-  {
-   "id": "route5",
-   "points": "360 300,370 220,400 170"
-  }
-
-                 ]
-         });
- 	
- });
-  </script>
+		thickness: 2,
+		imageUrl: "phototopo-example.jpg",
+		onmouseover: function(route){
+			$('#'+route.id).addClass('selected');
+			route.select();
+		},
+		onmouseout: function(route){
+			$('#'+route.id).removeClass('selected');
+			route.deselect();
+		},
+		onclick: function(route){
+			alert('route "'+route.id+'" clicked');
+		},
+		getlabel: function(routeId){
+			var ret = {
+				label:   $('#'+routeId +' td:nth-child(3)').text(),
+				classes: $('#'+routeId +' td:nth-child(5) *').attr('class')
+			};
+			return ret;
+		},
+		routes: routes
+	});
+});
+</script>
 
 <p>&nbsp;</p>
 

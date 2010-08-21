@@ -308,6 +308,9 @@ function Point(route, x, y, type, position){
 }
 
 Point.prototype.setType = function(type){
+	if (!this.route.phototopo.options.showPointTypes){
+		return;
+	}
 	if (!type || type === 'none'){
 		this.type = '';
 		if (this.iconEl){
@@ -616,22 +619,17 @@ Point.prototype.moveTo = function(x,y){
 };
 
 
-// TODO get rid of this crap
-function getID(){
-	var id=0;
-	return id++;
-}
 
 
-
-function secant(theta){
-	return 1 / Math.cos(theta);
-}
 
 /*
  * takes a set of points that defines a bezier curve and offsets it
  */
 function getBezierOffset(points, offset1, offset2){
+
+	function secant(theta){
+		return 1 / Math.cos(theta);
+	}
 
 	var res = [{}],
 		c,
@@ -674,7 +672,11 @@ function getBezierOffset(points, offset1, offset2){
  */
 function Path(point1, point2){
 
-	
+	function getID(){
+		var id=0;
+		return id++;
+	}
+
 
 
 
@@ -774,6 +776,7 @@ Path.prototype.redraw = function(point){
 		handle2 = this.point2.pointGroup.getAngle(this.point2),
 		points,
 		path,
+		phototopo = this.point1.route.phototopo,
 		path_finish = '',
 		off1, off2, thickness,
 		ddx, ddy,
@@ -787,8 +790,8 @@ Path.prototype.redraw = function(point){
 		this.point2
 	];
 
-	if (this.point1.route.phototopo.options.seperateRoutes){
-		thickness = this.point1.route.phototopo.options.thickness;
+	if (phototopo.options.seperateRoutes){
+		thickness = phototopo.options.thickness;
 		off1 = this.point1.pointGroup.getSplitOffset(this.point1) * thickness * 1.4;
 		off2 = this.point2.pointGroup.getSplitOffset(this.point2) * thickness * 1.4;
 		points = getBezierOffset(points, off1, off2);
@@ -810,7 +813,7 @@ Path.prototype.redraw = function(point){
 
 	delta = this.point2.pointGroup.getAngle();
 	angle = Math.atan2(delta.dy, delta.dx);
-	size = this.point1.route.phototopo.options.thickness * 0.5;
+	size = phototopo.options.thickness * 0.5;
 
 	// x,y of end point
 	ex = points[3].x;
@@ -844,9 +847,9 @@ Path.prototype.redraw = function(point){
 	this.curve.attr('path', path);
 	
 	if (this.point1.type === 'hidden'){
-		this.curve.attr('stroke-dasharray', '.');
+		this.curve.attr(phototopo.styles.strokeHidden);
 	} else {
-		this.curve.attr('stroke-dasharray', '');
+		this.curve.attr(phototopo.styles.strokeVisible);
 	}
 	
 	this.outline.attr('path', path);
@@ -1192,6 +1195,7 @@ function PhotoTopo(opts){
 	missingError(this.options.height, 'No height');
 	checkDefault('thickness', 5);
 	checkDefault('viewScale', 1);
+	checkDefault('showPointTypes', true);
 //	checkDefault('onchange', function(){} );
 
 
@@ -1287,6 +1291,12 @@ function PhotoTopo(opts){
 		strokeSelected: {
 			'stroke-width': this.options.thickness,
 			'stroke': '#3D80DF' // default if it can't inherit from label colour
+		},
+		strokeVisible: {
+			'stroke-dasharray': ''
+		},
+		strokeHidden: {
+			'stroke-dasharray': '.'
 		},
 		handle: {
 			'stroke': 'black', // default if it can't inherit from label colour
