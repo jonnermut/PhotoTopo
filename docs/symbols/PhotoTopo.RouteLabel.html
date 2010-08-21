@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - Route</title>
+		<title>JsDoc Reference - PhotoTopo.RouteLabel</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -210,7 +210,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class Route
+				Class PhotoTopo.RouteLabel
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -227,7 +227,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class Route.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class PhotoTopo.RouteLabel.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -240,9 +240,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/Route.html#constructor">Route</a></b>(phototopo, id, order)
+								<b><a href="../symbols/PhotoTopo.RouteLabel.html#constructor">PhotoTopo.RouteLabel</a></b>()
 							</div>
-							<div class="description"></div>
+							<div class="description">A label to be passed back to the getLabel callback</div>
 						</td>
 					</tr>
 				</tbody>
@@ -253,7 +253,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class Route.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class PhotoTopo.RouteLabel.">
 					<caption>Field Summary</caption>
 					<thead>
 						<tr>
@@ -267,9 +267,19 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<b><a href="../symbols/Route.html#id">id</a></b>
+								<b><a href="../symbols/PhotoTopo.RouteLabel.html#class">class</a></b>
 								</div>
-								<div class="description">the unique id of this route</div>
+								<div class="description">A css class for styline</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/PhotoTopo.RouteLabel.html#label">label</a></b>
+								</div>
+								<div class="description">A small label for the route, eg a number, or the initials of the route name</div>
 							</td>
 						</tr>
 					
@@ -293,41 +303,17 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>Route</b>(phototopo, id, order)
+						<b>PhotoTopo.RouteLabel</b>()
 				</div>
 				
 				<div class="description">
-					
+					A label to be passed back to the getLabel callback
 					
 				</div>
 				
 				
 				
 				
-					
-						<dl class="detailList">
-						<dt class="heading">Parameters:</dt>
-						
-							<dt>
-								 <b>phototopo</b>
-								
-							</dt>
-								<dd>the topo to add this route to</dd>
-						
-							<dt>
-								 <b>id</b>
-								
-							</dt>
-								<dd>- is a unique string identifying the route (eg a primary id in the DB)
-#param order is a number used for sorting the routes into a natural order (typically 1..x from left to right)</dd>
-						
-							<dt>
-								 <b>order</b>
-								
-							</dt>
-								<dd></dd>
-						
-						</dl>
 					
 					
 					
@@ -345,15 +331,37 @@ ul.inheritsList
 					Field Detail
 				</div>
 				
-					<a name="id"> </a>
+					<a name="class"> </a>
 					<div class="fixedFont">
 					
 					<span class="light">{String}</span>
-					<b>id</b>
+					<b>class</b>
 					
 					</div>
 					<div class="description">
-						the unique id of this route
+						A css class for styline
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="label"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{String}</span>
+					<b>label</b>
+					
+					</div>
+					<div class="description">
+						A small label for the route, eg a number, or the initials of the route name
 						
 						
 					</div>

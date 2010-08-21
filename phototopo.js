@@ -1,8 +1,9 @@
 /*!
- * PhotoTopo 0.1 - JavaScript Route editing widget
+ * PhotoTopo - A javascript climbing route editing widget
  *
  * Copyright (c) 2010 Brendan Heywood brendan.heywood@gmail.com
  *
+ * http://github.com/brendanheywood/PhotoTopo/
  */
 
 
@@ -22,40 +23,8 @@ Optimise: Defer redrawing of new routes until all are loaded?
 "use strict";
 
 
-/**
- * The options to pass in when creating a topo
- * @constructor
- * @property elementId The id of the html div that the topo shold be created in
- * @property {Interger} width The width of the topo in pixels
- * @property {Interger} height The height of the topo in pixels
- * @property {String} imageUrl The url to the photo
- * @property  routes a json hash of routes. Each 
- * @property {Boolean} editable true if you want the widget to be editable
- * @property {Boolean} seperateRoutes If you want the routes to not overlap when they use the same points
- * @property {Boolean} autoColors If you want the color of the route to be inherited from the color of the label 
- * @property {Integer} thickness The thickness of the routes in pixels 
- * @property {Function} onmouseover  A callback with the Route
- * @property {Function} onmouseout A callback with the Route
- * @property {Function} onclick A callback with the Route
- * @property {Function} onselect A callback with the Route
- * @property {Function} ondeselect A callback with the Route
- * @property {Function} onchange A callback with a JSON dump of all route data to persist somehow
- * @property {Function} getlabel A function which when given a routeId should return a RouteLabel
- * @property {Boolean} showPointTypes If false point types are hidden (eg on small versions of a topo)
- * @property {Float} viewScale A scaling factor for drawing the topo
-						  
- */
-function PhotoTopoOptions(){
 
-}
-/**
- * A label to be passed back to the getLabel callback
- * @constructor 
- * @property {String} label A small label for the route, eg a number, or the initials of the route name
- * @property {String} class A css class for styline
- */
-function RouteLabel(){
-}
+
 
 
 
@@ -95,7 +64,7 @@ PointGroup.prototype.sort = function(){
 		return a.route.order > b.route.order ? 1 : -1;
 	});
 
-}
+};
 
 
 /**
@@ -231,8 +200,9 @@ PointGroup.prototype.getAngle = function(point){
  */
 function Point(route, x, y, type, position){
 
-	var styles, circle;
-	var point = this;
+	var styles,
+		circle,
+		point = this;
 	this.route = route;
 	this.x = x*1;
 	this.y = y*1;
@@ -267,7 +237,7 @@ function Point(route, x, y, type, position){
 
 		function dragStart(){
 			var selectedRoute = this.point.route.phototopo.selectedRoute;
-		  	$(this.point.route.phototopo.photoEl).addClass('dragging');
+			$(this.point.route.phototopo.photoEl).addClass('dragging');
 
 			this.ox = this.attr("cx");
 			this.oy = this.attr("cy");
@@ -290,7 +260,7 @@ function Point(route, x, y, type, position){
 		}
 		function dragEnd(){
 			var selectedRoute = this.point.route.phototopo.selectedRoute;
-		  	$(this.point.route.phototopo.photoEl).removeClass('dragging');
+			$(this.point.route.phototopo.photoEl).removeClass('dragging');
 
 			if (selectedRoute && selectedRoute !== this.point.route){
 				return;
@@ -316,7 +286,7 @@ function Point(route, x, y, type, position){
 			this.animate(styles.handleHover, 100);
 		});
 		circle.mouseout(function(){
-		  	$(this.point.route.phototopo.photoEl).removeClass('point');
+			$(this.point.route.phototopo.photoEl).removeClass('point');
 			this.point.route.onmouseout(this.point);
 			this.point.setStyle();
 		});
@@ -395,8 +365,7 @@ Point.prototype.setType = function(type){
 Point.prototype.updateIconPosition = function(){
 	var div = this.iconEl,
 		offsetX = this.route.phototopo.options.editable ? 8 : -8, offsetY = -8,
-		width, top, left,
-		maxTop, maxLeft,
+		top, left,
 		phototopo = this.route.phototopo;
 	if (!div){ return; }
 	
@@ -406,7 +375,7 @@ Point.prototype.updateIconPosition = function(){
 
 	div.style.left = left + 'px';
 	div.style.top = top + 'px';
-}
+};
 /**
  * @private
  */
@@ -634,7 +603,7 @@ Point.prototype.moveTo = function(x,y){
 	if (this.x === x && this.y === y){
 		return { x: x, y: y };
 	}
-	if (x === NaN || y === NaN){
+	if (isNaN(x) || isNaN(y) ){
 		return { x: this.x, y: this.y };
 	}
 
@@ -762,8 +731,8 @@ function Path(point1, point2){
 			this.path.point1.select();
 			return;			
 		}
-		var route = phototopo.selectedRoute;
-		var path = event.target.raphael.path;
+		var route = phototopo.selectedRoute,
+			path = event.target.raphael.path;
 		if (route){
 			if (path.point1.route === route){
 				path.point1.select();
@@ -1055,7 +1024,7 @@ Route.prototype.getPoints = function(){
 		if (c!== 0){
 			points += ',';
 		} else {
-			path += 'M' + point.x + ' '+point.y
+			path += 'M' + point.x + ' '+point.y;
 		}
 		points += point.x + ' ' + point.y;
 		if (point.type){
@@ -1243,6 +1212,49 @@ Route.prototype.onclick = function(point){
 
 function PhotoTopo(opts){
 
+
+
+/**
+ * A callback function
+ * @constructor
+ * @type Callback 
+ * @param {Route} route The route
+ */
+PhotoTopo.Callback = function(){};
+/**
+ * The options to pass in when creating a topo
+ * @constructor
+ * @property elementId The id of the html div that the topo shold be created in
+ * @property {Interger} width The width of the topo in pixels
+ * @property {Interger} height The height of the topo in pixels
+ * @property {String} imageUrl The url to the photo
+ * @property  routes a json hash of routes. Each 
+ * @property {Boolean} editable true if you want the widget to be editable
+ * @property {Boolean} seperateRoutes If you want the routes to not overlap when they use the same points
+ * @property {Boolean} autoColors If you want the color of the route to be inherited from the color of the label 
+ * @property {Integer} thickness The thickness of the routes in pixels 
+ * @property {Function} onmouseover  A callback with the Route
+ * @property {Function} onmouseout A callback with the Route
+ * @property {Function} onclick A callback with the Route
+ * @property {Function} onselect A callback with the Route
+ * @property {Function} ondeselect A callback with the Route
+ * @property {Function} onchange A callback with a JSON dump of all route data to persist somehow
+ * @property {Function} getlabel A function which when given a routeId should return a RouteLabel
+ * @property {Boolean} showPointTypes If false point types are hidden (eg on small versions of a topo)
+ * @property {Float} viewScale A scaling factor for drawing the topo						  
+ */
+PhotoTopo.Options = function(){};
+
+
+/**
+ * A label to be passed back to the getLabel callback
+ * @constructor 
+ * @property {String} label A small label for the route, eg a number, or the initials of the route name
+ * @property {String} class A css class for styline
+ */
+PhotoTopo.RouteLabel = function(){};
+
+
 	var errors = false,
 		data,
 		pc, c,
@@ -1255,7 +1267,7 @@ function PhotoTopo(opts){
 	
 	/**
 	 * @private
- 	 */
+	 */
 	function checkDefault(option, value){
 		if (opts[option] === undefined){
 			opts[option] = value;
@@ -1312,20 +1324,20 @@ function PhotoTopo(opts){
 
 	if (this.options.editable && !document.getElementById('#phototopoContextMenu') ){
 		$('body').append(
-'<ul id="phototopoContextMenu" class="contextMenu">'
-+'    <li class="none"><a href="#">None</a></li>'
-+'    <li class="jumpoff"><a href="#jumpoff">Jump off</a></li>'
-+'    <li class="hidden"><a href="#hidden">Hidden</a></li>'
-+'    <li class="separator">Protection</li>'
-+'    <li class="bolt"><a href="#bolt">Bolt</a></li>'
-+'    <li class="draw"><a href="#draw">Clip</a></li>'
-+'    <li class="separator">Misc</li>'
-+'    <li class="crux"><a href="#crux">Crux</a></li>'
-+'    <li class="warning"><a href="#warning">Warning</a></li>'
-+'    <li class="belay"><a href="#belay">Belay</a></li>'
-+'    <li class="belaysemi"><a href="#belaysemi">Semi-belay</a></li>'
-+'    <li class="belayhanging"><a href="#belayhanging">Hanging Belay</a></li>'
-+'</ul>'
+'<ul id="phototopoContextMenu" class="contextMenu">'+
+'    <li class="none"><a href="#">None</a></li>'+
+'    <li class="jumpoff"><a href="#jumpoff">Jump off</a></li>'+
+'    <li class="hidden"><a href="#hidden">Hidden</a></li>'+
+'    <li class="separator">Protection</li>'+
+'    <li class="bolt"><a href="#bolt">Bolt</a></li>'+
+'    <li class="draw"><a href="#draw">Clip</a></li>'+
+'    <li class="separator">Misc</li>'+
+'    <li class="crux"><a href="#crux">Crux</a></li>'+
+'    <li class="warning"><a href="#warning">Warning</a></li>'+
+'    <li class="belay"><a href="#belay">Belay</a></li>'+
+'    <li class="belaysemi"><a href="#belaysemi">Semi-belay</a></li>'+
+'    <li class="belayhanging"><a href="#belayhanging">Hanging Belay</a></li>'+
+'</ul>'
 );
 	}
 
@@ -1483,7 +1495,7 @@ PhotoTopo.prototype.setRouteVisibility = function(visible){
 		phototopo.bg.toFront();
 		phototopo.labelsEl.style.display = 'none';
 	}
-}
+};
 
 /**
  * @private
@@ -1562,7 +1574,7 @@ PhotoTopo.prototype.saveData = function(){
 	}
 	
 	for(routeId in this.routes){
-		route = this.routes[routeId]
+		route = this.routes[routeId];
 		routeData = route.getPoints();
 		data.routes[data.routes.length] = {
 			id: routeId,
@@ -1731,7 +1743,8 @@ PhotoTopo.prototype.clickBackground = function(event){
  * @private
  */
 PhotoTopo.prototype.updateCursor = function(){
-	var cursor = '';
+	var cursor = '',
+	jq = $(this.photoEl);
 	
 	if (!this.selectedRoute){
 		cursor = 'noneselected';
@@ -1749,10 +1762,9 @@ PhotoTopo.prototype.updateCursor = function(){
 	// otherwise show a 'add'
 
 	// if mouseover a point then show a 'draggable'
-	var jq = $(this.photoEl);
 	jq.removeClass('noneselected addfirst addmore');
 	jq.addClass(cursor);
-}
+};
 /**
  * Sets the order of the routes which affects the way they visually thread through each point
  * @param order a hash of the id to the order
@@ -1778,4 +1790,4 @@ PhotoTopo.prototype.setOrder = function(order){
 	}
 
 	this.saveData();
-}
+};
