@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Tests</title>
+
+<!-- jquery and UI -->
+
+<script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/jquery-ui.min.js" type="text/javascript"></script>
+
+
+<!-- json for serialization -->
+<script type="application/javascript" src="../dependencies/json2.js"></script> 
+
+<!-- raphael -->
+<script type="application/javascript" src="../dependencies/raphael-1.5/raphael-min.js"></script>
+
+
+
+<!-- context menu -->
+
+<script type="application/javascript" src="../dependencies/jquery.contextMenu-1.01/jquery.contextMenu.js"></script> 
+<link type="text/css" href="../dependencies/jquery.contextMenu-1.01/jquery.contextMenu.css" rel="stylesheet" />
+
+
+<!-- plugin code -->
+
+<link type="text/css" rel="stylesheet" href="../src/phototopo.css" />
+<script type="application/javascript" src="../src/phototopo.js"></script>
+
+
+<link type="text/css" href="http://www-personal.une.edu.au/~bheywood/thecrag/icon-sprites/sprite.css" rel="stylesheet" />
+
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+
+
+
+
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+
+
+<h1>Hidden routes test</h1>
+
+
+<div id="test"></div>
+<script>
+var routes = [
+{
+	"id": "1",
+	"points": "172 347,233 250 bolt,249 183 hidden,210 143 hidden,164 107,208 58,204 40"
+}
+];
+
+
+jQuery(function(){
+	var pt = new PhotoTopo({
+	elementId: 'test',
+	width: 500,
+	height: 375,
+	editable: false,
+	seperateRoutes: true,
+	autoColors: true,
+	thickness: 4,
+	imageUrl: "whistler_rock_pillar.jpg",
+	onchange: function(data){
+		jQuery('#data').val(JSON.stringify(data, null, 1));
+	},
+	routes: routes
+	});
+	$('#route_table tr').hover(
+		function(){
+			$(this).addClass("selected");
+			pt.selectRoute($(this).attr('id'));
+		},
+		function(){
+			$(this).removeClass("selected");
+			pt.selectRoute();
+		}
+	);
+	$('#route_table tr').each(function(){
+		$(this).prepend("<td><input type='checkbox' id='check"+$(this).attr('id')+"' /></td>");
+	});
+	$('#route_table tr').click(function(){
+		var id = $(this).attr('id');
+		$(this).toggleClass('ticked');
+		$('#check'+id).val('checked');
+	});
+});
+</script>
+<textarea id="data" cols="100" rows="22" style="font-size: 9px;"></textarea>
+
+</body>
+</html>
