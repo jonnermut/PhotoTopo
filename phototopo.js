@@ -835,6 +835,13 @@ Path.prototype.redraw = function(point){
 	path += path_finish;
 
 	this.curve.attr('path', path);
+	
+	if (this.point1.type === 'hidden'){
+		this.curve.attr('stroke-dasharray', '.');
+	} else {
+		this.curve.attr('stroke-dasharray', '');
+	}
+	
 	this.outline.attr('path', path);
 	this.ghost.attr('path', path);
 };
