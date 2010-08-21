@@ -3,6 +3,8 @@
 	<property file="project.properties"/>
 	<property name="PREFIX" value="." />
 	<property description="Folder for output and min target" name="dist" value="${PREFIX}/dist" />
+	<property name="src" value="${PREFIX}" />
+	<property name="docs" value="${PREFIX}/docs" />
 
 	<property name="JS"      value="${dist}/phototopo-${version}.js" />
 	<property name="JS_MIN"  value="${dist}/phototopo-${version}-min.js" />
@@ -15,10 +17,10 @@
 		<echo message="Building ${JS}" />
 		<mkdir dir="${dist}" />
 		<concat destfile="${JS}">
-			<fileset file="phototopo.js" />
+			<fileset file="${src}/phototopo.js" />
 		</concat>
 		<concat destfile="${CSS}">
-			<fileset file="phototopo.css" />
+			<fileset file="${src}/phototopo.css" />
 		</concat>
 		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JS}" />
 		<echo message="Project built." />
