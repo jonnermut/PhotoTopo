@@ -29,9 +29,9 @@
 		<echo message="Building ${OUT_MIN}" />
 		<java fork="true" jar="build/yuicompressor-2.4.2.jar">
 			<arg line="--type=js" />
-			<arg line="${OUT}" />
+			<arg path="${OUT}" />
 			<arg line="-o" />
-			<arg line="${OUT_MIN}" />
+			<arg path="${OUT_MIN}" />
 		</java>
 		<echo message="${OUT_MIN} built." />
 	</target>
