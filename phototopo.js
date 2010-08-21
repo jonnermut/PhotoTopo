@@ -1518,7 +1518,7 @@ PhotoTopo.prototype.setHint = function(hintHTML){
 /**
  * Selects the route with a given id
  * @param {Route} route the route to select
- * @param {Boolean} toggle if true and the route is already selected will delesect
+ * @param {Boolean} [toggle] if true and the route is already selected will delesect
  */
 PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 	
