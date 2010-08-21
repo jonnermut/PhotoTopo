@@ -1238,7 +1238,7 @@ Route.prototype.onclick = function(point){
 /**
  * A widget for viewing and drawing climbing routes overlaid on a photo
  * @constructor 
- * @param {PhototopoOptions} opts The options for this phototopo
+ * @param {PhotoTopoOptions} opts The options for this phototopo
  */
 
 function PhotoTopo(opts){
