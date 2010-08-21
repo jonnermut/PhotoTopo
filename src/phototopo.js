@@ -364,9 +364,9 @@ Point.prototype.setType = function(type){
  */
 Point.prototype.updateIconPosition = function(){
 	var div = this.iconEl,
-		offsetX = this.route.phototopo.options.editable ? 8 : -8, offsetY = -8,
-		top, left,
-		phototopo = this.route.phototopo;
+		offsetX = this.route.phototopo.options.editable ? 8 : -8,
+		offsetY = -8,
+		top, left;
 	if (!div){ return; }
 	
 	left = this.x + offsetX;
@@ -376,6 +376,7 @@ Point.prototype.updateIconPosition = function(){
 	div.style.left = left + 'px';
 	div.style.top = top + 'px';
 };
+
 /**
  * @private
  */
@@ -521,7 +522,7 @@ Point.prototype.updateLabelPosition = function(){
 	var div = this.labelEl,
 		offsetX, offsetY,
 		width, top, left,
-		maxTop, maxLeft,
+		maxTop,
 		phototopo = this.route.phototopo;
 	if (!div){ return; }
 	
@@ -1614,7 +1615,6 @@ PhotoTopo.prototype.getPointGroup = function(point){
 
 	var x = point.x,
 		y = point.y,
-		tx,ty,
 		threshhold,
 		key,
 		group;

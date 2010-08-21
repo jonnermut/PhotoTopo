@@ -27,7 +27,7 @@
 		<echo message="Project built." />
 	</target>
 
-	<target name="lint" depends="build" description="Check jQuery against JSLint">
+	<target name="lint" depends="build" description="Check src against JSLint">
 		<exec executable="java">
 			<arg line="-jar ${lib}/js.jar ${lib}/jslint-check.js" />
 		</exec>
@@ -38,12 +38,14 @@
 		<java fork="true" jar="${lib}/yuicompressor-2.4.2.jar">
 			<arg line="--type=js" />
 			<arg path="${JS}" />
+			<arg line="-v" />
 			<arg line="-o" />
 			<arg path="${JS_MIN}" />
 		</java>
 		<java fork="true" jar="${lib}/yuicompressor-2.4.2.jar">
 			<arg line="--type=css" />
 			<arg path="${CSS}" />
+			<arg line="-v" />
 			<arg line="-o" />
 			<arg path="${CSS_MIN}" />
 		</java>
