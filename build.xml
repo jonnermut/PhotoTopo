@@ -27,7 +27,7 @@
 		<echo message="Project built." />
 	</target>
 
-	<target name="lint" depends="build" description="Check src against JSLint">
+	<target name="lint" depends="" description="Check src against JSLint">
 		<exec executable="java">
 			<arg line="-jar ${lib}/js.jar ${lib}/jslint-check.js" />
 		</exec>

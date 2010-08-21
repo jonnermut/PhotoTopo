@@ -368,11 +368,8 @@ Point.prototype.updateIconPosition = function(){
 		offsetY = -8,
 		top, left;
 	if (!div){ return; }
-	
 	left = this.x + offsetX;
 	top  = this.y + offsetY;
-	
-
 	div.style.left = left + 'px';
 	div.style.top = top + 'px';
 };
