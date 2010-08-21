@@ -51,21 +51,8 @@
 }
 
 .pt_label.none { display: none; }
-.contextMenu LI.none    A { border: none; background-image: url(jquery.contextMenu-1.01/images/.png); }
+.contextMenu LI.none    A { border: none; background-image: url(images/.png); }
 
 .pt_label.jumpoff { display: none; }
-.contextMenu LI.jumpoff A { border: none; background-image: url(jquery.contextMenu-1.01/images/jumpoff.png); }
-
-.pt_label.belay,        .contextMenu LI.belay        A { border: none; background-image: url(jquery.contextMenu-1.01/images/belay.png); }
-.pt_label.belaysemi,    .contextMenu LI.belaysemi    A { border: none; background-image: url(jquery.contextMenu-1.01/images/belaysemi.png); }
-.pt_label.belayhanging, .contextMenu LI.belayhanging A { border: none; background-image: url(jquery.contextMenu-1.01/images/belayhanging.png); }
-
-.pt_label.bolt,     .contextMenu LI.bolt    A { border: none; background-image: url(jquery.contextMenu-1.01/images/bolt.png); }
-.pt_label.draw,     .contextMenu LI.draw    A { border: none; background-image: url(jquery.contextMenu-1.01/images/clip.png); }
-
-
-
-.pt_label.crux,     .contextMenu LI.crux    A { border: none; background-image: url(jquery.contextMenu-1.01/images/lightning.png); }
-.pt_label.warning,  .contextMenu LI.warning A { border: none; background-image: url(jquery.contextMenu-1.01/images/error.png); }
-.pt_label.anchor,   .contextMenu LI.anchor  A { border: none; background-image: url(jquery.contextMenu-1.01/images/anchor.png); }
+.contextMenu LI.jumpoff A { border: none; background-image: url(images/jumpoff.png); }
 
