@@ -22,9 +22,45 @@ Optimise: Defer redrawing of new routes until all are loaded?
 "use strict";
 
 
+/**
+ * The options to pass in when creating a topo
+ * @constructor
+ * @property elementId The id of the html div that the topo shold be created in
+ * @property {Interger} width The width of the topo in pixels
+ * @property {Interger} height The height of the topo in pixels
+ * @property {String} imageUrl The url to the photo
+ * @property  routes a json hash of routes. Each 
+ * @property {Boolean} editable true if you want the widget to be editable
+ * @property {Boolean} seperateRoutes If you want the routes to not overlap when they use the same points
+ * @property {Boolean} autoColors If you want the color of the route to be inherited from the color of the label 
+ * @property {Integer} thickness The thickness of the routes in pixels 
+ * @property {Function} onmouseover  A callback with the Route
+ * @property {Function} onmouseout A callback with the Route
+ * @property {Function} onclick A callback with the Route
+ * @property {Function} onselect A callback with the Route
+ * @property {Function} ondeselect A callback with the Route
+ * @property {Function} onchange A callback with a JSON dump of all route data to persist somehow
+ * @property {Function} getlabel A function which when given a routeId should return a RouteLabel
+ * @property {Boolean} showPointTypes If false point types are hidden (eg on small versions of a topo)
+ * @property {Float} viewScale A scaling factor for drawing the topo
+						  
+ */
+function PhotoTopoOptions(){
+
+}
+/**
+ * A label to be passed back to the getLabel callback
+ * @constructor 
+ * @property {String} label A small label for the route, eg a number, or the initials of the route name
+ * @property {String} class A css class for styline
+ */
+function RouteLabel(){
+}
+
 
 
 /**
+ * @private
  * stores the collection of points that are in the same location
  * @constructor 
  * @param {Point} point The first point in this group
@@ -185,6 +221,7 @@ PointGroup.prototype.getAngle = function(point){
 
 
 /**
+ * @private
  * there is one point for every point on a route - two points can occupy the same location
  * @constructor 
  * @param {Route} 
@@ -314,7 +351,9 @@ function Point(route, x, y, type, position){
 	}
 	this.setType(this.type);
 }
-
+/**
+ * @private
+ */
 Point.prototype.setType = function(type){
 	if (!this.route.phototopo.options.showPointTypes){
 		return;
@@ -350,6 +389,9 @@ Point.prototype.setType = function(type){
 	this.updateIconPosition();
 
 };
+/**
+ * @private
+ */
 Point.prototype.updateIconPosition = function(){
 	var div = this.iconEl,
 		offsetX = this.route.phototopo.options.editable ? 8 : -8, offsetY = -8,
@@ -365,7 +407,9 @@ Point.prototype.updateIconPosition = function(){
 	div.style.left = left + 'px';
 	div.style.top = top + 'px';
 }
-
+/**
+ * @private
+ */
 Point.prototype.setLabel = function(classes, text){
 	var div = this.labelEl;
 	if (!this.labelEl){
@@ -396,8 +440,8 @@ Point.prototype.setLabel = function(classes, text){
 
 
 
-
-/*
+/**
+ * @private
  * remove a point from its route
  */
 Point.prototype.remove = function(){
@@ -499,8 +543,8 @@ Point.prototype.remove = function(){
 
 };
 
-
-/*
+/**
+ * @private
  * updates the labels position
  */
 Point.prototype.updateLabelPosition = function(){
@@ -526,7 +570,9 @@ Point.prototype.updateLabelPosition = function(){
 	div.style.top = top + 'px';
 };
 
-
+/**
+ * @private
+ */
 Point.prototype.setStyle = function(){
 	var styles = this.route.phototopo.styles;
 	if (this.circle){
@@ -555,7 +601,8 @@ Point.prototype.setStyle = function(){
 	}
 };
 
-/*
+/**
+ * @private
  * select the active point. new points on the route are added after this point
  * also explicitly selects the route the point is on
  */
@@ -578,9 +625,8 @@ Point.prototype.select = function(dontSelectRoute){
 
 
 
-
-
-/*
+/**
+ * @private
  * attempts to move the Point to a new location - it may not move due to 'stickyness' to itself and other points
  */
 Point.prototype.moveTo = function(x,y){
@@ -630,52 +676,11 @@ Point.prototype.moveTo = function(x,y){
 
 
 
-/*
- * takes a set of points that defines a bezier curve and offsets it
- */
-function getBezierOffset(points, offset1, offset2){
-
-	function secant(theta){
-		return 1 / Math.cos(theta);
-	}
-
-	var res = [{}],
-		c,
-		angles = [],
-		size = points.length -1,
-		offset,
-		offSec,
-		angleAvg;
-	for(c=0; c<3; c++){
-		angles[c] = Math.atan2(points[c+1].y - points[c].y, points[c+1].x - points[c].x);
-	}
-	for(c=1; c<size; c++){
-		offset = (offset1 * (size-c)) / size + (offset2 * c)/size;
-		offSec = offset * secant((angles[c] - angles[c-1])/2);
-		angleAvg = (angles[c]+angles[c-1])/2;
-		res[c] = {
-			x: points[c].x - offSec * Math.sin(angleAvg),
-			y: points[c].y + offSec * Math.cos(angleAvg)
-		};
-	}
-	res[0] = {
-		x: points[0].x - offset1 * Math.sin(angles[0]),
-		y: points[0].y + offset1 * Math.cos(angles[0])
-	};
-	res[size] = {
-		x: points[size].x - offset2 * Math.sin(angles[size-1]),
-		y: points[size].y + offset2 * Math.cos(angles[size-1])
-	};
-	for(c=0; c<res.length; c++){
-		res[c].x = Math.round(res[c].x);
-		res[c].y = Math.round(res[c].y);
-	}
-	return res;
-}
 
 
 
 /**
+ * @private
  * a path connects two points
  * @constructor 
  * @param {Point} point1 The starting point
@@ -780,6 +785,7 @@ function Path(point1, point2){
 
 
 /*
+ * @private
  * changes the start point
  */
 Path.prototype.redraw = function(point){
@@ -800,6 +806,52 @@ Path.prototype.redraw = function(point){
 		{x: this.point2.x - handle2.dx, y:this.point2.y - handle2.dy},
 		this.point2
 	];
+	
+	
+	/*
+	 * takes a set of points that defines a bezier curve and offsets it
+	 */
+	function getBezierOffset(points, offset1, offset2){
+	
+		function secant(theta){
+			return 1 / Math.cos(theta);
+		}
+	
+		var res = [{}],
+			c,
+			angles = [],
+			size = points.length -1,
+			offset,
+			offSec,
+			angleAvg;
+		for(c=0; c<3; c++){
+			angles[c] = Math.atan2(points[c+1].y - points[c].y, points[c+1].x - points[c].x);
+		}
+		for(c=1; c<size; c++){
+			offset = (offset1 * (size-c)) / size + (offset2 * c)/size;
+			offSec = offset * secant((angles[c] - angles[c-1])/2);
+			angleAvg = (angles[c]+angles[c-1])/2;
+			res[c] = {
+				x: points[c].x - offSec * Math.sin(angleAvg),
+				y: points[c].y + offSec * Math.cos(angleAvg)
+			};
+		}
+		res[0] = {
+			x: points[0].x - offset1 * Math.sin(angles[0]),
+			y: points[0].y + offset1 * Math.cos(angles[0])
+		};
+		res[size] = {
+			x: points[size].x - offset2 * Math.sin(angles[size-1]),
+			y: points[size].y + offset2 * Math.cos(angles[size-1])
+		};
+		for(c=0; c<res.length; c++){
+			res[c].x = Math.round(res[c].x);
+			res[c].y = Math.round(res[c].y);
+		}
+		return res;
+	}
+
+
 
 	if (phototopo.options.seperateRoutes){
 		thickness = phototopo.options.thickness;
@@ -882,6 +934,8 @@ Path.prototype.redraw = function(point){
  * @param phototopo the topo to add this route to
  * @param id - is a unique string identifying the route (eg a primary id in the DB)
  * #param order is a number used for sorting the routes into a natural order (typically 1..x from left to right)
+ * @property {String} id the unique id of this route
+ 
  */
 function Route(phototopo, id, order){
 	this.phototopo = phototopo;
@@ -892,10 +946,9 @@ function Route(phototopo, id, order){
 	this.label = {};
 }
 
-/*
- *
+/**
+ * @private
  */
-
 Route.prototype.addPoint = function(x,y,type,offset){
 
 	var c, p, path;
@@ -959,8 +1012,8 @@ Route.prototype.addPoint = function(x,y,type,offset){
 };
 
 
-
-/*
+/**
+ * @private
  * add's a new point to a route, optionally after the point
  *
  */
@@ -973,8 +1026,8 @@ Route.prototype.addAfter = function(afterPoint, x, y, type){
 };
 
 
-
-/*
+/**
+ * @private
  * sets the label for this route
  * The label may appear in more than one place
  * if selected if will have a class of 'selected'
@@ -988,8 +1041,8 @@ Route.prototype.setLabel = function(label){
 	// else draw the label somewhere else so notify that it is missing??
 };
 
-
-/*
+/**
+ * @private
  * serialise the point data and send back to the page to be saved 
  */
 Route.prototype.getPoints = function(){
@@ -1015,8 +1068,8 @@ Route.prototype.getPoints = function(){
 	return { points: points, path: path };
 };
 
-
-/*
+/**
+ * @private
  * select this route, and optionally specifies which point to select within the route
  * if no point specifices selects the last point in the route (if it has any points at all)
  */
@@ -1077,7 +1130,8 @@ Route.prototype.select = function(selectedPoint){
 
 };
 
-/*
+/**
+ * @private
  * deselect this route
  */
 Route.prototype.deselect = function(){
@@ -1121,10 +1175,10 @@ Route.prototype.deselect = function(){
 
 };
 
-/*
+/**
+ * @private
  * redraw all components of this route 
  */
-
 Route.prototype.redraw = function(){
 	var c;
 	for(c=0; c< this.paths.length; c++){
@@ -1132,6 +1186,9 @@ Route.prototype.redraw = function(){
 	}
 };
 
+/**
+ * @private
+ */
 Route.prototype.onmouseover = function(point){
 	$(this.phototopo.photoEl).addClass('route');
 	if (this === this.phototopo.selectedRoute){
@@ -1142,6 +1199,10 @@ Route.prototype.onmouseover = function(point){
 		this.phototopo.options.onmouseover(this);
 	}
 };
+
+/**
+ * @private
+ */
 Route.prototype.onmouseout = function(point){
 	$(this.phototopo.photoEl).removeClass('route selectedRoute');
 	
@@ -1149,6 +1210,9 @@ Route.prototype.onmouseout = function(point){
 		this.phototopo.options.onmouseout(this);
 	}
 };
+/**
+ * @private
+ */
 Route.prototype.onclick = function(point){
 	if (this.phototopo.options.onclick){
 		this.phototopo.options.onclick(this);
@@ -1172,8 +1236,9 @@ Route.prototype.onclick = function(point){
 
 
 /**
+ * A widget for viewing and drawing climbing routes overlaid on a photo
  * @constructor 
- * @param opts A hash of options
+ * @param {PhototopoOptions} opts The options for this phototopo
  */
 
 function PhotoTopo(opts){
@@ -1188,12 +1253,17 @@ function PhotoTopo(opts){
 		labelsdiv,
 		viewScale, parts, points;
 	
-
+	/**
+	 * @private
+ 	 */
 	function checkDefault(option, value){
 		if (opts[option] === undefined){
 			opts[option] = value;
 		}
 	}
+	/**
+	 * @private
+	 */
 	function missingError(exp, text){
 		if (!exp){
 			errors = true;
@@ -1398,10 +1468,13 @@ function PhotoTopo(opts){
 	this.updateCursor();	
 }
 
-
-PhotoTopo.prototype.routeVisibility = function(show){
+/**
+ * Sets wether the route lines are visible
+ * @param {Boolean} visible if true makes the routes visible
+ */
+PhotoTopo.prototype.setRouteVisibility = function(visible){
 	var phototopo = this;
-	phototopo.routesVisible = show;
+	phototopo.routesVisible = visible;
 	if (show){
 		phototopo.bg.toBack();
 		phototopo.fill.toBack();
@@ -1412,7 +1485,9 @@ PhotoTopo.prototype.routeVisibility = function(show){
 	}
 }
 
-
+/**
+ * @private
+ */
 PhotoTopo.prototype.updateHint = function(){
 	if (!this.options.editable){
 		return;
@@ -1428,8 +1503,9 @@ PhotoTopo.prototype.updateHint = function(){
 
 };
 
-
-
+/**
+ * @private
+ */
 PhotoTopo.prototype.setHint = function(hintHTML){
 	if (!this.hintEl){
 		this.hintEl = $('<div class="hint ui-state-highlight"></div>').show('slide').appendTo(this.photoEl)[0];
@@ -1439,11 +1515,11 @@ PhotoTopo.prototype.setHint = function(hintHTML){
 };
 
 
-/*
- * selects the route with a given id
- * if toggle is true and the same route is already selected it will deselect
+/**
+ * Selects the route with a given id
+ * @param {Route} route the route to select
+ * @param {Boolean} toggle if true and the route is already selected will delesect
  */
-
 PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 	
 	if (this.routes[routeId]){
@@ -1461,8 +1537,10 @@ PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 
 
 
-/*
+/**
+ * @private
  * save the data down to the page to be serialised in some form
+ * @returns a json strucure with all point data
  */
 PhotoTopo.prototype.saveData = function(){
 	var routeId,
@@ -1498,7 +1576,9 @@ PhotoTopo.prototype.saveData = function(){
 
 };
 
-
+/**
+ * @private
+ */
 PhotoTopo.prototype.redraw = function(){
 	var routeId, r;
 	for(routeId in this.routes){
@@ -1513,8 +1593,8 @@ PhotoTopo.prototype.redraw = function(){
 };
 
 
-
-/*
+/**
+ * @private
  * creates or retreives a point group for a new point location
  * if the point is close to another point it will 'stick' the point to the previous point
  */
@@ -1553,7 +1633,8 @@ PhotoTopo.prototype.getPointGroup = function(point){
 		
 };
 
-/*
+/**
+ * @private
  * given an x,y coord return a key for saving this
  */
 PhotoTopo.prototype.getKey = function(point){
@@ -1566,7 +1647,8 @@ PhotoTopo.prototype.getKey = function(point){
 
 
 
-/*
+/**
+ * @private
  * Adds or inserts a new Point into a route
  */
 PhotoTopo.prototype.addToRoute = function(routeId, x, y, type, position){
@@ -1576,8 +1658,9 @@ PhotoTopo.prototype.addToRoute = function(routeId, x, y, type, position){
 
 
 
-/*
- * set the topo image and triggers a redraw
+/**
+ * Set the photo image and triggers a redraw
+ * @param {String} imageUrl a url to an image
  */
 PhotoTopo.prototype.setImage = function(imageUrl){
 		
@@ -1625,7 +1708,8 @@ PhotoTopo.prototype.setImage = function(imageUrl){
 };
 
 
-/*
+/**
+ * @private
  * handle a click on the background
  * if in edit mode and a point is selected then insert it
  */
@@ -1642,6 +1726,10 @@ PhotoTopo.prototype.clickBackground = function(event){
 	this.updateCursor();
 	
 };
+
+/**
+ * @private
+ */
 PhotoTopo.prototype.updateCursor = function(){
 	var cursor = '';
 	
@@ -1665,9 +1753,11 @@ PhotoTopo.prototype.updateCursor = function(){
 	jq.removeClass('noneselected addfirst addmore');
 	jq.addClass(cursor);
 }
-
-
-PhotoTopo.prototype.updateOrder = function(order){
+/**
+ * Sets the order of the routes which affects the way they visually thread through each point
+ * @param order a hash of the id to the order
+ */
+PhotoTopo.prototype.setOrder = function(order){
 
 	// reorder all the routes
 	var id, label;

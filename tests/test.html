@@ -575,7 +575,7 @@ more text</div>
 	$('.routes tr:odd').addClass('zebra');
  	$('#toggle').click(function(){
 		var p = pt;
-		p.routeVisibility(!p.routesVisible);
+		p.setRouteVisibility(!p.routesVisible);
 		
 	});
 	$('#route_table_3 .handle').addClass('ui-icon ui-icon-grip-dotted-vertical ui-state-default ui-corner-all');
@@ -600,7 +600,7 @@ more text</div>
 				$(this).find('td:nth-child(2) span').text(index);
 			});
 			var p = pt;
-			p.updateOrder(id_order);
+			p.setOrder(id_order);
 			// update the phototopo
 		}
 	});
