@@ -1,11 +1,11 @@
 <project name="PhotoTopo" default="all" basedir=".">
 
-	<loadfile property="version" srcfile="version.txt" />
+	<property file="project.properties"/>
 	<property name="PREFIX" value="." />
 	<property description="Folder for output and min target" name="dist" value="${PREFIX}/dist" />
 
-	<property name="OUT" value="${dist}/phototopo.js" />
-	<property name="OUT_MIN" value="${dist}/phototopo.min.js" />
+	<property name="OUT" value="${dist}/phototopo-${version}.js" />
+	<property name="OUT_MIN" value="${dist}/phototopo-${version}.min.js" />
 
 	<target name="all" depends="jquery,lint,min" />
 
