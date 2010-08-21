@@ -24,8 +24,10 @@ Optimise: Defer redrawing of new routes until all are loaded?
 
 
 
-/*
+/**
  * stores the collection of points that are in the same location
+ * @constructor 
+ * @param {Point} point The first point in this group
  */
 function PointGroup(point){
 	this.points = [];
@@ -36,8 +38,9 @@ function PointGroup(point){
 	this.y = point.y;
 }
 
-/*
+/**
  * add another point to an existing pointGroup
+ * @param {Point} point the point to add
  */
 PointGroup.prototype.add = function(point){
 	var c;
@@ -59,7 +62,7 @@ PointGroup.prototype.sort = function(){
 }
 
 
-/*
+/**
  * gets the points order in this group
  * points have a natural order which is typically the order the routes are shown in the guide (eg left to right)
  */
@@ -181,8 +184,13 @@ PointGroup.prototype.getAngle = function(point){
 
 
 
-/*
+/**
  * there is one point for every point on a route - two points can occupy the same location
+ * @constructor 
+ * @param {Route} 
+ * @param {Integer} x x cordinate
+ * @param {Integer} y y coordinate
+ * @param {Integer} position where along the route it is added
  */
 function Point(route, x, y, type, position){
 
@@ -667,8 +675,11 @@ function getBezierOffset(points, offset1, offset2){
 
 
 
-/*
+/**
  * a path connects two points
+ * @constructor 
+ * @param {Point} point1 The starting point
+ * @param {Point} point2 The ending point
  */
 function Path(point1, point2){
 
@@ -866,9 +877,11 @@ Path.prototype.redraw = function(point){
 
 
 
-/*
- * id - is a unique string identifying the route (eg a primary id in the DB)
- * order is a number used for sorting the routes into a natural order (typically 1..x from left to right)
+/**
+ * @constructor 
+ * @param phototopo the topo to add this route to
+ * @param id - is a unique string identifying the route (eg a primary id in the DB)
+ * #param order is a number used for sorting the routes into a natural order (typically 1..x from left to right)
  */
 function Route(phototopo, id, order){
 	this.phototopo = phototopo;
@@ -1158,9 +1171,10 @@ Route.prototype.onclick = function(point){
 
 
 
-
-
-
+/**
+ * @constructor 
+ * @param opts A hash of options
+ */
 
 function PhotoTopo(opts){
 
