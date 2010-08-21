@@ -50,6 +50,13 @@
 	height: 16px;
 }
 
+.contextMenu li.separator {
+	background: #DDD;
+	font-weight:bold;
+	padding:2px;
+}
+
+
 .pt_label.none { display: none; }
 .contextMenu LI.none    A { border: none; background-image: url(images/.png); }
 

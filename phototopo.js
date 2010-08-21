@@ -254,7 +254,16 @@ function Point(route, x, y, type, position){
 		
 		circle.drag(dragMove, dragStart, dragEnd); 
 		circle.mouseover(function(){
-		  	$(this.point.route.phototopo.photoEl).addClass('point');
+			// is it the last point of a routes?
+			if (this.point.nextPoint){
+				$('#phototopoContextMenu .hidden').removeClass('disabled');
+				$('#phototopoContextMenu .jumpoff').addClass('disabled');
+			} else {
+				$('#phototopoContextMenu .hidden').addClass('disabled');
+				$('#phototopoContextMenu .jumpoff').removeClass('disabled');
+			}
+
+			$(this.point.route.phototopo.photoEl).addClass('point');
 
 			//this.point.setStyle();
 			this.point.route.onmouseover(this.point);
@@ -565,6 +574,9 @@ Point.prototype.moveTo = function(x,y){
 
 	if (this.x === x && this.y === y){
 		return { x: x, y: y };
+	}
+	if (x === NaN || y === NaN){
+		return { x: this.x, y: this.y };
 	}
 
 	this.pointGroup.remove(this);
@@ -1192,6 +1204,8 @@ function PhotoTopo(opts){
 		$('body').append(
 '<ul id="phototopoContextMenu" class="contextMenu">'
 +'    <li class="none"><a href="#">None</a></li>'
++'    <li class="jumpoff"><a href="#jumpoff">Jump off</a></li>'
++'    <li class="hidden"><a href="#hidden">Hidden</a></li>'
 +'    <li class="separator">Protection</li>'
 +'    <li class="bolt"><a href="#bolt">Bolt</a></li>'
 +'    <li class="draw"><a href="#draw">Clip</a></li>'
@@ -1201,9 +1215,6 @@ function PhotoTopo(opts){
 +'    <li class="belay"><a href="#belay">Belay</a></li>'
 +'    <li class="belaysemi"><a href="#belaysemi">Semi-belay</a></li>'
 +'    <li class="belayhanging"><a href="#belayhanging">Hanging Belay</a></li>'
-+'    <li class="separator">Bouldering</li>'
-+'    <li class="jumpoff"><a href="#jumpoff">Jump off</a></li>'
-+'    <li class="hidden"><a href="#hidden">Hidden</a></li>'
 +'</ul>'
 );
 	}
