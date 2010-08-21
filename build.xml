@@ -4,18 +4,23 @@
 	<property name="PREFIX" value="." />
 	<property description="Folder for output and min target" name="dist" value="${PREFIX}/dist" />
 
-	<property name="OUT" value="${dist}/phototopo-${version}.js" />
-	<property name="OUT_MIN" value="${dist}/phototopo-${version}-min.js" />
+	<property name="JS"      value="${dist}/phototopo-${version}.js" />
+	<property name="JS_MIN"  value="${dist}/phototopo-${version}-min.js" />
+	<property name="CSS"     value="${dist}/phototopo-${version}.css" />
+	<property name="CSS_MIN" value="${dist}/phototopo-${version}-min.css" />
 
 	<target name="all" depends="build,min" />
 
 	<target name="build" depends="" description="Main build, concatenates source files and replaces @VERSION">
-		<echo message="Building ${OUT}" />
+		<echo message="Building ${JS}" />
 		<mkdir dir="${dist}" />
-		<concat destfile="${OUT}">
+		<concat destfile="${JS}">
 			<fileset file="phototopo.js" />
 		</concat>
-		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${OUT}" />
+		<concat destfile="${CSS}">
+			<fileset file="phototopo.css" />
+		</concat>
+		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JS}" />
 		<echo message="Project built." />
 	</target>
 
@@ -26,14 +31,33 @@
 	</target>
 
 	<target name="min" depends="build" description="Remove all comments and whitespace, no compression, great in combination with GZip">
-		<echo message="Building ${OUT_MIN}" />
+		<echo message="Building ${JS_MIN}" />
 		<java fork="true" jar="build/yuicompressor-2.4.2.jar">
 			<arg line="--type=js" />
-			<arg path="${OUT}" />
+			<arg path="${JS}" />
 			<arg line="-o" />
-			<arg path="${OUT_MIN}" />
+			<arg path="${JS_MIN}" />
 		</java>
-		<echo message="${OUT_MIN} built." />
+		<java fork="true" jar="build/yuicompressor-2.4.2.jar">
+			<arg line="--type=css" />
+			<arg path="${CSS}" />
+			<arg line="-o" />
+			<arg path="${CSS_MIN}" />
+		</java>
+		<echo message="${JS_MIN} and ${CSS_MIN} built." />
+	</target>
+
+	<target name="jsdoc" depends="build" description="Build JSDocs">
+		<delete dir="docs" />
+		<mkdir dir="docs" />
+		<echo message="Building JSDocs" />
+		<java fork="true" jar="${jsdoc.home}/jsrun.jar">
+			<arg line="${jsdoc.home}/app/run.js" />
+			<arg line=" -a" />
+			<arg line="-t=${jsdoc.home}/templates/jsdoc" />
+			<arg line="phototopo.js" />
+			<arg line="-d=docs" />
+		</java>
 	</target>
 
 	<target name="clean">
