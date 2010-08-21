@@ -1,0 +1,62 @@
+<project name="PhotoTopo" default="all" basedir=".">
+
+	<loadfile property="version" srcfile="version.txt" />
+	<property name="PREFIX" value="." />
+	<property description="Folder for output and min target" name="dist" value="${PREFIX}/dist" />
+
+	<property name="OUT" value="${dist}/phototopo.js" />
+	<property name="OUT_MIN" value="${dist}/phototopo.min.js" />
+
+	<target name="all" depends="jquery,lint,min" />
+
+	<target name="jquery" depends="" description="Main jquery build, concatenates source files and replaces @VERSION">
+		<echo message="Building ${OUT}" />
+		<mkdir dir="${dist}" />
+		<concat destfile="${OUT}">
+			<fileset file="phototopo.js" />
+		</concat>
+		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${OUT}" />
+		<replaceregexp match="Date: " replace="Date: ${date}" file="${OUT}" />
+		<echo message="Project built." />
+	</target>
+
+	<target name="lint" depends="jquery" description="Check jQuery against JSLint">
+		<exec executable="java">
+			<arg line="-jar build/js.jar build/jslint-check.js" />
+		</exec>
+	</target>
+
+	<target name="min" depends="jquery" description="Remove all comments and whitespace, no compression, great in combination with GZip">
+		<echo message="Building ${JQ_MIN}" />
+		<apply executable="java" parallel="false" verbose="true" dest="${dist}">
+			<fileset dir="${dist}">
+				<include name="jquery.js" />
+			</fileset>
+			<arg line="-jar" />
+			<arg path="build/google-compiler-20091218.jar" />
+			<arg value="--warning_level" />
+			<arg value="QUIET" />
+			<arg value="--js_output_file" />
+			<targetfile />
+			<arg value="--js" />
+			<mapper type="glob" from="jquery.js" to="tmpmin" />
+		</apply>
+		<concat destfile="${JQ_MIN}">
+			<filelist files="${JQ}, ${dist}/tmpmin" />
+			<filterchain>
+				<headfilter lines="15" />
+			</filterchain>
+		</concat>
+		<concat destfile="${JQ_MIN}" append="yes">
+			<filelist files="${dist}/tmpmin" />
+		</concat>
+		<delete file="${dist}/tmpmin" />
+		<echo message="${JQ_MIN} built." />
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist}" />
+	</target>
+
+
+</project>

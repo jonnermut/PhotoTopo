@@ -1,5 +1,5 @@
 /*!
- * PhotoTopo - A javascript climbing route editing widget
+ * PhotoTopo @VERSION - A javascript climbing route editing widget
  *
  * Copyright (c) 2010 Brendan Heywood brendan.heywood@gmail.com
  *
