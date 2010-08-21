@@ -1,0 +1,700 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Tests</title>
+<link type="text/css" rel="stylesheet" href="phototopo.css" />
+<script type="application/javascript" src="jquery-1.4.2.min.js"></script>
+<script type="application/javascript" src="json2.js"></script> 
+<script type="application/javascript" src="raphael.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/jquery-ui.min.js" type="text/javascript"></script>
+
+
+<script type="application/javascript" src="jquery.contextMenu-1.01/jquery.contextMenu.js"></script> 
+<link type="text/css" href="jquery.contextMenu-1.01/jquery.contextMenu.css" rel="stylesheet" />
+
+
+<script type="application/javascript" src="phototopo.js"></script>
+
+<link type="text/css" href="http://www-personal.une.edu.au/~bheywood/thecrag/icon-sprites/sprite.css" rel="stylesheet" />
+
+<style>
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+<h1>Test 1: Read only, default config</h1>
+
+<div id="phototopo1" style="width: 300px;"></div>
+<p>Should test:</p>
+<ul>
+<li>routes that share a path should merge or split smoothly <span style="background:#6F9">DONE</span></li>
+<li>routes with sharp angles should still appear smooth (needs work) <span style="background:#6F9">DONE</span></li>
+<li>routes that share a point but not a path should just cross</li>
+</ul>
+<script>
+ jQuery(function(){
+         var pt = new PhotoTopo({
+                 elementId: 'phototopo1',
+                 width: 500,
+                 height: 375,
+                 imageUrl: "phototopo-example.jpg",
+                 routes: [
+  {
+   "id": "0",
+   "points": "20 220,40 150,20 70"
+  },
+  {
+   "id": "1",
+   "points": "20 220,40 150,100 130,130 60"
+  },
+  {
+   "id": "2",
+   "points": "80 260,120 200,100 130,130 60"
+  },
+  {
+   "id": "3",
+   "points": "140 280,190 180,190 140,180 50"
+  },
+  {
+   "id": "4",
+   "points": ""
+  },
+    {
+   "id": "5",
+   "points": "290 200,250 150,230 70"
+  },
+  {
+   "id": "6",
+   "points": "220 200,250 150,300 110,300 60"
+  },
+                 ]
+         });
+ 
+ });
+ </script>
+<div id="phototopo12" style="width: 300px;"></div>
+<ul>
+  <li>  route that share a start or an end should also merge (but perhaps only if the angles are close?)
+  </li>
+  <li>routes that share paths in opposite directions should also smoothly </li>
+</ul>
+<script>
+ jQuery(function(){
+         var pt = new PhotoTopo({
+                 elementId: 'phototopo12',
+                 width: 500,
+                 height: 375,
+                 imageUrl: "phototopo-example.jpg",
+                 routes: [
+  {
+   "id": "15",
+   "points": "330 270,280 160,360 70"
+  },
+  {
+   "id": "101",
+   "points": "20 250,80 180,170 180,230 90"
+  },
+  {
+   "id": "102",
+   "points": "330 270,430 180,420 140,360 70"
+  },
+  {
+   "id": "103",
+   "points": "230 270,170 180,80 180,30 100"
+  }
+                 ]
+         });
+ 
+ });
+ </script>
+
+<h1>Test 2: Read only, custom colours, events</h1>
+<div id="phototopo2" style="width: 300px;"></div>
+
+<p>
+
+<style type="text/css">
+
+table td, th {
+	font-family: "lucida grande", verdana, sans-serif;
+	font-size: 12px;
+	padding: 3px 5px;
+	border-bottom: 1px solid #D9D9D9;
+
+}
+
+.routes td p {
+	overflow: hidden;
+	text-overflow:ellipsis;
+	width: 300px;
+	white-space:nowrap;
+	color: #999;
+	padding: 0;
+	margin: 0;
+	font-size: 10px;
+	height: 14px;
+}
+.routes .selected td p {
+	color: #ccd;
+	font-weight: normal;
+}
+
+
+
+table {
+	border: 1px solid #666666;
+	border-collapse:collapse;
+}
+
+.zebra {
+	background: #EDF3FE;
+}
+
+
+#route_table {
+	border-collapse: collapse;
+}
+
+
+.ticked td {
+	background-color:#Fe3;
+	border-bottom: 1px solid #7DAAEA;
+}
+
+
+.selected td {
+	background-color: #3d80df;
+	color: #ffffff;
+	border-bottom: 1px solid #7DAAEA;
+}
+
+.hover {
+	background: #acf;
+}
+
+.beginner,
+.intermediate,
+.advanced,
+.elite {
+	width: 35px;
+	text-align:center;
+	border: 1px solid #666;
+	font-size: 12px;
+}
+
+.labels div {
+	width: 18px;
+	height: 18px;
+	line-height: 18px;
+	border: 1px solid #000;
+
+}
+
+
+
+
+
+
+
+td.beginner, .beginner {
+	background: #0a0;	
+	color: white;
+}
+
+td.intermediate, .intermediate {
+	background: #ff0;
+	color: black;
+}
+
+td.advanced, .advanced {
+	background: #Fa0;
+	color: black;
+}
+
+td.elite, .elite {
+	background: #f11;
+	color: #fff;
+}
+
+.selected.beginner .num ,
+.selected.intermediate .num ,
+.selected.advanced .num ,
+.selected.elite .num {
+	color: black;
+	background: white;
+	
+}
+
+.num {
+	height: 16px;
+	width: 16px;
+/*
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+*/
+	color: white;
+	background: black;
+	display:inline-block;
+	font-size: 11px;
+	text-align:center;
+	line-height: 15px;
+}
+
+
+
+.routes .selected .num {
+	background: white;
+	color: black;
+}
+
+.rp {
+	width: 89px;
+	background: #ddd url('http://www-personal.une.edu.au/~bheywood/thecrag/difficultyband/pr_bg.gif') -1px 0 repeat;
+	border: 1px solid #444;
+}
+
+.rp div {
+	background: #444 url('http://www-personal.une.edu.au/~bheywood/thecrag/difficultyband/pr_bg.gif') -1px 0 repeat;
+	height: 16px;
+}
+
+.handle {
+	display: block;
+	cursor: move;
+}
+
+
+</style>
+
+<table id="route_table" class="routes">
+  <tr>
+    <th colspan="3" align="right">Rating</th>
+    <th align="center">Grade</th>
+    <th align="left">Name</th>
+    <th align="right">H</th>
+    <th>Popularity</th>
+    <th align="left">Style</th>
+  </tr>
+  <tr id="route1">
+    <td><span class="single_lead"></span></td>
+    <td><span class="num">71</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="beginner">14</div></td>
+    <td>Good morning little school girl
+      <p>Start on the high crimp then easy ledges with perfect bolts to cam finish</p></td>
+    <td align="right">15m</td>
+    <td><div class="rp"><div style="width: 75px;"></div></div></td>
+    <td>Free</td>
+  </tr>
+  <tr id="route2">
+    <td><span class="single_unticked"></span></td>
+    <td><span class="num">72</span></td>
+    <td align="right"><img src="../img/mini-danger.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="intermediate">18</div></td>
+    <td>Some horrid climb
+      <p>Don't bother with this  rubish.</p></td>
+    <td align="right">9m</td>
+    <td><div class="rp"><div style="width: 5px;"></div></div></td>
+    <td>Sport <span class="clip"></span> 4</td>
+  </tr>
+  <tr id="route3">
+    <td><span class="single_solo"></span></td>
+    <td><span class="num">73</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="advanced">23</div></td>
+    <td>Yoda
+      <p>Chunky oblique blocks with solid moves.</p></td>
+    <td align="right">15m</td>
+    <td><div class="rp"><div style="width: 35px;"></div></div></td>
+    <td>Sport <img src="../img/clip.png" alt="6 bolts" width="15" height="18" align="absmiddle"/> 6</td>
+  </tr>
+  <tr id="route4">
+    <td><span class="single_hit"></span></td>
+    <td><span class="num">74</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="elite">V12</div></td>
+    <td>Friggen hard
+      <p>Not sure, follow the tiny thin stuff up and up</p></td>
+    <td align="right">&nbsp;</td>
+    <td><div class="rp"><div style="width: 65px;"></div></div></td>
+    <td>Boulder</td>
+  </tr>
+  <tr id="route5">
+    <td><span class="single_unticked"></span></td>
+    <td><span class="num">75</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="advanced">22</div></td>
+    <td>Another route
+    <p>Just some lorrem ipsum text</p></td>
+    <td align="right">&nbsp;</td>
+    <td><div class="rp"><div style="width: 65px;"></div></div></td>
+    <td>Boulder</td>
+  </tr>
+</table>
+<ul>
+  <li>Attached events to intereact with onmouseover, onmouseout, onclick, between route map and calling page. <span style="background:#6F9">DONE</span></li>
+  <li>Should show labels, with style called from function <span style="background:#6F9">DONE</span></li>
+  <li>Labels should never overlap 14 and 18 should both show <span style="background:#6F9">DONE</span> </li>
+  <li>should have invisible thick line for easier hover and select events <span style="background:#6F9">DONE</span></li>
+  <li>should show custom colours depending on a supplied function of the grade <span style="background:#6F9">DONE</span></li>
+</ul>
+
+<script>
+ jQuery(function(){
+         var pt = new PhotoTopo({
+                 elementId: 'phototopo2',
+                 width: 500,
+                 height: 400,
+		editable: false,
+		seperateRoutes: true,
+		autoColors: true,
+				 thickness: 4,
+                 imageUrl: "phototopo-example.jpg",
+				 onmouseover: function(route){
+					 $('#'+route.id).addClass('selected');
+					 route.select();
+				 },
+				 onmouseout: function(route){
+					 $('#'+route.id).removeClass('selected');
+					 route.deselect();
+				 },
+				 onclick: function(route){
+					 alert('route "'+route.id+'" clicked');
+				 },
+				 getlabel: function(routeId){
+					  return ({
+						 label:   $('#'+routeId +' td:nth-child(2)').text(),
+						 classes: $('#'+routeId +' td:nth-child(4) *').attr('class')
+					 });
+				 },
+                 routes: [
+ {
+   "id": "route1",
+   "points": "80 180,70 110 draw,130 30 jumpoff"
+  },
+  {
+   "id": "route2",
+   "points": "128 327 none,148 264 draw,128 202 belay,123 144 draw,155 98 draw,159 32"
+  },
+  {
+   "id": "route3",
+   "points": "305 307,299 234 bolt,315 177 bolt,293 123 bolt,284 79 bolt,274 36"
+  },
+  {
+   "id": "route4",
+   "points": "360 300,370 220,360 150,360 110"
+  },
+  {
+   "id": "route5",
+   "points": "360 300,370 220,400 170"
+  }
+
+                 ]
+         });
+ 	$('#route_table tr').hover(
+		function(){
+			$(this).addClass("selected");
+			pt.selectRoute($(this).attr('id'));
+   		},
+   		function(){
+			$(this).removeClass("selected");
+			pt.selectRoute();
+		}
+	);
+	$('#route_table tr').each(function(){
+		$(this).prepend("<td><input type='checkbox' id='check"+$(this).attr('id')+"' /></td>");
+	});
+	$('#route_table tr').click(function(){
+		var id = $(this).attr('id');
+		$(this).toggleClass('ticked');
+
+		$('#check'+id).val('checked');
+   	});
+ });
+  </script>
+
+<h3>Test 2.1: Scaled down version</h3>
+<div id="phototopo21" style="width: 300px;"></div>
+<script>
+ jQuery(function(){
+         var pt = new PhotoTopo({
+                 elementId: 'phototopo21',
+                 width: 250,
+                 height: 200,
+				viewScale: 0.5,				 
+		editable: false,
+		seperateRoutes: true,
+		autoColors: true,
+				 thickness: 2,
+                 imageUrl: "phototopo-example.jpg",
+				 onmouseover: function(route){
+					 $('#'+route.id).addClass('selected');
+					 route.select();
+				 },
+				 onmouseout: function(route){
+					 $('#'+route.id).removeClass('selected');
+					 route.deselect();
+				 },
+				 onclick: function(route){
+					 alert('route "'+route.id+'" clicked');
+				 },
+				 getlabel: function(routeId){
+					  var ret = {
+						 label:   $('#'+routeId +' td:nth-child(3)').text(),
+						 classes: $('#'+routeId +' td:nth-child(5) *').attr('class')
+					 };
+					 return ret;
+				 },
+                 routes: [
+ {
+   "id": "route1",
+   "points": "80 180,70 110 crux,130 30"
+  },
+  {
+   "id": "route2",
+   "points": "160 280,170 110,310 20"
+  },
+  {
+   "id": "route3",
+   "points": "360 300,370 220 warning,310 150,230 30"
+  },
+  {
+   "id": "route4",
+   "points": "360 300,370 220,360 150,360 110"
+  },
+  {
+   "id": "route5",
+   "points": "360 300,370 220,400 170"
+  }
+
+                 ]
+         });
+ 	
+ });
+  </script>
+
+<p>&nbsp;</p>
+
+<script type="text/javascript"
+  src="http://jqueryui.com/themeroller/themeswitchertool/">
+</script>
+<div id="switcher"></div>
+ <link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/ui.all.css" />
+  
+  <script>
+  $(document).ready(function(){
+    $('#switcher').themeswitcher();
+  });
+  </script>
+
+<h1>Test 3: Editable</h1>
+<ul>
+  <li>Drag any point to move it,this will also have te side effect of selecting the route <span style="background:#6F9">DONE</span></li>
+  <li>Points dragged near other points will snap to them, the selected route should always remain on top of the other routes it may share paths with</li>
+  <li>if a point is selected clicking on the background should insert another point after the selected point. if it is close to another point it will be located in the same spot exactly <span style="background:#6F9">DONE</span></li>
+  <li>if you double click a point it will be removed and the previous point in the route selected <span style="background:#6F9">DONE</span></li>
+  <li>hint should be shown to help the editor know how to edit. <span style="background:#6F9">DONE</span></li>
+  <li>the get labels calback should be able to declare the sort order for labels that are attached to the same point (so they appear in the same order as the table) <span style="background:#6F9">DONE</span></li>
+  <li>If you delete a point the label from other point there should be redrawn <span style="background:#6F9">DONE</span></li>
+</ul>
+<div>this is a parent nested div<div>
+
+<div id="phototopo3" style="width: 500px;"></div>
+more text</div>
+</div>
+<script>
+ jQuery(function(){
+         var pt = new PhotoTopo({
+                 elementId: 'phototopo3',
+                 width: 500,
+                 height: 375,
+		thickness: 5,
+		seperateRoutes: true,
+		autoColors: true,
+				 editable: true,
+                 imageUrl: "./phototopo-example.jpg",
+				 onchange: function(data){
+					 jQuery('#data3').val(JSON.stringify(data, null, 1));
+				 },
+				 onselect: function(route){
+					 $('#'+route.id).addClass('selected');
+				 },
+				 ondeselect: function(route){
+					 $('#'+route.id).removeClass('selected');
+				 },
+				 getlabel: function(routeId){
+					  return ({
+						 classes: $('#'+routeId +' td:nth-child(4) div').attr('class'),
+						 label:   $('#'+routeId +' td:nth-child(2)').text()
+					 });
+				 },
+                 routes: [
+                         {
+                                 id: 'e31',
+								 order: 1,
+                                 points: "20 220, 40 150, 15 100 anchor"
+                         },
+                         {
+                                 id: 'e32',
+								 order: 2,
+                                 points: "20 220, 40 150 warning, 150 150, 160 70"
+                         },
+                         {
+                                 id: 'e33',
+								 order: 3,
+                                 points: "200 260, 240 200, 150 150, 160 70"
+                         },
+                         {
+                                 id: 'e34',
+								 order: 4,
+                                 points: "400 260, 260 200, 310 150, 260 80"
+	                     },
+                         {
+                                 id: 'e35',
+								 order: 5,
+                                 points: ''
+                         }
+                 ]
+         });
+	$('#route_table_3 tr').click(function(){
+		pt.selectRoute($(this).attr('id'), true);
+   	});
+	$('.routes tr:odd').addClass('zebra');
+ 	$('#toggle').click(function(){
+		var p = pt;
+		p.routeVisibility(!p.routesVisible);
+		
+	});
+	$('#route_table_3 .handle').addClass('ui-icon ui-icon-grip-dotted-vertical ui-state-default ui-corner-all');
+
+	$('#route_table_3 tbody').sortable({
+		items: 'tr',
+		axis: 'y',
+		containment: 'parent',
+		tolerance: 'pointer',
+		update: function(event, ui) {
+			// re odd and even the table rows
+			$('#route_table_3 tbody tr').removeClass('zebra');
+			$('#route_table_3 tbody tr:odd').addClass('zebra');
+
+			var id_order = {};
+			var id;
+
+			// update the numbers - topo will pick these up
+			$('#route_table_3 tr').each(function(index, value){
+				id = $(this).attr('id');
+				id_order[id] = index;
+				$(this).find('td:nth-child(2) span').text(index);
+			});
+			var p = pt;
+			p.updateOrder(id_order);
+			// update the phototopo
+		}
+	});
+ });
+ </script>
+<table id="route_table_3" class="routes">
+  <tr>
+    <th>&nbsp;</th>
+    <th>#</th>
+    <th>Stars</th>
+    <th>Grade</th>
+    <th width="300">Name</th>
+    <th>H</th>
+  </tr>
+  <tr id="e31">
+    <td><span class="handle"></span></td>
+    <td><span class="num">1</span></td>
+    <td align="right"><img src="../img/mini-star.png" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="beginner">14</div></td>
+    <td>Good morning little school girl<p>Start on the high crimp then easy ledges with perfect bolts to cam finish</p></td>
+    <td>15m</td>
+  </tr>
+  <tr id="e32">
+    <td><span class="handle"></span></td>
+    <td><span class="num">2</span></td>
+    <td align="right"><img src="../img/mini-danger.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="intermediate">18</div></td>
+    <td>Some horrid climb
+    <p>Don't bother with this  rubish.</p></td>
+    <td>22m</td>
+  </tr>
+  <tr id="e33">
+    <td><span class="handle"></span></td>
+    <td><span class="num">3</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="advanced">23</div></td>
+    <td>Yoda
+    <p>Chunky oblique blocks with solid moves.</p></td>
+    <td>15m</td>
+  </tr>
+  <tr id="e34">
+    <td><span class="handle"></span></td>
+    <td><span class="num">4</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="elite">5.12c</div></td>
+    <td>Friggen hard
+    <p>Not sure, follow the tiny thin stuff up and up</p></td>
+    <td>28m</td>
+  </tr>
+  <tr id="e35">
+    <td><span class="handle"></span></td>
+    <td><span class="num">5</span></td>
+    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
+    <td align="center"><div class="advanced">22</div></td>
+    <td>Another route
+    <p>Just some lorrem ipsum text</p></td>
+    <td>35m</td>
+  </tr>
+</table>
+<p>
+  <textarea id="data3" cols="100" rows="22" style="font-size: 9px;"></textarea>
+</p>
+<p><button name="toggle routes" id="toggle">Toggle routes</button></p>
+<h1>Test 4: Advanced (later!)</h1>
+<ul>
+  <li>Point can have types, anchor etc</li>
+  <li>Allow a route to end with a 'T' to designate a jump off / arrow to designate walk off?</li>
+  <li>Allow a path to be dotted to show the route goes behind something</li>
+  <li>A hide routes mouseover in top left so you can easily see the rock underneath if you want</li>
+  <li>enable scaling of the image and it store coordinates against the original size (new config origHeight, origWidth) <span style="background:#6F9">DONE</span></li>
+  <li>enable dynamic scaing while viewing/editing so you can fine tune the path. path should stay the same pixel thickness as it scales</li>
+</ul>
+
+
+<ul id="myMenu" class="contextMenu">
+    <li class="none"><a href="#">None</a></li>
+    <li class="separator">Protection</li>
+    <li class="bolt"><a href="#bolt">Bolt</a></li>
+    <li class="draw"><a href="#draw">Clip</a></li>
+
+    <li class="separator">Misc</li>
+    <li class="crux"><a href="#crux">Crux</a></li>
+    <li class="warning"><a href="#warning">Warning</a></li>
+    <li class="belay"><a href="#belay">Belay</a></li>
+    <li class="belaysemi"><a href="#belaysemi">Semi-belay</a></li>
+    <li class="belayhanging"><a href="#belayhanging">Hanging Belay</a></li>
+
+    <li class="separator">Bouldering</li>
+    <li class="jumpoff"><a href="#jumpoff">Jump off</a></li>
+
+</ul>
+
+
+
+</body>
+</html>
