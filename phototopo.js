@@ -283,7 +283,7 @@ function Point(route, x, y, type, position){
 	
 	
 		$(circle.node).contextMenu({
-			menu: 'myMenu'
+			menu: 'phototopoContextMenu'
 		},
 			function(action, el, pos) {
 				point.setType(action);
@@ -1186,6 +1186,28 @@ function PhotoTopo(opts){
 	
 	
 	this.canvas = Raphael(this.options.elementId, this.options.width, this.options.height);
+
+
+	if (this.options.editable && !document.getElementById('#phototopoContextMenu') ){
+		$('body').append(
+'<ul id="phototopoContextMenu" class="contextMenu">'
++'    <li class="none"><a href="#">None</a></li>'
++'    <li class="separator">Protection</li>'
++'    <li class="bolt"><a href="#bolt">Bolt</a></li>'
++'    <li class="draw"><a href="#draw">Clip</a></li>'
++'    <li class="separator">Misc</li>'
++'    <li class="crux"><a href="#crux">Crux</a></li>'
++'    <li class="warning"><a href="#warning">Warning</a></li>'
++'    <li class="belay"><a href="#belay">Belay</a></li>'
++'    <li class="belaysemi"><a href="#belaysemi">Semi-belay</a></li>'
++'    <li class="belayhanging"><a href="#belayhanging">Hanging Belay</a></li>'
++'    <li class="separator">Bouldering</li>'
++'    <li class="jumpoff"><a href="#jumpoff">Jump off</a></li>'
++'    <li class="hidden"><a href="#hidden">Hidden</a></li>'
++'</ul>'
+);
+	}
+
 
 	// size of visible image
 	this.shownWidth = -1;
