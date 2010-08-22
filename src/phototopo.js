@@ -7,28 +7,7 @@
  *
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
-
-
-/*
-
-TODO
-
-BUG: If a single route ends where another single route starts they don't join properly
-
-BUG: Chrome sometimes draws a black route - possibly the getLbel selector is wrong for some rows (perhaps an empty cell?)
-
-
-Optimise: Defer redrawing of new routes until all are loaded?
-
-
-*/
 "use strict";
-
-
-
-
-
-
 
 /**
  * @private
