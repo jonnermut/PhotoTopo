@@ -1,9 +1,11 @@
 /*!
  * PhotoTopo @VERSION - A javascript climbing route editing widget
  *
- * Copyright (c) 2010 Brendan Heywood brendan.heywood@gmail.com
+ * Copyright (c) 2010 Brendan Heywood
  *
  * http://github.com/brendanheywood/PhotoTopo/
+ *
+ * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 
 

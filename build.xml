@@ -64,7 +64,7 @@
 			<arg line="${jsdoc.home}/app/run.js" />
 			<arg line=" -a" />
 			<arg line="-t=${jsdoc.home}/templates/jsdoc" />
-			<arg line="phototopo.js" />
+			<arg line="${src}/phototopo.js" />
 			<arg line="-d=docs" />
 		</java>
 	</target>
