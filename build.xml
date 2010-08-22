@@ -7,6 +7,7 @@
 	<property name="src" value="${PREFIX}/src" />
 	<property name="lib" value="lib" />
 	<property name="docs" value="${PREFIX}/docs" />
+	<property name="zip" value="${dists}/${ant.project.name}-${version}.zip" />
 
 	<property name="JS"      value="${dist}/${ant.project.name}.js" />
 	<property name="JS_MIN"  value="${dist}/${ant.project.name}-min.js" />
@@ -14,8 +15,9 @@
 	<property name="CSS_MIN" value="${dist}/${ant.project.name}-min.css" />
 
 	<target name="all" depends="build,min" />
+	<target name="docs" depends="jsdoc" />
 
-	<target name="build" depends="" description="Main build, concatenates source files and replaces @VERSION">
+	<target name="build" depends="clean" description="Main build, concatenates source files and replaces @VERSION">
 		<echo message="Building ${JS}" />
 		<mkdir dir="${dist}" />
 		<concat destfile="${JS}">
@@ -28,6 +30,7 @@
 			<fileset dir="src/images" />
 		</copy>
 		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JS}" />
+		<zip destfile="${zip}" basedir="${dists}" />
 		<echo message="Project built." />
 	</target>
 
