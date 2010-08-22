@@ -1,16 +1,17 @@
-<project name="PhotoTopo" default="all" basedir=".">
+<project name="phototopo" default="all" basedir=".">
 
 	<property file="project.properties"/>
 	<property name="PREFIX" value="." />
-	<property description="Folder for output and min target" name="dist" value="${PREFIX}/dist" />
+	<property name="dists" value="${PREFIX}/dist/" />
+	<property description="Folder for output and min target" name="dist" value="${dists}/${ant.project.name}-${version}" />
 	<property name="src" value="${PREFIX}/src" />
 	<property name="lib" value="lib" />
 	<property name="docs" value="${PREFIX}/docs" />
 
-	<property name="JS"      value="${dist}/phototopo-${version}.js" />
-	<property name="JS_MIN"  value="${dist}/phototopo-${version}-min.js" />
-	<property name="CSS"     value="${dist}/phototopo-${version}.css" />
-	<property name="CSS_MIN" value="${dist}/phototopo-${version}-min.css" />
+	<property name="JS"      value="${dist}/${ant.project.name}.js" />
+	<property name="JS_MIN"  value="${dist}/${ant.project.name}-min.js" />
+	<property name="CSS"     value="${dist}/${ant.project.name}.css" />
+	<property name="CSS_MIN" value="${dist}/${ant.project.name}-min.css" />
 
 	<target name="all" depends="build,min" />
 
@@ -23,6 +24,9 @@
 		<concat destfile="${CSS}">
 			<fileset file="${src}/phototopo.css" />
 		</concat>
+		<copy todir="${dist}/images">
+			<fileset dir="src/images" />
+		</copy>
 		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JS}" />
 		<echo message="Project built." />
 	</target>
@@ -66,7 +70,7 @@
 	</target>
 
 	<target name="clean">
-		<delete dir="${dist}" />
+		<delete dir="${dists}" />
 	</target>
 
 
