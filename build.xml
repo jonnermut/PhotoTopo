@@ -14,7 +14,7 @@
 	<property name="CSS"     value="${dist}/${ant.project.name}.css" />
 	<property name="CSS_MIN" value="${dist}/${ant.project.name}-min.css" />
 
-	<target name="all" depends="build,min" />
+	<target name="all" depends="dist" />
 	<target name="docs" depends="jsdoc" />
 
 	<target name="build" depends="clean" description="Main build, concatenates source files and replaces @VERSION">
@@ -30,8 +30,10 @@
 			<fileset dir="src/images" />
 		</copy>
 		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JS}" />
-		<zip destfile="${zip}" basedir="${dists}" />
 		<echo message="Project built." />
+	</target>
+	<target name="dist" depends="min" description="Makes a zip ready for distribution">
+		<zip destfile="${zip}" basedir="${dists}" />
 	</target>
 
 	<target name="lint" depends="" description="Check src against JSLint">
