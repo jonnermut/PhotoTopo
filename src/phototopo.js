@@ -644,7 +644,7 @@ function Path(point1, point2){
 
 
 
-	var route, offset, path, phototopo;
+	var offset, path, phototopo;
 
 	this.point1 = point1;
 	this.point2 = point2;
@@ -1536,9 +1536,7 @@ PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 PhotoTopo.prototype.saveData = function(){
 	var routeId,
 		data = {routes: [], changed: false },
-		route,
-		points,
-		path;
+		route;
 	if (this.loading){
 		return;
 	}
@@ -1593,7 +1591,6 @@ PhotoTopo.prototype.getPointGroup = function(point){
 
 	var x = point.x,
 		y = point.y,
-		threshhold,
 		key,
 		group;
 
