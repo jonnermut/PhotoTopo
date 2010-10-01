@@ -322,7 +322,11 @@ var routes = [
 					 route.deselect();
 				 },
 				 onclick: function(route){
-					 alert('route "'+route.id+'" clicked');
+					if (route){					
+						alert('route "'+route.id+'" clicked');
+					} else {
+						alert('background clicked');
+					}
 				 },
 				 getlabel: function(routeId){
 					  return ({
@@ -358,6 +362,7 @@ var routes = [
 <li>test clicking on label</li>
 <li>test clicking on route</li>
 <li>test clicking on point icon</li>
+<li>test clicking on background</li>
 </ul>
 
 

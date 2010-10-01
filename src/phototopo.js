@@ -1723,6 +1723,9 @@ PhotoTopo.prototype.clickBackground = function(event){
 		}
 	}
 	this.updateCursor();
+	if (this.options.onclick){
+		this.options.onclick();
+	}
 	
 };
 
