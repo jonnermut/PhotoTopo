@@ -10,6 +10,7 @@
 	border: 1px solid white;
 	background: #3d80df;
 	color: white;
+	z-index: 10;
 }
 
 /* draggable */
