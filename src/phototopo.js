@@ -334,6 +334,10 @@ Point.prototype.setType = function(type){
 		);
 		div.onclick = function(event){
 			this.point.select(); // should this only be in edit mode?
+			var opts = this.point.route.phototopo.options;
+			if (opts.onclick){
+				opts.onclick(this.point.route);
+			}
 		};
 	}
 	this.iconEl.className = 'pt_label pt_icon ' + this.type;
@@ -375,6 +379,10 @@ Point.prototype.setLabel = function(classes, text){
 		);
 		div.onclick = function(event){
 			this.point.select(); // should this only be in edit mode?
+			var opts = this.point.route.phototopo.options;
+			if (opts.onclick){
+				opts.onclick(this.point.route);
+			}
 		};
 		this.labelEl.className = 'pt_label '+classes;
 		if (!this.route.phototopo.loading){ 
@@ -708,6 +716,10 @@ function Path(point1, point2){
 	function PathClick(event){
 		if (!phototopo.options.editable){
 			this.path.point1.select();
+			var opts = this.path.point1.route.phototopo.options;
+			if (opts.onclick){
+				opts.onclick(this.path.point1.route);
+			}
 			return;			
 		}
 		var route = phototopo.selectedRoute,
