@@ -1533,6 +1533,7 @@ PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 			this.selectedRoute.deselect();
 		} else {
 			this.routes[routeId].select();
+			return this.routes[routeId];
 		}
 	} else {
 		if (this.selectedRoute){
