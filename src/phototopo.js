@@ -1478,12 +1478,15 @@ PhotoTopo.RouteLabel = function(){};
 PhotoTopo.prototype.setRouteVisibility = function(visible){
 	var phototopo = this;
 	phototopo.routesVisible = visible;
-	if (show){
-		phototopo.bg.toBack();
-		phototopo.fill.toBack();
+	if (!phototopo.hide){
+		phototopo.hide = phototopo.bg.clone();
+		phototopo.hide.attr('opacity', 0.8);
+	}
+	if (visible){
+		phototopo.hide.toBack();
 		phototopo.labelsEl.style.display = 'block';
 	} else {
-		phototopo.bg.toFront();
+		phototopo.hide.toFront();
 		phototopo.labelsEl.style.display = 'none';
 	}
 };
