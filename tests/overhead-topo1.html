@@ -39,7 +39,7 @@
 
 <h1>Test 1: Read only, default config</h1>
 
-<div id="overheadtopo1" style="width: 300px;"></div>
+<div id="overheadtopo1"></div>
 <p>Should test:</p>
 <ul>
 <li>single points should be a clickable square</li>
@@ -50,9 +50,7 @@
  jQuery(function(){
          var pt = new OverheadTopo({
                  elementId: 'overheadtopo1',
-                 width: 500,
-                 height: 375,
-                 imageUrl: "phototopo-example.jpg",
+                 imageUrl: "overhead-boulder-topo.gif",
                  routes: [
   {
    "id": "route1",
