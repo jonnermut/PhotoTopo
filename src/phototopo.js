@@ -1325,6 +1325,7 @@ PhotoTopo.RouteLabel = function(){};
 '    <li class="separator">Misc</li>'+
 '    <li class="crux"><a href="#crux">Crux</a></li>'+
 '    <li class="warning"><a href="#warning">Warning</a></li>'+
+'    <li class="lower"><a href="#lower">Lower-off</a></li>'+
 '    <li class="belay"><a href="#belay">Belay</a></li>'+
 '    <li class="belaysemi"><a href="#belaysemi">Semi-belay</a></li>'+
 '    <li class="belayhanging"><a href="#belayhanging">Hanging Belay</a></li>'+

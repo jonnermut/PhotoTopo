@@ -68,6 +68,7 @@
 .contextMenu LI.hidden A { border: none; background-image: url(images/hidden.png); }
 
 
+.pt_label.lower,        .contextMenu LI.lower        A { border: none; background-image: url(images/lower.png); }
 .pt_label.belay,        .contextMenu LI.belay        A { border: none; background-image: url(images/belay.png); }
 .pt_label.belaysemi,    .contextMenu LI.belaysemi    A { border: none; background-image: url(images/belaysemi.png); }
 .pt_label.belayhanging, .contextMenu LI.belayhanging A { border: none; background-image: url(images/belayhanging.png); }
