@@ -1434,6 +1434,7 @@ PhotoTopo.RouteLabel = function(){};
 			alert('Error: duplicate route=['+data.id+'] '+this.options.elementId);
 		}
 		this.routes[data.id] = new Route(this, data.id, data.order);
+		this.routes[data.id].orig = data;
 		if (this.options.getlabel){
 			label = this.options.getlabel(data.id);
 			if (this.options.autoColors){
