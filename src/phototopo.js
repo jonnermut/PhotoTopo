@@ -1436,7 +1436,7 @@ PhotoTopo.RouteLabel = function(){};
 		this.routes[data.id] = new Route(this, data.id, data.order);
 		this.routes[data.id].orig = data;
 		if (this.options.getlabel){
-			label = this.options.getlabel(data.id);
+			label = this.options.getlabel(data);
 			if (this.options.autoColors){
 				tempEl = $("<div class='"+label.classes+"'>");
 				this.labelsEl.appendChild(tempEl[0]);
