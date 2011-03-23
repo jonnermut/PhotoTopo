@@ -1458,7 +1458,7 @@ PhotoTopo.RouteLabel = function(){};
 			}
 		}
 		if (this.options.getlabel){
-			label = this.options.getlabel(data.id);
+			label = this.options.getlabel(data);
 			this.routes[data.id].setLabel(label);
 		}
 	
@@ -1773,7 +1773,7 @@ PhotoTopo.prototype.setOrder = function(order){
 		if (this.routes[id]){
 			this.routes[id].order = order[id];
 			if (this.options.getlabel){
-				label = this.options.getlabel(id);
+				label = this.options.getlabel(this.routes[id]);
 				this.routes[id].setLabel(label);
 			}
 		}
