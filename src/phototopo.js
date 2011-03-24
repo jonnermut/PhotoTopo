@@ -682,6 +682,7 @@ function Path(point1, point2){
 
 
 	this.curve      = phototopo.canvas.path(path);
+
 	this.outline.attr(phototopo.styles.outline);
 	if (this.point1.route.autoColorBorder){
 		this.outline.attr('stroke', this.point1.route.autoColorBorder);
@@ -1381,7 +1382,7 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke': '#3D80DF' // default if it can't inherit from label colour
 		},
 		strokeVisible: {
-			'stroke-dasharray': ''
+			'stroke-dasharray': 'inherit'
 		},
 		strokeHidden: {
 			'stroke-dasharray': '.'
