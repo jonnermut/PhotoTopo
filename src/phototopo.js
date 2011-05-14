@@ -204,6 +204,41 @@ function Point(route, x, y, type, position){
 	
 	styles = this.route.phototopo.styles;
 
+
+	function dragStart(){
+		var selectedRoute = this.point.route.phototopo.selectedRoute;
+		$(this.point.route.phototopo.photoEl).addClass('dragging');
+
+		this.ox = this.attr("cx");
+		this.oy = this.attr("cy");
+			
+		// don't allow draging of points if another route is selected
+		if (selectedRoute && selectedRoute !== this.point.route){
+			return;
+		}
+		circle.animate(styles.handleHover, 100);
+		this.point.select();
+	}
+
+	function dragMove(dx, dy){
+		var selectedRoute = this.point.route.phototopo.selectedRoute, pos;
+		if (selectedRoute && selectedRoute !== this.point.route){
+			return;
+		}
+		pos = circle.point.moveTo(this.ox + dx, this.oy + dy);
+		circle.attr({cx: pos.x, cy: pos.y});
+	}
+
+	function dragEnd(){
+		var selectedRoute = this.point.route.phototopo.selectedRoute;
+		$(this.point.route.phototopo.photoEl).removeClass('dragging');
+
+		if (selectedRoute && selectedRoute !== this.point.route){
+			return;
+		}
+		this.point.setStyle();
+	}
+
 	if (this.route.phototopo.options.editable){
 
 
@@ -214,39 +249,6 @@ function Point(route, x, y, type, position){
 		if (this.route.autoColor){
 			circle.attr('fill', this.route.autoColor);
 			circle.attr('stroke', this.route.autoColorBorder);
-		}
-
-		function dragStart(){
-			var selectedRoute = this.point.route.phototopo.selectedRoute;
-			$(this.point.route.phototopo.photoEl).addClass('dragging');
-
-			this.ox = this.attr("cx");
-			this.oy = this.attr("cy");
-			
-			// don't allow draging of points if another route is selected
-			if (selectedRoute && selectedRoute !== this.point.route){
-				return;
-			}
-			circle.animate(styles.handleHover, 100);
-			this.point.select();
-	
-		}
-		function dragMove(dx, dy){
-			var selectedRoute = this.point.route.phototopo.selectedRoute, pos;
-			if (selectedRoute && selectedRoute !== this.point.route){
-				return;
-			}
-			pos = circle.point.moveTo(this.ox + dx, this.oy + dy);
-			circle.attr({cx: pos.x, cy: pos.y});
-		}
-		function dragEnd(){
-			var selectedRoute = this.point.route.phototopo.selectedRoute;
-			$(this.point.route.phototopo.photoEl).removeClass('dragging');
-
-			if (selectedRoute && selectedRoute !== this.point.route){
-				return;
-			}
-			this.point.setStyle();
 		}
 		
 		circle.drag(dragMove, dragStart, dragEnd); 
