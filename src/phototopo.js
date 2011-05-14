@@ -1557,7 +1557,7 @@ PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 PhotoTopo.prototype.saveData = function(){
 	var routeId,
 		data = {routes: [], changed: false },
-		route;
+		route, routeData;
 	if (this.loading){
 		return;
 	}

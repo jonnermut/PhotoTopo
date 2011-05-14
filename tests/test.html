@@ -418,10 +418,10 @@ var routes = [
 				 onclick: function(route){
 					 alert('route "'+route.id+'" clicked');
 				 },
-				 getlabel: function(routeId){
+				 getlabel: function(route){
 					  return ({
-						 label:   $('#'+routeId +' td:nth-child(2)').text(),
-						 classes: $('#'+routeId +' td:nth-child(4) *').attr('class')
+						 label:   $('#'+route.id +' td:nth-child(2)').text(),
+						 classes: $('#'+route.id +' td:nth-child(4) *').attr('class')
 					 });
 				 },
                  routes: routes
@@ -474,10 +474,10 @@ jQuery(function(){
 		onclick: function(route){
 			alert('route "'+route.id+'" clicked');
 		},
-		getlabel: function(routeId){
+		getlabel: function(route){
 			var ret = {
-				label:   $('#'+routeId +' td:nth-child(3)').text(),
-				classes: $('#'+routeId +' td:nth-child(5) *').attr('class')
+				label:   $('#'+route.id +' td:nth-child(3)').text(),
+				classes: $('#'+route.id +' td:nth-child(5) *').attr('class')
 			};
 			return ret;
 		},
@@ -535,10 +535,10 @@ more text</div>
 				 ondeselect: function(route){
 					 $('#'+route.id).removeClass('selected');
 				 },
-				 getlabel: function(routeId){
+				 getlabel: function(route){
 					  return ({
-						 classes: $('#'+routeId +' td:nth-child(4) div').attr('class'),
-						 label:   $('#'+routeId +' td:nth-child(2)').text()
+						 classes: $('#'+route.id +' td:nth-child(4) div').attr('class'),
+						 label:   $('#'+route.id +' td:nth-child(2)').text()
 					 });
 				 },
                  routes: [
