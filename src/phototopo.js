@@ -365,35 +365,62 @@ Point.prototype.updateIconPosition = function(){
  * @private
  */
 Point.prototype.setLabel = function(classes, text){
-	var div = this.labelEl;
-	if (!this.labelEl){
-		this.labelEl = document.createElement("div");
-		this.labelEl.point = this;
-		this.route.phototopo.labelsEl.appendChild(this.labelEl);
-		div = this.labelEl;
-		$(div).hover(
-		function(event){
-			div.point.route.onmouseover();
-		},
-		function(event){
-			div.point.route.onmouseout();
+
+	var label = this.labelEl;
+	var labelText = this.labelText;
+	var x,y;
+	var point = this;
+	var topo = this.route.phototopo;
+	var opts = topo.options.style;
+	var size = topo.options.labelSize;
+	var canvas = topo.canvas;
+
+	function clickHandler(event){
+		point.select(); // should this only be in edit mode?
+		var opts = topo.options;
+		if (opts.onclick){
+			opts.onclick(point.route);
 		}
-		);
-		div.onclick = function(event){
-			this.point.select(); // should this only be in edit mode?
-			var opts = this.point.route.phototopo.options;
-			if (opts.onclick){
-				opts.onclick(this.point.route);
-			}
-		};
-		this.labelEl.className = 'pt_label '+classes;
+	};
+
+	if (!this.labelEl){
+		label = canvas.rect(this.x,this.y,size,size,size/6);
+		label.attr({fill: 'yellow', width: size, height: size, stroke: 'black', 'stroke-width': topo.options.labelBorder });
+		labelText = canvas.text(0,0,text);
+		this.labelText = labelText;
+
+		this.labelEl = label;	
+		label.mouseover(function(event){ point.route.onmouseover(); });
+		label.mouseout(function(event){  point.route.onmouseout();  });
+		labelText.mouseover(function(event){ point.route.onmouseover(); });
+		labelText.mouseout(function(event){  point.route.onmouseout();  });
+
+		label.click(clickHandler);
+		labelText.click(clickHandler);
+
 		if (!this.route.phototopo.loading){ 
 			this.updateLabelPosition();
 		}
-	}
-	this.labelEl.className = 'pt_label '+classes;
-	div.innerHTML = text;
 
+	}
+
+	var styles = this.route.phototopo.styles;
+	if (classes.indexOf('selected') !== -1){
+		    label.attr({fill: styles.strokeSelected.stroke, stroke: styles.outlineSelected.stroke });
+		labelText.attr({fill: styles.outlineSelected.stroke });
+	} else {
+		if (this.route.autoColor){
+			    label.attr({fill: this.route.autoColor, stroke: this.route.autoColorBorder });
+			labelText.attr({fill: this.route.autoColorBorder});
+		} else {
+			    label.attr({fill: styles.stroke.stroke, stroke: styles.outline.stroke });
+			labelText.attr({fill: styles.outline.stroke });
+		}
+	}
+	label.toFront();
+	labelText.toFront();
+	// TODO
+	this.labelEl.className = 'pt_label '+classes;
 };
 
 
@@ -475,12 +502,15 @@ Point.prototype.remove = function(){
 		
 		// just one point so delete it
 	}
+
 	if (this.labelEl){
-		this.labelEl.parentNode.removeChild(this.labelEl);
+		this.labelEl.remove();
+		this.labelText.remove();
 		this.labelEl = null;
+		this.labelText = null;
 	}
 	if (this.iconEl){
-		this.iconEl.parentNode.removeChild(this.iconEl);
+		this.iconEl.remove();
 		this.iconEl = null;
 	}
 
@@ -506,26 +536,27 @@ Point.prototype.remove = function(){
  * updates the labels position
  */
 Point.prototype.updateLabelPosition = function(){
-	
-	var div = this.labelEl,
+
+	var label = this.labelEl,
 		offsetX, offsetY,
 		width, top, left,
 		maxTop,
 		phototopo = this.route.phototopo;
-	if (!div){ return; }
+	if (!label){ return; }
+
+	var labelWidth = this.route.phototopo.options.labelSize;
 	
-	offsetX = this.pointGroup.getSplitOffset(this) * div.offsetWidth;
-	width = (div.offsetWidth) / 2;
+	offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
+
+	width = (labelWidth) / 2;
 	offsetY = phototopo.options.thickness;	
 
 	left = this.x - width + offsetX;
 	top  = this.y + offsetY;
 	
-	maxTop = phototopo.shownHeight - div.offsetHeight;
-	if (top>maxTop){ top = this.y - offsetY - div.offsetHeight; }
-	
-	div.style.left = left + 'px';
-	div.style.top = top + 'px';
+	label.attr({x:left, y:top});
+	this.labelText.attr({x:left+width, y:top+width});
+
 };
 
 /**
@@ -1284,6 +1315,8 @@ PhotoTopo.RouteLabel = function(){};
 	missingError(this.options.width, 'No width');
 	missingError(this.options.height, 'No height');
 	checkDefault('thickness', 5);
+	checkDefault('labelSize', 16);
+	checkDefault('labelBorder', 1.5);
 	checkDefault('viewScale', 1);
 	checkDefault('showPointTypes', true);
 //	checkDefault('onchange', function(){} );
