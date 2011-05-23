@@ -74,10 +74,10 @@
 .pt_label.belayhanging, .contextMenu LI.belayhanging A { border: none; background-image: url(images/belayhanging.png); }
 
 .pt_label.bolt,     .contextMenu LI.bolt    A { border: none; background-image: url(images/bolt.png); }
-.pt_label.draw,     .contextMenu LI.draw    A { border: none; background-image: url(images/clip.png); }
+.pt_label.draw,     .contextMenu LI.draw    A { border: none; background-image: url(images/draw.png); }
 
 
 
-.pt_label.crux,     .contextMenu LI.crux    A { border: none; background-image: url(images/lightning.png); }
-.pt_label.warning,  .contextMenu LI.warning A { border: none; background-image: url(images/error.png); }
-.pt_label.anchor,   .contextMenu LI.anchor  A { border: none; background-image: url(images/anchor.png); }
+.pt_label.crux,     .contextMenu LI.crux    A { border: none; background-image: url(images/crux.png);    }
+.pt_label.warning,  .contextMenu LI.warning A { border: none; background-image: url(images/warning.png); }
+.pt_label.anchor,   .contextMenu LI.anchor  A { border: none; background-image: url(images/anchor.png);  }

@@ -308,7 +308,8 @@ function Point(route, x, y, type, position){
  * @private
  */
 Point.prototype.setType = function(type){
-	if (!this.route.phototopo.options.showPointTypes){
+	var topo = this.route.phototopo;
+	if (!topo.options.showPointTypes){
 		return;
 	}
 	if (!type || type === 'none'){
@@ -320,23 +321,22 @@ Point.prototype.setType = function(type){
 		return;
 	}
 	this.type = type;
-	var div = this.iconEl;
 	if (!this.iconEl){
-		this.iconEl = document.createElement("div");
+		this.iconEl = topo.canvas.image(topo.options.baseUrl+'images/'+type+'.png', 0, 0, 16, 16);
+		this.iconEl.toFront();
 		this.iconEl.point = this;
-		this.route.phototopo.labelsEl.appendChild(this.iconEl);
-		div = this.iconEl;
-		$(div).hover(
-		function(event){
-			div.point.route.onmouseover();
-		},
-		function(event){
-			div.point.route.onmouseout();
-		}
+		var point = this;
+		this.iconEl.hover(
+			function(event){
+				point.route.onmouseover();
+			},
+			function(event){
+				point.route.onmouseout();
+			}
 		);
-		div.onclick = function(event){
+		this.iconEl.onclick = function(event){
 			this.point.select(); // should this only be in edit mode?
-			var opts = this.point.route.phototopo.options;
+			var opts = topo.options;
 			if (opts.onclick){
 				opts.onclick(this.point.route);
 			}
@@ -357,8 +357,10 @@ Point.prototype.updateIconPosition = function(){
 	if (!div){ return; }
 	left = this.x + offsetX;
 	top  = this.y + offsetY;
-	div.style.left = left + 'px';
-	div.style.top = top + 'px';
+
+	this.iconEl.attr({x: left, y: top });
+
+
 };
 
 /**
@@ -387,6 +389,7 @@ Point.prototype.setLabel = function(classes, text){
 		label = canvas.rect(this.x,this.y,size,size,size/6);
 		label.attr({fill: 'yellow', width: size, height: size, stroke: 'black', 'stroke-width': topo.options.labelBorder });
 		labelText = canvas.text(0,0,text);
+		labelText.attr({'font-size': size*.68 });
 		this.labelText = labelText;
 
 		this.labelEl = label;	
@@ -1318,6 +1321,7 @@ PhotoTopo.RouteLabel = function(){};
 	checkDefault('labelSize', 16);
 	checkDefault('labelBorder', 1.5);
 	checkDefault('viewScale', 1);
+	checkDefault('baseUrl', '../src/');
 	checkDefault('showPointTypes', true);
 //	checkDefault('onchange', function(){} );
 
