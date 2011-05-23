@@ -308,7 +308,7 @@ function Point(route, x, y, type, position){
  * @private
  */
 Point.prototype.setType = function(type){
-	var topo = this.route.phototopo;
+	var topo = this.route.phototopo, point;
 	if (!topo.options.showPointTypes){
 		return;
 	}
@@ -325,7 +325,7 @@ Point.prototype.setType = function(type){
 		this.iconEl = topo.canvas.image(topo.options.baseUrl+'images/'+type+'.png', 0, 0, 16, 16);
 		this.iconEl.toFront();
 		this.iconEl.point = this;
-		var point = this;
+		point = this;
 		this.iconEl.hover(
 			function(event){
 				point.route.onmouseover();
@@ -368,14 +368,13 @@ Point.prototype.updateIconPosition = function(){
  */
 Point.prototype.setLabel = function(classes, text){
 
-	var label = this.labelEl;
-	var labelText = this.labelText;
-	var x,y;
-	var point = this;
-	var topo = this.route.phototopo;
-	var opts = topo.options.style;
-	var size = topo.options.labelSize;
-	var canvas = topo.canvas;
+	var	label = this.labelEl,
+		labelText = this.labelText,
+		point = this,
+		topo = this.route.phototopo,
+		size = topo.options.labelSize,
+		canvas = topo.canvas,
+		styles = topo.styles;
 
 	function clickHandler(event){
 		point.select(); // should this only be in edit mode?
@@ -407,7 +406,6 @@ Point.prototype.setLabel = function(classes, text){
 
 	}
 
-	var styles = this.route.phototopo.styles;
 	if (classes.indexOf('selected') !== -1){
 		    label.attr({fill: styles.strokeSelected.stroke, stroke: styles.outlineSelected.stroke });
 		labelText.attr({fill: styles.outlineSelected.stroke });
@@ -540,19 +538,19 @@ Point.prototype.remove = function(){
  */
 Point.prototype.updateLabelPosition = function(){
 
-	var label = this.labelEl,
+	var	label = this.labelEl,
 		offsetX, offsetY,
 		width, top, left,
-		maxTop,
-		phototopo = this.route.phototopo;
+		topo = this.route.phototopo,
+		labelWidth = topo.options.labelSize;
+
 	if (!label){ return; }
 
-	var labelWidth = this.route.phototopo.options.labelSize;
 	
 	offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
 
 	width = (labelWidth) / 2;
-	offsetY = phototopo.options.thickness;	
+	offsetY = topo.options.thickness;	
 
 	left = this.x - width + offsetX;
 	top  = this.y + offsetY;
@@ -751,16 +749,16 @@ function Path(point1, point2){
 	
 	
 	function PathClick(event){
+		var route = phototopo.selectedRoute,
+			opts = phototopo.options;
+			path = event.target.raphael.path;
 		if (!phototopo.options.editable){
 			this.path.point1.select();
-			var opts = this.path.point1.route.phototopo.options;
 			if (opts.onclick){
 				opts.onclick(this.path.point1.route);
 			}
 			return;			
 		}
-		var route = phototopo.selectedRoute,
-			path = event.target.raphael.path;
 		if (route){
 			if (path.point1.route === route){
 				path.point1.select();
