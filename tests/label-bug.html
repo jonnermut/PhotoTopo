@@ -1,0 +1,380 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:og="http://opengraphprotocol.org/schema/">
+
+
+<head>
+  <title>theCrag | Car Park Boulder</title>
+  <meta property="og:site_name" content="theCrag"/>
+  <meta property="og:title" content="Car Park Boulder" />
+  <meta property="og:type" content="landmark" />
+  <meta property="fb:app_id" content="177943852215695"/>
+  <meta property="og:image" content="http://dev.thecrag.com/image/topo/00001/fixedheightsmall/26860899.jpg" />
+  <meta property="og:image" content="http://dev.thecrag.com/image/photo/00002/fixedheightmedium/26860206.jpg" />
+
+  <meta property="og:image" content="http://dev.thecrag.com/cids/images/touch-icon-129-1.0.0.png" />
+  <meta property="og:description" content="Car Park Boulder is a cliff inside of Upper Gara Gorge" />
+  <meta property="og:latitude"  content="-30.59961351411" />
+  <meta property="og:longitude" content="151.80451964766" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=980" />
+  <link rel="apple-touch-icon-precomposed" href="/static/cids/images/touch-icon-129-1.0.0.png"/>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="content-language" content="en" />
+
+  <meta http-equiv="pragma" content="no-cache" />
+  <meta http-equiv="cache-control" content="no-cache" />
+<link rel="canonical" href="/area/12094993" />
+  <meta name="copyright" content="&copy; thecrag.com" />
+  
+
+<link rel="stylesheet" type="text/css" media="all" href="../src/phototopo.css" />
+<script src="../src/phototopo.js" type="text/javascript"></script>
+
+<base href="http://dev.thecrag.com/area/12094993" />
+  <link rel="stylesheet" type="text/css" media="all"   href="/static/cids/portal-1.1.6.css" />
+  <link rel="stylesheet" type="text/css" media="print" href="/static/cids/print-1.0.1.css" /> 
+  <link rel="stylesheet" type="text/css" media="all" href="/static/jquery/easyui-1.1.1/themes/default/easyui.css" />
+
+  <script src="/static/jquery/jquery-1.4.2.min.js" type="text/javascript"></script>
+
+
+
+</head>
+<body>
+
+
+  <div id="wrapperi">
+
+
+
+
+
+<div class="page-contenti">
+
+
+
+<div id="contenti"><div class="inneri">
+
+
+<script>
+function clickHandlerFactory(topo){
+	return function(route){
+		if (route){
+			//window.location.hash = '#'+route.id;
+			window.location = '/route/'+route.id;
+		} else {
+			window.location = '/area/12094993/topo#topo'+topo;
+		}
+	}
+}
+</script>
+
+<h2>Photo topos</h2>
+<span class="fixedheightsmall"><span id="topo_26860899" style="display: inline-block; width: 213px; height: 160px;"></span></span>
+<script type="text/javascript">
+if (!window.route2topo){
+	window.route2topo = {};
+}
+var topo26860899 = [
+
+{
+	id:'13342669',
+	grade: '16',
+	gb: '2',
+	name: 'Spare Parts',
+	order: 1,
+	points:'121 344,163 245,125 197,188 113,222 101,274 33'
+}
+,
+{
+	id:'13342621',
+	grade: '8',
+	gb: '1',
+	name: 'Pink Freud',
+	order: 2,
+	points:'121 344,163 245,233 116,266 97,270 63,274 33'
+}
+,
+{
+	id:'13342573',
+	grade: '17',
+	gb: '2',
+	name: 'Fugue State',
+	order: 3,
+	points:'205 328,202 260,269 143,266 97,270 63,274 33'
+}
+];
+jQuery(function(){
+	var pt = new PhotoTopo({
+	elementId:'topo_26860899',
+	width: 213,
+	height: 160,
+	thickness: 1.5,
+	viewScale: 0.387272727272727,
+	seperateRoutes: true,
+	autoColors: true,
+	editable: false,
+	baseUrl: '/static/bheywood/phototopo-1.2.1/',
+	imageUrl: "/image/topo/00001/fixedheightsmall/26860899.jpg",
+	routes: topo26860899,
+	labelSize: 15,
+	labelBorder: 1,
+	onmouseover: function(route){
+		$('#n'+route.id).addClass('hover');
+		var name = route.orig.grade + ' ' + route.orig.name;
+		route.select();
+	},
+	onmouseout: function(route){
+		$('#n'+route.id).removeClass('hover');
+		route.deselect();
+	},
+	onclick: clickHandlerFactory(26860899),
+	getlabel: function(route){
+		var r = {
+			label:   $('#n'+route.id +' td:nth-child(1)').text().replace(/(\r|\n)/gm, ''),
+			classes: 'gb'+route.gb
+		}
+		return r;
+	}
+	});
+	var x = route2topo;
+	if ( '13342669' in route2topo){
+		route2topo['13342669'].push(pt);
+	} else {
+		route2topo['13342669'] = [pt];
+	}
+	if ( '13342621' in route2topo){
+		route2topo['13342621'].push(pt);
+	} else {
+		route2topo['13342621'] = [pt];
+	}
+	if ( '13342573' in route2topo){
+		route2topo['13342573'].push(pt);
+	} else {
+		route2topo['13342573'] = [pt];
+	}
+});
+
+</script>
+
+
+
+
+
+
+<div style="clear: both"></div>
+
+
+
+
+
+
+
+
+<form action="/CIDS/cgi-bin/cids.cgi" method="post">
+
+    <h2>Routes
+<a class="icon_button" href="/processmap/resequencenode/12094993"><img src='/static/silk/arrow_switch.png' title='Re-order area/routes' /></a><a class="icon_button" href="/processmap/createclimbnode/12094993"><img src='/static/silk/add.png' title='Add a new route' /></a></h2>
+
+
+
+
+
+
+
+
+
+ <table class="routetable" >
+        <tr>
+          <th scope="col" colspan="2"></th>
+
+          <th scope="col">Route</th>
+          <th scope="col">Stars</th>
+          <th scope="col">Grade</th>
+          <th scope="col">Popularity</th>
+          <th scope="col">Style</th>
+        </tr>
+
+
+
+
+
+        <tr id="n13342669">
+
+
+
+          <td scope="col" class="toponum">
+<input type="checkbox" value="13342669" name="D:AscentNodeID" />
+1.
+
+</td>
+
+
+          <td scope="col" class="rt_tick">
+</td>
+	<td scope="col" class="rt_name">
+<a href="/climb/13342669" title="Selected comments - No comments">Spare Parts</a>
+
+<p>Start: As for Pink Freud. Looks harder than 16 and probably is!</p>
+
+<p>Up as for Pink Freud, left across wall using crack, step up and climb slabby arête.</p>
+
+
+
+
+</td>
+
+          <td scope="col" class="rt_star"></td>
+
+
+	<td scope="col"><div class="gb2">16</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (0%) - 1 ascent"><div style="width: 0%;"></div></div>
+</td>
+	<td scope="col" class="flags"><span class="tags trad ">Trad</span>	10m</td>
+
+        </tr>
+
+
+        <tr id="n13342621">
+
+
+
+          <td scope="col" class="toponum">
+<input type="checkbox" value="13342621" name="D:AscentNodeID" />
+2.
+
+</td>
+
+
+          <td scope="col" class="rt_tick">
+
+<span class="tick_tick" title="Tick"></span>
+
+</td>
+	<td scope="col" class="rt_name">
+<a href="/climb/13342621" title="Selected comments - No comments">Pink Freud</a>
+
+<p>Start: 2m left of Fugue State</p>
+
+<p>Up crack.</p>
+
+
+
+
+</td>
+
+          <td scope="col" class="rt_star"></td>
+
+
+	<td scope="col"><div class="gb1">8</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (100%) - 5 ascents"><div style="width: 100%;"></div></div>
+</td>
+	<td scope="col" class="flags"><span class="tags trad ">Trad</span>	10m</td>
+
+        </tr>
+
+
+        <tr id="n13342573">
+
+
+
+          <td scope="col" class="toponum">
+<input type="checkbox" value="13342573" name="D:AscentNodeID" />
+3.
+
+</td>
+
+
+          <td scope="col" class="rt_tick">
+
+<span class="tick_tick" title="Tick"></span>
+
+</td>
+	<td scope="col" class="rt_name">
+<a href="/climb/13342573" title="Selected comments - No comments">Fugue State</a>
+
+<p>Start: The best line on the boulder just down (approximately 40 m) from the car park.</p>
+
+<p>Up crack, through overlap to ledge, then up offwidth crack to top.</p>
+
+
+
+
+</td>
+
+          <td scope="col" class="rt_star"></td>
+
+
+	<td scope="col"><div class="gb2">17</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (100%) - 5 ascents"><div style="width: 100%;"></div></div>
+</td>
+	<td scope="col" class="flags"><span class="tags trad ">Trad</span>	10m</td>
+
+        </tr>
+
+
+        <tr id="n13342717">
+
+
+
+          <td scope="col" class="toponum">
+<input type="checkbox" value="13342717" name="D:AscentNodeID" />
+4.
+
+</td>
+
+
+          <td scope="col" class="rt_tick">
+
+</td>
+	<td scope="col" class="rt_name">
+<a href="/climb/13342717" title="Selected comments - No comments">The Golden Legion of Cleaning Women</a>
+
+<p>Start: Somewhere (?) on a boulder 200 m downstream of Pink Freud.</p>
+
+
+
+
+
+</td>
+
+          <td scope="col" class="rt_star"></td>
+
+
+	<td scope="col"><div class="gb1">10</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (0%) - 1 ascent"><div style="width: 0%;"></div></div>
+</td>
+	<td scope="col" class="flags"><span class="tags trad ">Trad</span>	15m</td>
+        </tr>
+
+
+</table>
+
+
+
+
+</form>
+
+
+</div></div>
+
+
+
+</div></div>
+
+
+
+</div>
+
+
+
+
+<script src="/static/raphael/raphael-1.5.0-min.js" type="text/javascript"></script>
+
+
+</div><!-- close wrapper -->
+</body>
+</html>
+
+
+
