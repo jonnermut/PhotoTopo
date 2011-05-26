@@ -1,7 +1,7 @@
 /*!
  * PhotoTopo @VERSION - A javascript climbing route editing widget
  *
- * Copyright (c) 2010 Brendan Heywood
+ * Copyright (c) 2010-2011 Brendan Heywood
  *
  * http://github.com/brendanheywood/PhotoTopo/
  *
@@ -385,10 +385,10 @@ Point.prototype.setLabel = function(classes, text){
 	};
 
 	if (!this.labelEl){
-		label = canvas.rect(this.x,this.y,size,size,size/6);
+		label = canvas.rect(this.x,this.y,size,size,0);
 		label.attr({fill: 'yellow', width: size, height: size, stroke: 'black', 'stroke-width': topo.options.labelBorder });
-		labelText = canvas.text(0,0,text);
-		labelText.attr({'font-size': size*.68 });
+		labelText = canvas.text(1,1,text);
+		labelText.attr({width: size, height: size, 'font-size': size*.68 });
 		this.labelText = labelText;
 
 		this.labelEl = label;	
@@ -554,9 +554,16 @@ Point.prototype.updateLabelPosition = function(){
 
 	left = this.x - width + offsetX;
 	top  = this.y + offsetY;
+
+	left = Math.round(left);
+	top = Math.round(top);
+
 	
 	label.attr({x:left, y:top});
-	this.labelText.attr({x:left+width, y:top+width});
+
+	left = left + width;
+	top = top + width;
+	this.labelText.attr({x:left, y:top});
 
 };
 
@@ -1317,7 +1324,7 @@ PhotoTopo.RouteLabel = function(){};
 	missingError(this.options.height, 'No height');
 	checkDefault('thickness', 5);
 	checkDefault('labelSize', 16);
-	checkDefault('labelBorder', 1.5);
+	checkDefault('labelBorder', 1);
 	checkDefault('viewScale', 1);
 	checkDefault('baseUrl', '../src/');
 	checkDefault('showPointTypes', true);
