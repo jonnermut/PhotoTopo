@@ -312,15 +312,23 @@ Point.prototype.setType = function(type){
 	if (!topo.options.showPointTypes){
 		return;
 	}
-	if (!type || type === 'none'){
-		this.type = '';
-		if (this.iconEl){
-			this.iconEl.className = 'pt_label pt_icon none';
-			this.updateIconPosition();
+	if (!type){ type = 'none'; }
+	this.type = type;
+
+	if (this.iconEl){
+		this.iconEl.remove();
+	}
+	this.iconEl = null;
+
+	if (type == 'none' || type == 'hidden' || type == 'jumpoff'){
+		if (this.nextPath){
+			this.nextPath.redraw();
 		}
 		return;
 	}
-	this.type = type;
+	if (this.nextPath){
+		this.nextPath.redraw();
+	}
 	if (!this.iconEl){
 		this.iconEl = topo.canvas.image(topo.options.baseUrl+'images/'+type+'.png', 0, 0, 16, 16);
 		this.iconEl.toFront();
@@ -742,8 +750,9 @@ function Path(point1, point2){
 	this.ghost.path = this;
 
 	if (phototopo.options.editable){
-		this.point1.circle.toFront();
-		this.point2.circle.toFront();
+// commented it out and it still works fine! TODO
+//		this.point1.circle.toFront();
+//		this.point2.circle.toFront();
 	}
 	
 	this.curve.mouseover(function(event){	this.path.point1.route.onmouseover();	});
@@ -1113,17 +1122,17 @@ Route.prototype.select = function(selectedPoint){
 	
 	// now highlight the new route and make sure it is at the front
 	for(c=0; c< this.paths.length; c++){
-		this.paths[c].outline.attr(styles.outlineSelected).toFront();
+		this.paths[c].outline.attr(styles.outlineSelected).insertBefore(phototopo.layerLabels);
 	}
 	for(c=0; c< this.paths.length; c++){
-		this.paths[c].curve.attr(styles.strokeSelected).toFront();
+		this.paths[c].curve.attr(styles.strokeSelected).insertBefore(phototopo.layerLabels);
 	}
 	if (phototopo.options.editable === true){
 		for(c=0; c< this.paths.length; c++){
-			this.paths[c].point2.circle.attr(styles.handleSelected).toFront();
+			this.paths[c].point2.circle.attr(styles.handleSelected).insertBefore(phototopo.layerLabels);
 		}
 		if (this.points[0]){
-			this.points[0].circle.attr(styles.handleSelected).toFront();
+			this.points[0].circle.attr(styles.handleSelected).insertBefore(phototopo.layerLabels);
 		}
 	}
 	
@@ -1265,6 +1274,8 @@ PhotoTopo.Callback = function(){};
  * @property {Boolean} editable true if you want the widget to be editable
  * @property {Boolean} seperateRoutes If you want the routes to not overlap when they use the same points
  * @property {Boolean} autoColors If you want the color of the route to be inherited from the color of the label 
+ * @property {Integer} labelSize The label size in pixels
+ * @property {Integer} labelBorder The thickness of the label border in pixels 
  * @property {Integer} thickness The thickness of the routes in pixels 
  * @property {Function} onmouseover  A callback with the Route
  * @property {Function} onmouseout A callback with the Route
@@ -1357,6 +1368,9 @@ PhotoTopo.RouteLabel = function(){};
 	
 	this.canvas = Raphael(this.options.elementId, this.options.width, this.options.height);
 
+	this.layerLabels = this.canvas.rect(1,1,0,0);
+
+
 
 	if (this.options.editable && !document.getElementById('#phototopoContextMenu') ){
 		$('body').append(
@@ -1426,7 +1440,7 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke': '#3D80DF' // default if it can't inherit from label colour
 		},
 		strokeVisible: {
-			'stroke-dasharray': 'inherit'
+			'stroke-dasharray': 'none' // If none makes svg bug? if inheret makes another bug where the hidden is 'stuck' after its visible
 		},
 		strokeHidden: {
 			'stroke-dasharray': '.'
