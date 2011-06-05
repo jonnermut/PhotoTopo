@@ -1506,6 +1506,12 @@ PhotoTopo.RouteLabel = function(){};
 				this.routes[data.id].autoColorBorder = autoColorBorder;
 			}
 		}
+		if (data.manualColor){
+			this.routes[data.id].autoColor = data.manualColor;
+		}
+		if (data.manualColorBorder){
+			this.routes[data.id].autoColorBorder = data.manualColorBorder;
+		}
 		if (data.points){
 			points = data.points.split(',');
 			for(pc = 0; pc < points.length; pc++){
