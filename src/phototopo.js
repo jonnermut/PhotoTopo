@@ -727,8 +727,6 @@ function Path(point1, point2){
 	if (this.point1.route.phototopo.bg){
 		this.point1.route.phototopo.bg.toBack();
 	}
-	this.point1.route.phototopo.fill.toBack();
-
 
 	this.curve      = phototopo.canvas.path(path);
 
@@ -1306,7 +1304,6 @@ PhotoTopo.RouteLabel = function(){};
 		tempEl,
 		autoColor,
 		autoColorBorder,
-		labelsdiv,
 		viewScale, parts, points;
 	
 	/**
@@ -1355,16 +1352,6 @@ PhotoTopo.RouteLabel = function(){};
 	this.photoEl.phototopo = this;
 	this.photoEl.className = 'phototopo' + (this.options.editable === true ? ' editable' : '');
 
-
-	labelsdiv = document.createElement("div");
-	
-	labelsdiv.className = 'labels';
-	labelsdiv.innerHTML = '';
-	this.labelsEl = labelsdiv;
-	this.labelsEl.style.top = (-this.options.height+'px');
-	document.getElementById(this.options.elementId).appendChild(this.labelsEl);
-
-	
 	
 	this.canvas = Raphael(this.options.elementId, this.options.width, this.options.height);
 
@@ -1464,15 +1451,6 @@ PhotoTopo.RouteLabel = function(){};
 	};
 
 
-
-
-
-
-	this.fill = this.canvas.rect(0, 0, this.options.width, this.options.height).attr({
-		fill: '#7a9'
-	});
-
-
 	if (errors){
 		return;
 	}
@@ -1497,11 +1475,11 @@ PhotoTopo.RouteLabel = function(){};
 		if (this.options.getlabel){
 			label = this.options.getlabel(data);
 			if (this.options.autoColors){
-				tempEl = $("<div class='"+label.classes+"'>");
-				this.labelsEl.appendChild(tempEl[0]);
-				autoColor = tempEl.css('background-color');
+				tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
+				this.photoEl.appendChild(tempEl[0]);
+				autoColor = tempEl.children().css('background-color');
 				autoColorBorder = tempEl.css('border-top-color');
-				this.labelsEl.removeChild(tempEl[0]);
+				this.photoEl.removeChild(tempEl[0]);
 				this.routes[data.id].autoColor = autoColor;
 				this.routes[data.id].autoColorBorder = autoColorBorder;
 			}
@@ -1551,10 +1529,8 @@ PhotoTopo.prototype.setRouteVisibility = function(visible){
 	}
 	if (visible){
 		phototopo.hide.toBack();
-		phototopo.labelsEl.style.display = 'block';
 	} else {
 		phototopo.hide.toFront();
-		phototopo.labelsEl.style.display = 'none';
 	}
 };
 
@@ -1772,7 +1748,6 @@ PhotoTopo.prototype.setImage = function(imageUrl){
 		});
 								 
 		phototopo.bg.toBack();
-		phototopo.fill.toBack();
 	})
 	.attr('src', imageUrl);
 };
