@@ -1268,10 +1268,13 @@ PhotoTopo.Callback = function(){};
  * @property {Interger} width The width of the topo in pixels
  * @property {Interger} height The height of the topo in pixels
  * @property {String} imageUrl The url to the photo
+ * @property {String} manualColor If you have autoColor turned off
+ * @property {String} manualColorBorder If you have autoColor turned off
  * @property  routes a json hash of routes. Each 
  * @property {Boolean} editable true if you want the widget to be editable
  * @property {Boolean} seperateRoutes If you want the routes to not overlap when they use the same points
  * @property {Boolean} autoColors If you want the color of the route to be inherited from the color of the label 
+ * @property {Boolean} autoSize  If you want to set the image to not resize within the width and height set, eg stretch it (usually not what you want - needed for static export)
  * @property {Integer} labelSize The label size in pixels
  * @property {Integer} labelBorder The thickness of the label border in pixels 
  * @property {Integer} thickness The thickness of the routes in pixels 
@@ -1330,6 +1333,7 @@ PhotoTopo.RouteLabel = function(){};
 	missingError(this.options.elementId, 'No elementId');
 	missingError(this.options.width, 'No width');
 	missingError(this.options.height, 'No height');
+	checkDefault('autoSize', true);
 	checkDefault('thickness', 5);
 	checkDefault('labelSize', 16);
 	checkDefault('labelBorder', 1);
@@ -1719,25 +1723,40 @@ PhotoTopo.prototype.setImage = function(imageUrl){
 	this.shownWidth  = this.options.width;
 	this.shownHeight = this.options.height;
 	
-	this.options.imageUrl = imageUrl;
-	$(img).load(function(){
-		options.origWidth = img.width;
-		options.origHeight = img.height;
+	options.imageUrl = imageUrl;
 
-		phototopo.shownWidth = img.width;
-		phototopo.shownHeight = img.height;
-		if (phototopo.shownHeight > options.height){
-			phototopo.scale = options.height / phototopo.shownHeight;
-			phototopo.shownHeight *= phototopo.scale;
-			phototopo.shownWidth *= phototopo.scale; 
-		}
-		if (phototopo.shownWidth > options.width){
-			phototopo.scale = phototopo.scale * options.width / phototopo.shownWidth;
-			phototopo.shownHeight = options.origHeight * phototopo.scale;
-			phototopo.shownWidth  = options.origWidth  * phototopo.scale; 
-		}
+	if (options.autoSize){
+		$(img).load(function(){
+			options.origWidth = img.width;
+			options.origHeight = img.height;
+
+			phototopo.shownWidth = img.width;
+			phototopo.shownHeight = img.height;
+			if (phototopo.shownHeight > options.height){
+				phototopo.scale = options.height / phototopo.shownHeight;
+				phototopo.shownHeight *= phototopo.scale;
+				phototopo.shownWidth *= phototopo.scale; 
+			}
+			if (phototopo.shownWidth > options.width){
+				phototopo.scale = phototopo.scale * options.width / phototopo.shownWidth;
+				phototopo.shownHeight = options.origHeight * phototopo.scale;
+				phototopo.shownWidth  = options.origWidth  * phototopo.scale; 
+			}
 
 
+			options.imageUrl = imageUrl;
+			if (phototopo.bg){
+				phototopo.bg.remove();
+			}
+			phototopo.bg = phototopo.canvas.image(options.imageUrl, 0, 0, phototopo.shownWidth, phototopo.shownHeight);
+			phototopo.bg.click(function(event){
+				phototopo.clickBackground(event);
+			});
+								 
+			phototopo.bg.toBack();
+		})
+		.attr('src', imageUrl);
+	} else {
 		options.imageUrl = imageUrl;
 		if (phototopo.bg){
 			phototopo.bg.remove();
@@ -1746,10 +1765,10 @@ PhotoTopo.prototype.setImage = function(imageUrl){
 		phototopo.bg.click(function(event){
 			phototopo.clickBackground(event);
 		});
-								 
+					 
 		phototopo.bg.toBack();
-	})
-	.attr('src', imageUrl);
+	}
+
 };
 
 
