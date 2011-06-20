@@ -485,8 +485,9 @@ Point.prototype.remove = function(){
 		r.paths.splice(p.position-1, 1);
 		path.curve.remove();
 		path.outline.remove();
-		path.ghost.remove();
-
+		if (path.ghost){
+			path.ghost.remove();
+		}
 		// select prev point
 		p.prevPoint.select();
 	} else if (p.nextPath){
@@ -502,8 +503,9 @@ Point.prototype.remove = function(){
 		r.paths.splice(p.position, 1);
 		path.curve.remove();
 		path.outline.remove();
-		path.ghost.remove();
-
+		if (path.ghost){
+			path.ghost.remove();
+		}
 		// select next point
 		p.nextPoint.select();
 	
@@ -711,7 +713,8 @@ function Path(point1, point2){
 	this.point2.prevPath = this;
 
 	phototopo = this.point1.route.phototopo;	
-
+	var options = phototopo.options;
+	var nojs = options.nojs;
 
 	path = 'M'+this.point1.x+' '+this.point1.y+' L'+this.point2.x+' '+this.point2.y;
 	this.svg_part = path;
@@ -720,10 +723,13 @@ function Path(point1, point2){
 
 
 	this.outline = phototopo.canvas.path(path);
-	this.ghost   = phototopo.canvas.path(path);
-	
+	if (!nojs){
+		this.ghost   = phototopo.canvas.path(path);
+	}
 	this.outline.toBack();
-	this.ghost.toBack();
+	if (!nojs){
+		this.ghost.toBack();
+	}
 	if (this.point1.route.phototopo.bg){
 		this.point1.route.phototopo.bg.toBack();
 	}
@@ -735,8 +741,9 @@ function Path(point1, point2){
 		this.outline.attr('stroke', this.point1.route.autoColorBorder);
 	}
 	
-	
-	this.ghost.attr  (phototopo.styles.ghost);
+	if (!nojs){
+		this.ghost.attr  (phototopo.styles.ghost);
+	}
 	this.curve.attr  (phototopo.styles.stroke);
 
 	if (this.point1.route.autoColor){
@@ -745,7 +752,9 @@ function Path(point1, point2){
 	
 	this.curve.path = this;
 	this.outline.path = this;
-	this.ghost.path = this;
+	if (!nojs){
+		this.ghost.path = this;
+	}
 
 	if (phototopo.options.editable){
 // commented it out and it still works fine! TODO
@@ -754,12 +763,13 @@ function Path(point1, point2){
 	}
 	
 	this.curve.mouseover(function(event){	this.path.point1.route.onmouseover();	});
-	this.ghost.mouseover(function(event){	this.path.point1.route.onmouseover();	});
 	this.outline.mouseover(function(event){	this.path.point1.route.onmouseover();	});
 	this.curve.mouseout(function(event){	this.path.point1.route.onmouseout();	});
-	this.ghost.mouseout(function(event){	this.path.point1.route.onmouseout();	});
 	this.outline.mouseout(function(event){	this.path.point1.route.onmouseout();	});
-	
+	if (!nojs){
+		this.ghost.mouseover(function(event){	this.path.point1.route.onmouseover();	});
+		this.ghost.mouseout(function(event){	this.path.point1.route.onmouseout();	});
+	}
 	
 	
 	function PathClick(event){
@@ -789,7 +799,9 @@ function Path(point1, point2){
 
 	this.curve.click(PathClick);
 	this.outline.click(PathClick);
-	this.ghost.click(PathClick);
+	if (!nojs){
+		this.ghost.click(PathClick);
+	}
 }
 
 
@@ -925,7 +937,9 @@ Path.prototype.redraw = function(point){
 	}
 	
 	this.outline.attr('path', path);
-	this.ghost.attr('path', path);
+	if (!phototopo.options.nojs){
+		this.ghost.attr('path', path);
+	}
 };
 
 
@@ -1275,6 +1289,7 @@ PhotoTopo.Callback = function(){};
  * @property {Boolean} seperateRoutes If you want the routes to not overlap when they use the same points
  * @property {Boolean} autoColors If you want the color of the route to be inherited from the color of the label 
  * @property {Boolean} autoSize  If you want to set the image to not resize within the width and height set, eg stretch it (usually not what you want - needed for static export)
+ * @property {Boolean} nojs Is there JS? If not then don't render the ghost path for click/hover events
  * @property {Integer} labelSize The label size in pixels
  * @property {Integer} labelBorder The thickness of the label border in pixels 
  * @property {Integer} thickness The thickness of the routes in pixels 
@@ -1338,6 +1353,7 @@ PhotoTopo.RouteLabel = function(){};
 	checkDefault('labelSize', 16);
 	checkDefault('labelBorder', 1);
 	checkDefault('viewScale', 1);
+	checkDefault('nojs', false);
 	checkDefault('baseUrl', '../src/');
 	checkDefault('showPointTypes', true);
 //	checkDefault('onchange', function(){} );
