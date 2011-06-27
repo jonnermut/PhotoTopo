@@ -1497,8 +1497,8 @@ PhotoTopo.RouteLabel = function(){};
 			if (this.options.autoColors){
 				tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
 				this.photoEl.appendChild(tempEl[0]);
-				autoColor = tempEl.children().css('background-color');
-				autoColorBorder = tempEl.css('border-top-color');
+				autoColor       = tempEl.children().css('background-color');
+				autoColorBorder = tempEl.children().css('border-top-color');
 				this.photoEl.removeChild(tempEl[0]);
 				this.routes[data.id].autoColor = autoColor;
 				this.routes[data.id].autoColorBorder = autoColorBorder;
