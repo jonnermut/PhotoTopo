@@ -911,7 +911,7 @@ Path.prototype.redraw = function(point){
 	// x,y of end point
 	ex = points[3].x;
 	ey = points[3].y;
-	// If this is the end of the Path then draw an arrow head
+	// draw a T bar stop
 	if (!this.point2.nextPoint && this.point2.type === 'jumpoff'){
 		aWidth = size*4;
 		aHeight = size*0.1;
@@ -923,8 +923,8 @@ Path.prototype.redraw = function(point){
 		path_finish += offset(angle, ex, ey,  aWidth,  -aHeight   ); // bottom left
 		path_finish += offset(angle, ex, ey, -aWidth,  -aHeight   ); // bottom left
 	
-	// draw a T bar stop
-	} else if (!this.point2.nextPoint){
+	// If this is the end of the Path then draw an arrow head
+	} else if (!this.point2.nextPoint && (this.point2.type == 'none' || !this.point2.type) ){
 		aWidth  = size*1.5;
 		aHeight = size*1.5;
 		path_finish += offset(angle, ex, ey,       0,  size*1.2   ); // middle
