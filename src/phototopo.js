@@ -82,7 +82,7 @@ PointGroup.prototype.getSplitOffset = function(point){
 
 
 /*
- * the point has moved to redraw all connected paths
+ * the point has moved so redraw all connected paths
  */
 PointGroup.prototype.redraw = function(point){
 	var c,p;
@@ -396,7 +396,12 @@ Point.prototype.setLabel = function(classes, text){
 		label = canvas.rect(this.x,this.y,size,size,0);
 		label.attr({fill: 'yellow', width: size, height: size, stroke: 'black', 'stroke-width': topo.options.labelBorder });
 		labelText = canvas.text(1,1,text);
-		labelText.attr({width: size, height: size, 'font-size': size*.68 });
+		labelText.attr({
+			width: size,
+			height: size,
+			'font-size': size*.68,
+			'font-family': 'Helvetica'
+		});
 		this.labelText = labelText;
 
 		this.labelEl = label;	
@@ -419,8 +424,12 @@ Point.prototype.setLabel = function(classes, text){
 		labelText.attr({fill: styles.outlineSelected.stroke });
 	} else {
 		if (this.route.autoColor){
-			    label.attr({fill: this.route.autoColor, stroke: this.route.autoColorBorder });
-			labelText.attr({fill: this.route.autoColorBorder});
+			label.attr({fill: this.route.autoColor, stroke: this.route.autoColorBorder });
+			if (this.route.autoColorText){
+				labelText.attr({fill: this.route.autoColorText });
+			} else {
+				labelText.attr({fill: this.route.autoColorBorder });
+			}
 		} else {
 			    label.attr({fill: styles.stroke.stroke, stroke: styles.outline.stroke });
 			labelText.attr({fill: styles.outline.stroke });
@@ -1283,6 +1292,7 @@ PhotoTopo.Callback = function(){};
  * @property {Interger} height The height of the topo in pixels
  * @property {String} imageUrl The url to the photo
  * @property {String} manualColor If you have autoColor turned off
+ * @property {String} manualColorText If you have autoColor turned off
  * @property {String} manualColorBorder If you have autoColor turned off
  * @property  routes a json hash of routes. Each 
  * @property {Boolean} editable true if you want the widget to be editable
@@ -1321,6 +1331,7 @@ PhotoTopo.RouteLabel = function(){};
 		label,
 		tempEl,
 		autoColor,
+		autoColorText,
 		autoColorBorder,
 		viewScale, parts, points;
 	
@@ -1354,7 +1365,8 @@ PhotoTopo.RouteLabel = function(){};
 	checkDefault('labelBorder', 1);
 	checkDefault('viewScale', 1);
 	checkDefault('nojs', false);
-	checkDefault('baseUrl', '../src/');
+//	checkDefault('baseUrl', '../src/');
+	checkDefault('baseUrl', '/static/bheywood/phototopo-1.2.2/');
 	checkDefault('showPointTypes', true);
 //	checkDefault('onchange', function(){} );
 
@@ -1498,14 +1510,19 @@ PhotoTopo.RouteLabel = function(){};
 				tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
 				this.photoEl.appendChild(tempEl[0]);
 				autoColor       = tempEl.children().css('background-color');
+				autoColorText   = tempEl.children().css('color');
 				autoColorBorder = tempEl.children().css('border-top-color');
 				this.photoEl.removeChild(tempEl[0]);
 				this.routes[data.id].autoColor = autoColor;
+				this.routes[data.id].autoColorText = autoColorText;
 				this.routes[data.id].autoColorBorder = autoColorBorder;
 			}
 		}
 		if (data.manualColor){
 			this.routes[data.id].autoColor = data.manualColor;
+		}
+		if (data.manualColorText){
+			this.routes[data.id].autoColorText = data.manualColorText;
 		}
 		if (data.manualColorBorder){
 			this.routes[data.id].autoColorBorder = data.manualColorBorder;
