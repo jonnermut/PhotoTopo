@@ -143,7 +143,7 @@ body {
  });
  </script>
 
-<h1>Test 2: Read only, custom colours, events</h1>
+<h1>Test 2: Read only, custom colours, events, areas</h1>
 <div id="phototopo2" style="width: 300px;"></div>
 
 <p>
@@ -364,6 +364,9 @@ td.elite, .elite {
     <td><div class="rp"><div style="width: 65px;"></div></div></td>
     <td>Boulder</td>
   </tr>
+  <tr id="area1">
+    <td colspan="8">This is an area record</td>
+  </tr>
 </table>
 <ul>
   <li>Attached events to intereact with onmouseover, onmouseout, onclick, between route map and calling page. <span style="background:#6F9">DONE</span></li>
@@ -394,6 +397,11 @@ var routes = [
   {
    "id": "route5",
    "points": "360 300,370 220,400 170"
+  },
+  {
+   "id": "area1",
+   "type": "area",
+   "points": "50 50 tl 'some area', 100 200,200 200,200 100,100 100"
   }
 ]
 
@@ -548,28 +556,37 @@ more text</div>
                  routes: [
                          {
                                  id: 'e31',
-								 order: 1,
+				 order: 1,
                                  points: "20 220, 40 150, 15 100 anchor"
                          },
                          {
                                  id: 'e32',
-								 order: 2,
+				 order: 2,
                                  points: "20 220, 40 150 warning, 150 150, 160 70"
                          },
                          {
                                  id: 'e33',
-								 order: 3,
+				 order: 3,
                                  points: "200 260, 240 200, 150 150, 160 70"
                          },
                          {
                                  id: 'e34',
-								 order: 4,
+				 order: 4,
                                  points: "400 260, 260 200, 310 150, 260 80"
-	                     },
+	                 },
                          {
                                  id: 'e35',
-								 order: 5,
+				 order: 5,
                                  points: ''
+  			 },
+	                 {
+   				"id": "area1",
+   				"type": "area",
+   				"points": "50 50 tl 'some area', 100 200,200 200,200 100,100 100"
+  			 },
+	                 {
+   				"id": "area2",
+   				"type": "area"
                          }
                  ]
          });
