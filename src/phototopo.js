@@ -1490,7 +1490,7 @@ Area.prototype.addVertex = function(x,y,offset){
 
 	v = new Vertex(this, x, y);
 
-	// if offset is not specified then add it at the end of the path
+	// if offset is not specified then add it at the end of th path
 	if (offset === undefined || offset === null){
 		offset = this.vertices.length;
 	}
@@ -1501,12 +1501,16 @@ Area.prototype.addVertex = function(x,y,offset){
 	// rewire the next and prev links
 	if (offset > 0){
 		v.prev = this.vertices[offset-1];
-		v.next = v.prev.next;
-		v.prev.next = v;
-		v.next.prev = v;
-		v.redraw();
-		v.prev.redraw();
+	} else {
+		v.prev = this.vertices[this.vertices.length-1];
 	}
+
+	v.next = v.prev.next;
+	v.prev.next = v;
+	v.next.prev = v;
+	v.redraw();
+	v.prev.redraw();
+	
 
 
 	this.redraw();	
@@ -1546,7 +1550,8 @@ Vertex.prototype.setStyle = Point.prototype.setStyle;
 
 Vertex.prototype.redraw = function(){
 
-	var e = this.area.fixPixel;
+	var area = this.area;
+	var e = area.fixPixel;
 	this.svg_path = 'M'+e(this.x)+' '+e(this.y)+' L'+e(this.next.x)+' '+e(this.next.y);
 	var pt = this.area.phototopo;
 	if (this.border){
@@ -1557,11 +1562,31 @@ Vertex.prototype.redraw = function(){
 		return;
 	}
 
+	var v = this;
+	function clickHandler(e){
+		var offset;
+		if (!area.phototopo.options.editable){
+			area.select();
+			if (opts.onclick){
+				opts.onclick(this.path.point1.route);
+			}
+			return;			
+		} else {
+			offset = $(area.phototopo.photoEl).offset();
+			area.addAfter(v.next,
+				event.clientX - offset.left + $(window).scrollLeft(),
+				event.clientY - offset.top  + $(window).scrollTop()  );
+		}
+	}
+
 	this.border = pt.canvas.path(this.svg_path);
 	this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
+	this.border.click(clickHandler);
+
 	var nojs = pt.options.nojs;
 	if (!nojs){
 		this.ghost   = pt.canvas.path(this.svg_path).attr(pt.styles.ghost);
+		this.ghost.click(clickHandler);
 	}
 
 	var circle;
@@ -1618,6 +1643,7 @@ Vertex.prototype.redraw = function(){
 			this.animate(styles.handleHover, 100);
 		});
 		circle.mouseout(function(){
+			if (!this.point)return;
 			$(this.point.area.phototopo.photoEl).removeClass('point');
 			this.point.area.onmouseout(this.point);
 			this.point.setStyle();
@@ -1689,6 +1715,62 @@ Vertex.prototype.moveTo = function(x,y){
 
 };
 
+Vertex.prototype.remove = function(){
+
+
+	// remove all handlers for the point and refs to/from dom
+	var area = this.area;
+	
+	var pos,c;
+	for(c=0; c<= area.vertices.length; c++){
+		if (area.vertices[c] === this){
+			pos = c;
+			break;
+		}
+	}
+
+	// remove handle from raphael
+	this.circle.remove();
+	// remove point from array
+	area.vertices.splice(pos, 1);
+
+	this.next.prev = this.prev;
+	this.prev.next = this.next;
+
+	if (this.prev != this){
+		this.prev.select();
+	}
+
+	this.next = null;
+	this.prev = null;
+
+
+	this.border.remove();
+	if (this.ghost){
+		this.ghost.remove();
+	}
+/*
+	if (this.labelEl){
+		this.labelEl.remove();
+		this.labelText.remove();
+		this.labelEl = null;
+		this.labelText = null;
+	}
+	if (this.iconEl){
+		this.iconEl.remove();
+		this.iconEl = null;
+	}
+*/
+	if (this.area.phototopo.selectedPoint === this){
+		this.area.phototopo.selectedPoint = null;
+	}
+
+	area.redraw();
+	area.phototopo.saveData();
+	$(area.phototopo.photoEl).removeClass('point');
+	area.phototopo.updateCursor();
+
+};
 
 
 Area.prototype.fixPixel = function(n){

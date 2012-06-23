@@ -1,10 +1,9 @@
 
 
 
-get add vertix working
- - if a selected vertex, add a new vertex after it
 
-get split vertex working
+
+get snapping working
 
 
 make label
@@ -28,6 +27,9 @@ get select working
 
 DONE
 
+get split vertex working
+get add vertix working
+ - if a selected vertex, add a new vertex after it
 get hover events working
  - dummy that select the node
 click on poly on fire click handler / select
