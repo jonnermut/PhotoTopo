@@ -312,7 +312,6 @@ Point.prototype.setType = function(type){
 	if (!topo.options.showPointTypes){
 		return;
 	}
-	if (!type){ type = 'none'; }
 	this.type = type;
 
 	if (this.iconEl){
@@ -1090,7 +1089,7 @@ Route.prototype.getPoints = function(){
 			path += 'M' + point.x + ' '+point.y;
 		}
 		points += point.x + ' ' + point.y;
-		if (point.type){
+		if (point.type && point.type != 'none'){
 			points += ' ' + point.type;
 		}
 		if (point.nextPath){
