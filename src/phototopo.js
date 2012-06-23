@@ -590,10 +590,13 @@ Point.prototype.updateLabelPosition = function(){
  * @private
  */
 Point.prototype.setStyle = function(){
-	var styles = this.route.phototopo.styles;
+
+	var node = this.route ? this.route : this.area;
+
+	var styles = node.phototopo.styles;
 	if (this.circle){
 		// if the active point			  
-		if (this === this.route.phototopo.selectedPoint){
+		if (this === node.phototopo.selectedPoint){
 			this.circle.attr(styles.handleSelectedActive);
 			/*
 			this.circle.attr(styles.handleSelected);
@@ -604,14 +607,14 @@ Point.prototype.setStyle = function(){
 				});
 			});
 			*/
-		} else if (this.route === this.route.phototopo.selectedRoute){
+		} else if (node === node.phototopo.selectedRoute){
 			// if any point on the selected route
 			this.circle.animate(styles.handleSelected, 100);
 		} else {
 			// if any other point on another route
 			this.circle.animate(styles.handle, 100);
-			if (this.route.autoColor){
-				this.circle.animate({'fill': this.route.autoColor}, 100);
+			if (node.autoColor){
+				this.circle.animate({'fill': node.autoColor}, 100);
 			}
 		}
 	}
@@ -1337,10 +1340,7 @@ Area.prototype.load = function(data, viewScale){
 
 Area.prototype.redraw = function(){
 
-	console.log('area draw');
-
 	var v,e,c,svg_path,pt;
-
 
 	if (this.vertices.length >2){
 		v = this.vertices[this.vertices.length-1];
@@ -1351,7 +1351,7 @@ Area.prototype.redraw = function(){
 			v = this.vertices[c];
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
-
+		v.redraw();
 		this.polygon.attr('path', svg_path).insertBefore(pt.layerAreas);
 
 	} else {
@@ -1359,6 +1359,91 @@ Area.prototype.redraw = function(){
 
 	}
 }
+
+
+Area.prototype.select = function(selectedPoint){
+	var phototopo = this.phototopo,
+		previousRoute = phototopo.selectedRoute,
+		styles = phototopo.styles,
+		c;
+	
+	if (phototopo.selectedRoute === this && selectedPoint === phototopo.selectedPoint){
+		return;
+	}
+	
+
+	if (previousRoute && previousRoute !== this){
+		previousRoute.deselect();
+	}
+	
+	phototopo.selectedRoute = this;
+	
+	
+	if (!selectedPoint){
+		if (this.vertices.length > 0){
+			selectedPoint = this.vertices[this.vertices.length-1];
+		}
+	}
+	phototopo.selectedPoint = selectedPoint;
+	if (selectedPoint){
+		selectedPoint.select(true);
+	}
+
+	if (phototopo.options.onselect){
+		phototopo.options.onselect(this);
+	}
+	
+	// now highlight the new route and make sure it is at the front
+	for(c=0; c< this.vertices.length; c++){
+		this.vertices[c].border.attr(styles.areaBorderSelected).insertBefore(phototopo.layerAreas);
+	}
+	this.polygon.attr(styles.areaFillSelected).insertBefore(phototopo.layerAreas);
+
+	if (phototopo.options.editable === true){
+		for(c=0; c< this.vertices.length; c++){
+			this.vertices[c].circle.attr(styles.handleSelected).insertBefore(phototopo.layerAreas);
+		}
+	}
+	
+	phototopo.updateHint();
+	phototopo.updateCursor();
+
+};
+
+
+Area.prototype.deselect = function(){
+
+	var phototopo = this.phototopo,
+	c;
+
+	if (phototopo.options.ondeselect){
+		phototopo.options.ondeselect(this);
+	}
+
+	phototopo.selectedRoute = null;
+	phototopo.selectedPoint = null;
+
+
+	for(c=0; c< this.vertices.length; c++){
+		this.vertices[c].border.attr(phototopo.styles.areaBorder);
+	}
+	this.polygon.attr(phototopo.styles.areaFill);
+
+	if (phototopo.options.editable === true){
+		for(c=0; c< this.vertices.length; c++){
+			this.vertices[c].circle.attr(phototopo.styles.handle);
+		}
+	}
+
+	phototopo.updateHint();
+	phototopo.updateCursor();
+
+};
+
+
+
+
+
 
 /*
  * x
@@ -1395,6 +1480,8 @@ Area.prototype.addVertex = function(x,y,offset){
 
 	return v;
 };
+Area.prototype.onmouseover = Route.prototype.onmouseover;
+Area.prototype.onmouseout  = Route.prototype.onmouseout;
 
 function Vertex(area, x, y){
 	this.area = area;
@@ -1404,19 +1491,146 @@ function Vertex(area, x, y){
 	this.next = this;
 	this.prev = this; 
 }
+Vertex.prototype.setStyle = Point.prototype.setStyle;
 
 Vertex.prototype.redraw = function(){
 
 	var e = this.area.fixPixel;
 	this.svg_path = 'M'+e(this.x)+' '+e(this.y)+' L'+e(this.next.x)+' '+e(this.next.y);
-	if (!this.border){
-		var pt = this.area.phototopo;
-		this.border = pt.canvas.path(this.svg_path);
-		this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
-	} else {
+	var pt = this.area.phototopo;
+	if (this.border){
 		this.border.attr('path', this.svg_path);
+		return;
 	}
+
+	this.border = pt.canvas.path(this.svg_path);
+	this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
+
+	var circle;
+	var styles = pt.styles;
+
+	function dragStart(){
+		var selectedRoute = this.point.area.phototopo.selectedRoute;
+		$(this.point.area.phototopo.photoEl).addClass('dragging');
+
+		this.ox = this.attr("cx");
+		this.oy = this.attr("cy");
+			
+		// don't allow draging of points if another route is selected
+		if (selectedRoute && selectedRoute !== this.point.area){
+			return;
+		}
+		circle.animate(styles.handleHover, 100);
+		this.point.select();
+	}
+
+	function dragMove(dx, dy){
+		var selectedRoute = this.point.area.phototopo.selectedRoute, pos;
+		if (selectedRoute && selectedRoute !== this.point.area){
+			return;
+		}
+		pos = circle.point.moveTo(this.ox + dx, this.oy + dy);
+		circle.attr({cx: pos.x, cy: pos.y});
+	}
+
+	function dragEnd(){
+		var selectedRoute = this.point.area.phototopo.selectedRoute;
+		$(this.point.area.phototopo.photoEl).removeClass('dragging');
+
+		if (selectedRoute && selectedRoute !== this.point.area){
+			return;
+		}
+		this.point.setStyle();
+	}
+
+	if (pt.options.editable){
+
+		this.circle = pt.canvas.circle(this.x, this.y, 5);
+		circle = this.circle;
+		circle.point = this;
+		circle.attr(styles.handle);
+		
+		circle.drag(dragMove, dragStart, dragEnd); 
+		circle.mouseover(function(){
+
+			$(this.point.area.phototopo.photoEl).addClass('point');
+
+			//this.point.setStyle();
+			this.point.area.onmouseover(this.point);
+			this.animate(styles.handleHover, 100);
+		});
+		circle.mouseout(function(){
+			$(this.point.area.phototopo.photoEl).removeClass('point');
+			this.point.area.onmouseout(this.point);
+			this.point.setStyle();
+		});
+		circle.click(function(e){
+			var route = this.point.area.phototopo.selectedRoute;
+			// don't allow adding a point in the current route back to itself
+			if (this.point.route === route){
+				return;
+			}
+			if (route){
+				route.addAfter(this.point.area.phototopo.selectedPoint, this.point.x, this.point.y);
+			} else {
+				this.point.select();
+			}
+		});
+		circle.dblclick(function(){
+			this.point.remove();
+		});
+	
+	
+		$(circle.node).contextMenu({
+			menu: 'phototopoContextMenu'
+		},
+			function(action, el, pos) {
+				point.setType(action);
+				point.pointGroup.redraw();
+				point.route.phototopo.saveData();
+
+		});
+		
+		
+	}
+
 }
+Vertex.prototype.select = function(dontSelectRoute){
+	
+	var previous = this.area.phototopo.selectedPoint;
+	
+	if (!dontSelectRoute){
+		this.area.select(this);
+	}
+	if (previous){
+		previous.setStyle();
+	}
+		
+	this.setStyle();
+};
+
+
+Vertex.prototype.moveTo = function(x,y){
+
+	if (this.x === x && this.y === y){
+		return { x: x, y: y };
+	}
+	if (isNaN(x) || isNaN(y) ){
+		return { x: this.x, y: this.y };
+	}
+
+	this.x = x;
+	this.y = y;
+
+	this.area.redraw();
+
+	this.area.phototopo.saveData();
+
+	return { x: this.x, y: this.y };
+
+
+};
+
 
 
 Area.prototype.fixPixel = function(n){
@@ -1590,6 +1804,9 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1
 		},
+		areaBorderSelected: {
+			'stroke': '#3D80DF' // default if it can't inherit from label colour
+		},
 		areaFill: {
 			'stroke': 'white',
 			'stroke-width': 1,
@@ -1597,7 +1814,10 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1,
 			'fill-opacity': .01,
-			'fill': 'white'
+			'fill': '#3D80DF'
+		},
+		areaFillSelected: {
+			'fill-opacity': .2
 		},
 		outline: {
 			'stroke': 'black', // default if it can't inherit from label colour
@@ -1774,8 +1994,10 @@ PhotoTopo.prototype.updateHint = function(){
 
 	if (this.selectedRoute === null){
 		this.setHint('Select the route you wish to draw or edit in the table below');
-	} else if (this.selectedRoute.points.length === 0){
+	} else if (this.selectedRoute.points && this.selectedRoute.points.length === 0){
 		this.setHint('Click at the beginning of the route to start drawing this route');
+	} else if (this.selectedRoute.vertices && this.selectedRoute.vertices.length === 0){
+		this.setHint('Click anywhere to start drawing the area shape');
 	} else {
 		this.setHint('Click to add or select, then drag to move. Double click to remove');
 	}
@@ -2028,7 +2250,9 @@ PhotoTopo.prototype.updateCursor = function(){
 	} else {
 	// if no route selected then show a 'selectabke' on a mouseover'
 	
-		if (this.selectedRoute.points.length === 0){
+		if (this.selectedRoute.points && this.selectedRoute.points.length === 0){
+			cursor = 'addfirst';
+		} else if (this.selectedRoute.vertices && this.selectedRoute.vertices.length === 0){
 			cursor = 'addfirst';
 		} else {
 			cursor = 'addmore';
