@@ -2308,7 +2308,7 @@ PhotoTopo.prototype.getPointGroup = function(point){
 	if (y>this.shownHeight){ y = this.shownHeight;}
 
 	key = this.getKey(point);
-	group = this.pointGroups[key];
+	group = this.getNearGroup(point);
 		
 	point.x = x;
 	point.y = y;
@@ -2322,6 +2322,46 @@ PhotoTopo.prototype.getPointGroup = function(point){
 
 	return group;
 		
+};
+
+PhotoTopo.prototype.getNearGroup = function(point){
+
+	var threshold = this.options.thickness * 4;
+	var key = this.getKey(point);
+	var group = this.pointGroups[key];
+	if(!group){
+		key = this.getKey({x:point.x+threshold,y:point.y});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x-threshold,y:point.y});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x,y:point.y+threshold});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x,y:point.y-threshold});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x-threshold,y:point.y+threshold});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x-threshold,y:point.y-threshold});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x+threshold,y:point.y+threshold});
+		group = this.pointGroups[key];
+	}
+	if(!group){
+		key = this.getKey({x:point.x+threshold,y:point.y-threshold});
+		group = this.pointGroups[key];
+	}
+	return group;
 };
 
 /**
