@@ -1489,6 +1489,23 @@ Area.prototype.addVertex = function(x,y,offset){
 
 	return v;
 };
+
+
+Area.prototype.addAfter = function(afterVert, x, y){
+	
+	var c;
+	for(c=0; c<= this.vertices.length; c++){
+		if (this.vertices[c] === afterVert){
+			var v = this.addVertex(x,y,c);
+			v.select();
+			return;
+		}
+	}
+
+
+};
+
+
 Area.prototype.onmouseover = Route.prototype.onmouseover;
 Area.prototype.onmouseout  = Route.prototype.onmouseout;
 
