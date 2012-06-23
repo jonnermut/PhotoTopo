@@ -1283,6 +1283,28 @@ function Area(phototopo, id){
 
 	this.polygon = phototopo.canvas.path().attr(phototopo.styles.areaFill);
 
+	var area = this;
+	this.polygon.click(function(event){
+		area.select(); // should this only be in edit mode?
+		var opts = phototopo.options;
+		if (opts.onclick){
+			opts.onclick(area);
+		}
+	});
+	this.polygon.mouseover(function(e){
+		var opts = phototopo.options;
+		if (opts.onmouseover){
+			opts.onmouseover(area);
+		}
+	});
+	this.polygon.mouseout(function(e){
+		var opts = phototopo.options;
+		if (opts.onmouseout){
+			opts.onmouseout(area);
+		}
+	});
+
+
 }
 
 
@@ -1336,6 +1358,8 @@ Area.prototype.load = function(data, viewScale){
 			this.addVertex(parts[0]*viewScale, parts[1]*viewScale);
 		}
 	}
+	this.select();
+	this.deselect();
 }
 
 Area.prototype.redraw = function(){
@@ -1353,6 +1377,7 @@ Area.prototype.redraw = function(){
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
 		this.polygon.attr('path', svg_path);
+		
 
 	} else {
 		

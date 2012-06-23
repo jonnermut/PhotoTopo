@@ -1,6 +1,5 @@
 
 
-get edit working
 
 get add vertix working
  - if a selected vertex, add a new vertex after it
@@ -25,12 +24,13 @@ get select working
  - grey out the rest
  - fudge some z-indexes
 
-get hover events working
- - dummy that select the node
-
 
 
 DONE
 
+get hover events working
+ - dummy that select the node
+click on poly on fire click handler / select
+get edit working
 get render working
 
