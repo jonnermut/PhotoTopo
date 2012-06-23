@@ -712,7 +712,7 @@ function Path(point1, point2){
 
 
 
-	var offset, path, phototopo;
+	var offset, path, phototopo, options,nojs;
 
 	this.point1 = point1;
 	this.point2 = point2;
@@ -722,8 +722,8 @@ function Path(point1, point2){
 	this.point2.prevPath = this;
 
 	phototopo = this.point1.route.phototopo;	
-	var options = phototopo.options;
-	var nojs = options.nojs;
+	options = phototopo.options;
+	nojs = options.nojs;
 
 	path = 'M'+this.point1.x+' '+this.point1.y+' L'+this.point2.x+' '+this.point2.y;
 	this.svg_part = path;
@@ -1353,22 +1353,13 @@ PhotoTopo.RouteLabel = function(){};
 		}
 	}
 
-	this.options = opts;
-	
+	this.options = $.extend({}, this.defaultOptions);
+	this.options = $.extend(this.options, opts);
+
 	missingError(this.options, 'No options hash');
 	missingError(this.options.elementId, 'No elementId');
 	missingError(this.options.width, 'No width');
 	missingError(this.options.height, 'No height');
-	checkDefault('autoSize', true);
-	checkDefault('thickness', 5);
-	checkDefault('labelSize', 16);
-	checkDefault('labelBorder', 1);
-	checkDefault('viewScale', 1);
-	checkDefault('nojs', false);
-//	checkDefault('baseUrl', '../src/');
-	checkDefault('baseUrl', '/static/bheywood/phototopo-1.2.2/');
-	checkDefault('showPointTypes', true);
-//	checkDefault('onchange', function(){} );
 
 
 
@@ -1552,6 +1543,25 @@ PhotoTopo.RouteLabel = function(){};
 	this.updateHint();
 	this.updateCursor();	
 }
+
+/*
+ * default options
+ */
+PhotoTopo.prototype.defaultOptions = {
+	'autoSize': true,
+	'thickness': 5,
+	'labelSize': 16,
+	'labelBorder': 1,
+	'viewScale': 1,
+	'nojs': false,
+//	'baseUrl': '../src/',
+	'baseUrl': '/static/bheywood/phototopo-1.2.2/',
+	'showPointTypes': true,
+//	'onchange': function(){},
+
+};
+
+
 
 /**
  * Sets wether the route lines are visible

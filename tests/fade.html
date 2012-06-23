@@ -148,13 +148,15 @@ var routes = [
 
 
  jQuery(function(){
+
+	PhotoTopo.prototype.defaultOptions.seperateRoutes = true;
+	PhotoTopo.prototype.defaultOptions.autoColors= true;
+
          var pt = new PhotoTopo({
                  elementId: 'phototopo2',
                  width: 500,
                  height: 400,
 		editable: false,
-		seperateRoutes: true,
-		autoColors: true,
 				 thickness: 4,
                  imageUrl: "phototopo-example.jpg",
                  routes: routes
