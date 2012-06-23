@@ -1278,13 +1278,11 @@ function Area(phototopo, id){
 	};
 
 
-	this.polygon;
+	this.polygon = phototopo.canvas.path();
+	this.polygon.attr(phototopo.styles.areaFill);
 
 }
 
-Area.prototype.redraw = function(){
-
-}
 
 Area.prototype.getJSON = function(){
 
@@ -1354,13 +1352,7 @@ Area.prototype.redraw = function(){
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
 
-
-		if(!this.polygon){
-			this.polygon = pt.canvas.path(svg_path);
-			this.polygon.attr(pt.styles.areaFill);
-		} else {
-			this.polygon.attr('path', svg_path);
-		}
+		this.polygon.attr('path', svg_path).insertBefore(pt.layerAreas);
 
 	} else {
 		
@@ -1424,7 +1416,7 @@ function Edge(v1, v2){
 	var pt = this.v1.area.phototopo;
 
 	this.border = pt.canvas.path(this.svg_path);
-	this.border.attr(pt.styles.areaBorder);
+	this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
 
 }
 
@@ -1548,7 +1540,9 @@ PhotoTopo.RouteLabel = function(){};
 	
 	this.canvas = Raphael(this.options.elementId, this.options.width, this.options.height);
 
+	this.layerAreas = this.canvas.rect(1,1,0,0);
 	this.layerLabels = this.canvas.rect(1,1,0,0);
+
 
 
 
@@ -1592,20 +1586,20 @@ PhotoTopo.RouteLabel = function(){};
 
 	this.styles = {
 		areaBorder: {
-			'stroke': 'green', // default if it can't inherit from label colour
-			'stroke-width': 11,
+			'stroke': 'black', // default if it can't inherit from label colour
+			'stroke-width': 15,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1
 		},
 		areaFill: {
 			'stroke': 'white',
-			'stroke-width': 3,
+			'stroke-width': 1,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1,
-			'fill-opacity': .2,
-			'fill': 'red'
+			'fill-opacity': .01,
+			'fill': 'white'
 		},
 		outline: {
 			'stroke': 'black', // default if it can't inherit from label colour
