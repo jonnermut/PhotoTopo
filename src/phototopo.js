@@ -1316,22 +1316,6 @@ Area.prototype.load = function(data, viewScale){
 
 	this.orig = data;
 	var points, pc, parts;
-/*
-	if (this.options.getlabel){
-		label = this.options.getlabel(data);
-		if (this.options.autoColors){
-			tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
-			this.photoEl.appendChild(tempEl[0]);
-			autoColor       = tempEl.children().css('background-color');
-			autoColorText   = tempEl.children().css('color');
-			autoColorBorder = tempEl.children().css('border-top-color');
-			this.photoEl.removeChild(tempEl[0]);
-			this.routes[data.id].autoColor = autoColor;
-			this.routes[data.id].autoColorText = autoColorText;
-			this.routes[data.id].autoColorBorder = autoColorBorder;
-		}
-	}
-*/
 	if (data.points){
 		points = data.points.split(',');
 		for(pc = 0; pc < points.length; pc++){
@@ -1351,14 +1335,38 @@ Area.prototype.load = function(data, viewScale){
 			this.addVertex(parts[0]*viewScale, parts[1]*viewScale);
 		}
 	}
-/*
-	if (this.options.getlabel){
-		label = this.options.getlabel(data);
-		this.routes[data.id].setLabel(label);
-	}
-*/
 }
 
+Area.prototype.redraw = function(){
+
+	console.log('area draw');
+
+	var v,e,c,svg_path,pt;
+
+
+	if (this.vertices.length >2){
+		v = this.vertices[this.vertices.length-1];
+		e = v.area.fixPixel;
+		pt = v.area.phototopo;
+		svg_path = 'M'+e(v.x)+' '+e(v.y);
+		for(c=0;c<this.vertices.length;c++){
+			v = this.vertices[c];
+			svg_path += ' L'+e(v.x)+' '+e(v.y);
+		}
+
+
+		if(!this.polygon){
+			this.polygon = pt.canvas.path(svg_path);
+			this.polygon.attr(pt.styles.areaFill);
+		} else {
+			this.polygon.attr('path', svg_path);
+		}
+
+	} else {
+		
+
+	}
+}
 
 /*
  * x
@@ -1388,7 +1396,12 @@ Area.prototype.addVertex = function(x,y,offset){
 			this.edges[offset].v1 = v;
 		}
 	}
-	
+
+	// if it was the second point the make one to close the gap
+	if(this.vertices.length == 2){
+	}
+
+	this.redraw();	
 	this.phototopo.saveData();
 
 	return v;
@@ -1398,17 +1411,27 @@ function Vertex(area, x, y){
 	this.area = area;
 	this.x = x;
 	this.y = y;
-	console.log('vertex');
 }
 
 function Edge(v1, v2){
 	this.v1 = v1;
 	this.v2 = v2;
 
-	console.log('edge');
+	// this func is to offset the pixels by a half to get a crisp border
+	var e = this.v1.area.fixPixel;
+	this.svg_path = 'M'+e(this.v1.x)+' '+e(this.v1.y)+' L'+e(this.v2.x)+' '+e(this.v2.y);
+
+	var pt = this.v1.area.phototopo;
+
+	this.border = pt.canvas.path(this.svg_path);
+	this.border.attr(pt.styles.areaBorder);
+
 }
 
 
+Area.prototype.fixPixel = function(n){
+	return n+.5;
+}
 
 
 
@@ -1568,6 +1591,22 @@ PhotoTopo.RouteLabel = function(){};
 
 
 	this.styles = {
+		areaBorder: {
+			'stroke': 'green', // default if it can't inherit from label colour
+			'stroke-width': 11,
+			'stroke-linejoin': 'miter',
+			'stroke-linecap': 'round',
+			'stroke-opacity': 1
+		},
+		areaFill: {
+			'stroke': 'white',
+			'stroke-width': 3,
+			'stroke-linejoin': 'miter',
+			'stroke-linecap': 'round',
+			'stroke-opacity': 1,
+			'fill-opacity': .2,
+			'fill': 'red'
+		},
 		outline: {
 			'stroke': 'black', // default if it can't inherit from label colour
 			'stroke-width': this.options.thickness * 1.7,
