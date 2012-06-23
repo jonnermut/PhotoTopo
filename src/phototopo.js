@@ -187,6 +187,7 @@ function Point(route, x, y, type, position){
 	this.route = route;
 	this.x = x*1;
 	this.y = y*1;
+	if (!type){type = 'none';}
 	this.type = type;
 	this.position = position;
 	
