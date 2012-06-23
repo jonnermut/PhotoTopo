@@ -1692,8 +1692,43 @@ Vertex.prototype.select = function(dontSelectRoute){
 	this.setStyle();
 };
 
+Vertex.prototype.snap = function(x,y){
+
+	var foundX = null;
+	var foundY = null;
+
+	var threshold = 10;
+
+	var myarea = this.area;
+	var pt = this.area.phototopo;
+
+	for(var c in pt.routes){
+		var verts = pt.routes[c].vertices;
+		if (!verts){ continue; }
+		for(var c=0;c<verts.length; c++){
+			// if x is within threshold of the vert then lock it in
+			if (verts[c] === this){ continue; }
+			var tx = verts[c].x;
+			var ty = verts[c].y;
+			if (!foundX && (tx - threshold < x) && (tx + threshold > x)){ foundX = tx; }
+			if (!foundY && (ty - threshold < y) && (ty + threshold > y)){ foundY = ty; }
+			if (foundX && foundY){
+				return {x:foundX,y:foundY};
+			}
+		}
+	}
+	if (!foundX) foundX = x;
+	if (!foundY) foundY = y;
+
+	return {x:foundX,y:foundY};
+}
 
 Vertex.prototype.moveTo = function(x,y){
+
+	var pos = this.snap(x,y);
+
+	x = pos.x;
+	y = pos.y;
 
 	if (this.x === x && this.y === y){
 		return { x: x, y: y };
@@ -1773,7 +1808,7 @@ Vertex.prototype.remove = function(){
 
 
 Area.prototype.fixPixel = function(n){
-	return n+.5;
+	return n;//+.5;
 }
 
 
@@ -1938,7 +1973,7 @@ PhotoTopo.RouteLabel = function(){};
 	this.styles = {
 		areaBorder: {
 			'stroke': 'black', // default if it can't inherit from label colour
-			'stroke-width': 15,
+			'stroke-width': 6,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1
@@ -1948,7 +1983,7 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		areaFill: {
 			'stroke': 'white',
-			'stroke-width': 1,
+			'stroke-width': 2,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1,
@@ -1973,7 +2008,7 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-width': this.options.thickness * 4,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
-			'stroke-opacity': 0.3 
+			'stroke-opacity': 0.01 
 		},
 		stroke: {
 			'stroke': 'yellow',
