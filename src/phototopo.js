@@ -320,7 +320,7 @@ Point.prototype.setType = function(type){
 	}
 	this.iconEl = null;
 
-	if (type == 'none' || type == 'hidden' || type == 'jumpoff'){
+	if (!type || type == '' || type == 'none' || type == 'hidden' || type == 'jumpoff'){
 		if (this.nextPath){
 			this.nextPath.redraw();
 		}
