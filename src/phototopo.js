@@ -1077,7 +1077,7 @@ Route.prototype.setLabel = function(label){
  * @private
  * serialise the point data and send back to the page to be saved 
  */
-Route.prototype.getPoints = function(){
+Route.prototype.getJSON = function(){
 	var points = '',
 		path = '',
 		point,
@@ -1097,8 +1097,14 @@ Route.prototype.getPoints = function(){
 			path += point.nextPath.svg_part;
 		}
 	}
-	return { points: points, path: path };
+	return {
+		id: this.id,
+		points: points,
+		svg_path: path, 
+		order: this.order
+	};
 };
+
 
 /**
  * @private
@@ -1255,11 +1261,152 @@ Route.prototype.onclick = function(point){
 
 
 
+/*
+ * An area
+ * @constructor 
+ */
+function Area(phototopo, id){
+	this.phototopo = phototopo;
+	this.id = id;
+	this.vertices = [];
+	this.edges = [];
+	this.label = {
+		x: '',
+		y: '',
+		align: '',
+		text: ''
+	};
 
 
+	this.polygon;
+
+}
+
+Area.prototype.redraw = function(){
+
+}
+
+Area.prototype.getJSON = function(){
+
+	var data = '', vertex,c;
+	data += this.label.x + ' '+
+		this.label.y + ' '+
+		this.label.align + ' '+
+		this.label.text+',';
+	for(c=0; c<this.vertices.length; c++){
+		vertex = this.vertices[c];
+		if (c!== 0){
+			data += ',';
+		}
+		data += vertex.x + ' ' + vertex.y;
+	}
+
+	return {
+		id: this.id,
+		points: data
+	}
+}
+
+/*
+ *
+ */
+Area.prototype.load = function(data, viewScale){
+	// load up points
+	// load up label
+
+	this.orig = data;
+	var points, pc, parts;
+/*
+	if (this.options.getlabel){
+		label = this.options.getlabel(data);
+		if (this.options.autoColors){
+			tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
+			this.photoEl.appendChild(tempEl[0]);
+			autoColor       = tempEl.children().css('background-color');
+			autoColorText   = tempEl.children().css('color');
+			autoColorBorder = tempEl.children().css('border-top-color');
+			this.photoEl.removeChild(tempEl[0]);
+			this.routes[data.id].autoColor = autoColor;
+			this.routes[data.id].autoColorText = autoColorText;
+			this.routes[data.id].autoColorBorder = autoColorBorder;
+		}
+	}
+*/
+	if (data.points){
+		points = data.points.split(',');
+		for(pc = 0; pc < points.length; pc++){
+			parts = points[pc].split(/\s/);
+			if (pc==0){
+				if (parts.length>3){
+					this.label.x = parts[0];
+					this.label.y = parts[1];
+					this.label.align = parts[2];
+					this.label.text = parts.slice(3).join(' ');
+				}
+				continue;
+			}
+			if (parts[0] === ''){
+				parts.splice(0,1);
+			}
+			this.addVertex(parts[0]*viewScale, parts[1]*viewScale);
+		}
+	}
+/*
+	if (this.options.getlabel){
+		label = this.options.getlabel(data);
+		this.routes[data.id].setLabel(label);
+	}
+*/
+}
 
 
+/*
+ * x
+ * y
+ * offset - insert at the nth position, otherwise add to end
+ */
+Area.prototype.addVertex = function(x,y,offset){
 
+	var c, v, path;
+
+	v = new Vertex(this, x, y);
+
+	// if offset is not specified then add it at the end of the path
+	if (offset === undefined || offset === null){
+		offset = this.vertices.length;
+	}
+
+	// add this vertex into the vertices list
+	this.vertices.splice(offset, 0, v);
+
+
+	// if more than one point make a path
+	if(this.vertices.length >1){
+		path = new Edge(this.vertices[offset-1], this.vertices[offset]);
+		this.edges.splice(offset-1, 0, path);
+		if (this.edges[offset]){
+			this.edges[offset].v1 = v;
+		}
+	}
+	
+	this.phototopo.saveData();
+
+	return v;
+};
+
+function Vertex(area, x, y){
+	this.area = area;
+	this.x = x;
+	this.y = y;
+	console.log('vertex');
+}
+
+function Edge(v1, v2){
+	this.v1 = v1;
+	this.v2 = v2;
+
+	console.log('edge');
+}
 
 
 
@@ -1493,6 +1640,11 @@ PhotoTopo.RouteLabel = function(){};
 		if (this.routes[data.id]){
 			alert('Error: duplicate route=['+data.id+'] '+this.options.elementId);
 		}
+		if (data.type == 'area'){
+			var area = this.routes[data.id] = new Area(this, data.id);
+			area.load(data, viewScale);
+			continue;
+		}
 		this.routes[data.id] = new Route(this, data.id, data.order);
 		this.routes[data.id].orig = data;
 		if (this.options.getlabel){
@@ -1658,13 +1810,7 @@ PhotoTopo.prototype.saveData = function(){
 	
 	for(routeId in this.routes){
 		route = this.routes[routeId];
-		routeData = route.getPoints();
-		data.routes[data.routes.length] = {
-			id: routeId,
-			points: routeData.points,
-			svg_path: routeData.path,
-			order: route.order
-		};
+		data.routes[data.routes.length] = route.getJSON();
 	}
 
 	this.options.onchange(data);
@@ -1679,7 +1825,9 @@ PhotoTopo.prototype.redraw = function(){
 	for(routeId in this.routes){
 		r = this.routes[routeId];
 		r.redraw();
-		if (r.points.length){
+
+		// dirty hack? should be inside the route object
+		if (r.points && r.points.length){
 			r.select(); // select them all to flush the outline z-index
 			r.points[0].updateLabelPosition();
 		}
