@@ -1366,7 +1366,7 @@ Area.prototype.redraw = function(){
 
 	var v,e,c,svg_path,pt;
 
-	if (this.vertices.length >2){
+	if (this.vertices.length > 0){
 		v = this.vertices[this.vertices.length-1];
 		e = v.area.fixPixel;
 		pt = v.area.phototopo;
@@ -1377,11 +1377,10 @@ Area.prototype.redraw = function(){
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
 		this.polygon.attr('path', svg_path);
-		
+		this.polygon.show();
 
 	} else {
-		
-
+		this.polygon.hide();
 	}
 }
 
