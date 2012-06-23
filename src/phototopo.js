@@ -1623,13 +1623,13 @@ Vertex.prototype.redraw = function(){
 			this.point.setStyle();
 		});
 		circle.click(function(e){
-			var route = this.point.area.phototopo.selectedRoute;
+			var node = this.point.area.phototopo.selectedRoute;
 			// don't allow adding a point in the current route back to itself
-			if (this.point.route === route){
+			if (this.point.area === node){
 				return;
 			}
-			if (route){
-				route.addAfter(this.point.area.phototopo.selectedPoint, this.point.x, this.point.y);
+			if (node){
+				node.addAfter(this.point.area.phototopo.selectedPoint, this.point.x, this.point.y);
 			} else {
 				this.point.select();
 			}
