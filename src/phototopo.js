@@ -1285,6 +1285,10 @@ function Area(phototopo, id){
 
 	var area = this;
 	this.polygon.click(function(event){
+		if (area.phototopo.selectedRoute === area){
+			area.deselect();
+			return;
+		}
 		area.select(); // should this only be in edit mode?
 		var opts = phototopo.options;
 		if (opts.onclick){
