@@ -1379,19 +1379,16 @@ Area.prototype.addVertex = function(x,y,offset){
 	// add this vertex into the vertices list
 	this.vertices.splice(offset, 0, v);
 
-
-	// if more than one point make a path
-	if(this.vertices.length >1){
-		path = new Edge(this.vertices[offset-1], this.vertices[offset]);
-		this.edges.splice(offset-1, 0, path);
-		if (this.edges[offset]){
-			this.edges[offset].v1 = v;
-		}
+	// rewire the next and prev links
+	if (offset > 0){
+		v.prev = this.vertices[offset-1];
+		v.next = v.prev.next;
+		v.prev.next = v;
+		v.next.prev = v;
+		v.redraw();
+		v.prev.redraw();
 	}
 
-	// if it was the second point the make one to close the gap
-	if(this.vertices.length == 2){
-	}
 
 	this.redraw();	
 	this.phototopo.saveData();
@@ -1403,21 +1400,22 @@ function Vertex(area, x, y){
 	this.area = area;
 	this.x = x;
 	this.y = y;
+
+	this.next = this;
+	this.prev = this; 
 }
 
-function Edge(v1, v2){
-	this.v1 = v1;
-	this.v2 = v2;
+Vertex.prototype.redraw = function(){
 
-	// this func is to offset the pixels by a half to get a crisp border
-	var e = this.v1.area.fixPixel;
-	this.svg_path = 'M'+e(this.v1.x)+' '+e(this.v1.y)+' L'+e(this.v2.x)+' '+e(this.v2.y);
-
-	var pt = this.v1.area.phototopo;
-
-	this.border = pt.canvas.path(this.svg_path);
-	this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
-
+	var e = this.area.fixPixel;
+	this.svg_path = 'M'+e(this.x)+' '+e(this.y)+' L'+e(this.next.x)+' '+e(this.next.y);
+	if (!this.border){
+		var pt = this.area.phototopo;
+		this.border = pt.canvas.path(this.svg_path);
+		this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
+	} else {
+		this.border.attr('path', this.svg_path);
+	}
 }
 
 
