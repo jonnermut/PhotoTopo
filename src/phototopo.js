@@ -1426,8 +1426,11 @@ Area.prototype.select = function(selectedPoint){
 		this.vertices[c].border.attr(styles.areaBorderSelected).toFront();
 	}
 	this.polygon.attr(styles.areaFillSelected).toFront();
-	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].ghost.toFront();
+
+	if (this.vertices[0] && this.vertices[0].ghost){
+		for(c=0; c< this.vertices.length; c++){
+			this.vertices[c].ghost.toFront();
+		}
 	}
 
 	if (phototopo.options.editable === true){
@@ -1461,10 +1464,11 @@ Area.prototype.deselect = function(){
 	}
 	this.polygon.attr(phototopo.styles.areaFill).insertBefore(phototopo.layerAreas);
 	
-	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].ghost.insertBefore(phototopo.layerAreas);
+	if (this.vertices[0] && this.vertices[0].ghost){
+		for(c=0; c< this.vertices.length; c++){
+			this.vertices[c].ghost.insertBefore(phototopo.layerAreas);
+		}
 	}
-
 	if (phototopo.options.editable === true){
 		for(c=0; c< this.vertices.length; c++){
 			this.vertices[c].circle.attr(phototopo.styles.handle).insertBefore(phototopo.layerAreas);
@@ -1586,8 +1590,7 @@ Vertex.prototype.redraw = function(){
 	this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
 	this.border.click(clickHandler);
 
-	var nojs = pt.options.nojs;
-	if (!nojs){
+	if (pt.options.editable){
 		this.ghost   = pt.canvas.path(this.svg_path).attr(pt.styles.ghost);
 		this.ghost.click(clickHandler);
 	}
