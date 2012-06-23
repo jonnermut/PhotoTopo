@@ -1281,10 +1281,10 @@ function Area(phototopo, id){
 	};
 
 
-	this.polygon = phototopo.canvas.path();
-	this.polygon.attr(phototopo.styles.areaFill);
+	this.polygon = phototopo.canvas.path().attr(phototopo.styles.areaFill);
 
 }
+
 
 
 Area.prototype.getJSON = function(){
@@ -1349,10 +1349,10 @@ Area.prototype.redraw = function(){
 		svg_path = 'M'+e(v.x)+' '+e(v.y);
 		for(c=0;c<this.vertices.length;c++){
 			v = this.vertices[c];
+			v.redraw();
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
-		v.redraw();
-		this.polygon.attr('path', svg_path).insertBefore(pt.layerAreas);
+		this.polygon.attr('path', svg_path);
 
 	} else {
 		
@@ -1395,13 +1395,16 @@ Area.prototype.select = function(selectedPoint){
 	
 	// now highlight the new route and make sure it is at the front
 	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].border.attr(styles.areaBorderSelected).insertBefore(phototopo.layerAreas);
+		this.vertices[c].border.attr(styles.areaBorderSelected).toFront();
 	}
-	this.polygon.attr(styles.areaFillSelected).insertBefore(phototopo.layerAreas);
+	this.polygon.attr(styles.areaFillSelected).toFront();
+	for(c=0; c< this.vertices.length; c++){
+		this.vertices[c].ghost.toFront();
+	}
 
 	if (phototopo.options.editable === true){
 		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].circle.attr(styles.handleSelected).insertBefore(phototopo.layerAreas);
+			this.vertices[c].circle.attr(styles.handleSelected).toFront();
 		}
 	}
 	
@@ -1424,14 +1427,20 @@ Area.prototype.deselect = function(){
 	phototopo.selectedPoint = null;
 
 
+
 	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].border.attr(phototopo.styles.areaBorder);
+		this.vertices[c].border.attr(phototopo.styles.areaBorder).insertBefore(phototopo.layerAreas);
 	}
-	this.polygon.attr(phototopo.styles.areaFill);
+	this.polygon.attr(phototopo.styles.areaFill).insertBefore(phototopo.layerAreas);
+	
+	for(c=0; c< this.vertices.length; c++){
+		this.vertices[c].ghost.insertBefore(phototopo.layerAreas);
+	}
 
 	if (phototopo.options.editable === true){
 		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].circle.attr(phototopo.styles.handle);
+			this.vertices[c].circle.attr(phototopo.styles.handle).insertBefore(phototopo.layerAreas);
+			this.vertices[c].setStyle();
 		}
 	}
 
@@ -1500,11 +1509,18 @@ Vertex.prototype.redraw = function(){
 	var pt = this.area.phototopo;
 	if (this.border){
 		this.border.attr('path', this.svg_path);
+		if (this.ghost){
+			this.ghost.attr('path', this.svg_path);
+		}
 		return;
 	}
 
 	this.border = pt.canvas.path(this.svg_path);
 	this.border.attr(pt.styles.areaBorder).insertBefore(pt.layerAreas);
+	var nojs = pt.options.nojs;
+	if (!nojs){
+		this.ghost   = pt.canvas.path(this.svg_path).attr(pt.styles.ghost);
+	}
 
 	var circle;
 	var styles = pt.styles;
@@ -1834,7 +1850,7 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-width': this.options.thickness * 4,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
-			'stroke-opacity': 0.01 
+			'stroke-opacity': 0.3 
 		},
 		stroke: {
 			'stroke': 'yellow',
