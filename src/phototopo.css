@@ -24,6 +24,10 @@
 	cursor: -moz-grabbing !important;
 	cursor: move;
 }
+.phototopo.editable.split,
+.phototopo.editable.addmore.split {
+	cursor: row-resize;
+}
 
 /* clickable */
 .phototopo.route {

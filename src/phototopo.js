@@ -773,14 +773,24 @@ function Path(point1, point2){
 //		this.point1.circle.toFront();
 //		this.point2.circle.toFront();
 	}
-	
-	this.curve.mouseover(function(event){	this.path.point1.route.onmouseover();	});
-	this.outline.mouseover(function(event){	this.path.point1.route.onmouseover();	});
-	this.curve.mouseout(function(event){	this.path.point1.route.onmouseout();	});
-	this.outline.mouseout(function(event){	this.path.point1.route.onmouseout();	});
+
+	function mouseover(event){
+		this.path.point1.route.onmouseover();
+		$(this.path.point1.route.phototopo.photoEl).addClass('split');
+		this.path.point1.route.phototopo.updateCursor();
+	}
+	function mouseout(event){	
+		this.path.point1.route.onmouseout();
+		$(this.path.point1.route.phototopo.photoEl).removeClass('split');
+		this.path.point1.route.phototopo.updateCursor();
+	}
+	this.curve.mouseover(   mouseover );
+	this.curve.mouseout(    mouseout  );
+	this.outline.mouseover( mouseover );
+	this.outline.mouseout(  mouseout  );
 	if (!nojs){
-		this.ghost.mouseover(function(event){	this.path.point1.route.onmouseover();	});
-		this.ghost.mouseout(function(event){	this.path.point1.route.onmouseout();	});
+		this.ghost.mouseover( mouseover );
+		this.ghost.mouseout(  mouseout );
 	}
 	
 	
@@ -1593,6 +1603,13 @@ Vertex.prototype.redraw = function(){
 	if (pt.options.editable){
 		this.ghost   = pt.canvas.path(this.svg_path).attr(pt.styles.ghost);
 		this.ghost.click(clickHandler);
+		this.ghost.vert = this;
+		this.ghost.mouseover(function(e){
+			$(this.vert.area.phototopo.photoEl).addClass('split');
+		});
+		this.ghost.mouseout(function(e){
+			$(this.vert.area.phototopo.photoEl).removeClass('split');
+		});
 	}
 
 	var circle;
@@ -1643,8 +1660,7 @@ Vertex.prototype.redraw = function(){
 		circle.mouseover(function(){
 
 			$(this.point.area.phototopo.photoEl).addClass('point');
-
-			//this.point.setStyle();
+			this.point.setStyle();
 			this.point.area.onmouseover(this.point);
 			this.animate(styles.handleHover, 100);
 		});
