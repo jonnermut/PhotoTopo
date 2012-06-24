@@ -1368,8 +1368,8 @@ Area.prototype.load = function(data, viewScale){
 					this.label.x = parts[0];
 					this.label.y = parts[1];
 					var op = parts[2];
-					this.label.valign  = op.charAt(0) || 'l';
-					this.label.halign  = op.charAt(1) || 'b';
+					this.label.halign  = op.charAt(0) || 'l';
+					this.label.valign  = op.charAt(1) || 'b';
 					this.label.visible = op.charAt(2) || 'v';
 					this.label.line    = op.charAt(3) || 'n';
 					this.label.text = parts.slice(3).join(' ');
@@ -1453,6 +1453,10 @@ Area.prototype.select = function(selectedPoint){
 		}
 	}
 
+	function silk(i){
+		return '<img src="https://static.thecrag.com/silk/'+i+'.png">';
+	}
+
 	if (phototopo.options.editable === true){
 		for(c=0; c< this.vertices.length; c++){
 			this.vertices[c].circle.attr(styles.handleSelected).toFront();
@@ -1465,15 +1469,15 @@ Area.prototype.select = function(selectedPoint){
 				'<div class="btn-group"><textarea name="label" style="width:200px;" rows="2"></textarea></div></label>'+
 				' <label>Align: '+
 				'<div class="btn-group">'+
-					'<button name="halign" value="l" class="btn btn-mini"><i class="icon-align-left"></i></button>'+ 
-					'<button name="halign" value="c" class="btn btn-mini"><i class="icon-align-center"></i></button>'+ 
-					'<button name="halign" value="r" class="btn btn-mini"><i class="icon-align-right"></i></button>'+ 
+					'<button name="halign" value="l" class="btn btn-mini">'+silk('text_align_left'   )+'</button>'+ 
+					'<button name="halign" value="c" class="btn btn-mini">'+silk('text_align_center' )+'</button>'+ 
+					'<button name="halign" value="r" class="btn btn-mini">'+silk('text_align_right'  )+'</button>'+ 
 				'</div></label>'+ 
 				' <label>Vertical: '+
 				'<div class="btn-group">'+
-					'<button name="valign" value="t" class="btn btn-mini"><i class="icon-align-left"></i></button>'+ 
-					'<button name="valign" value="m" class="btn btn-mini"><i class="icon-align-center"></i></button>'+ 
-					'<button name="valign" value="b" class="btn btn-mini"><i class="icon-align-right"></i></button>'+ 
+					'<button name="valign" value="t" class="btn btn-mini">'+silk('shape_align_top'   )+'</button>'+ 
+					'<button name="valign" value="m" class="btn btn-mini">'+silk('shape_align_middle')+'</button>'+ 
+					'<button name="valign" value="b" class="btn btn-mini">'+silk('shape_align_bottom')+'</button>'+ 
 				'</div></label>'+ 
 				' <label>Shape: '+
 				'<div class="btn-group">'+
@@ -1527,8 +1531,7 @@ Area.prototype.showOptions = function(){
 
 	var el = this.phototopo.areaOptionsEl;
 
-	el.find('button').removeClass('btn-primary');
-	el.find('i').removeClass('icon-white');
+	el.find('button').removeClass('active');
 
 	el.find('textarea').val(unescape(this.label.text) );
 
@@ -1537,7 +1540,7 @@ Area.prototype.showOptions = function(){
 	var props =['halign','valign','visible','line'];
 	for(var c=0; c<4; c++){
 		var prop = props[c];
-		var b = el.find('button[value='+this.label[prop]+']').addClass('btn-primary').find('i').addClass('icon-white');
+		var b = el.find('button[value='+this.label[prop]+']').addClass('active');
 	}
 
 }
