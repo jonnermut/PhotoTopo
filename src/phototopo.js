@@ -1447,6 +1447,38 @@ Area.prototype.select = function(selectedPoint){
 		for(c=0; c< this.vertices.length; c++){
 			this.vertices[c].circle.attr(styles.handleSelected).toFront();
 		}
+	} else {
+
+/*
+		// magic greyness
+
+		if (!this.focus){
+			// start at highest point
+			var maxX = this.phototopo.options.width;
+			var maxY = this.phototopo.options.height;
+	
+			var greyPath = 'M0 0'             // first corner
+				+',L'+maxX+' 0'      // bottom
+				+',L'+maxX+' '+maxY  // bottom
+				+',L0 '+maxY             // bottom
+				;
+			var start = this.vertices[0];
+			var curV =start
+			greyPath += 'z M'+curV.x+' '+curV.y;       // last vert
+			while(curV != start){
+				curV = curV.next;
+				greyPath += ',L'+curV.x+' '+curV.y;
+			}
+
+			this.focus = this.phototopo.canvas.path(greyPath).attr({
+				'fill': 'red',
+				'fill-opacity': .9,
+			});
+		} else {
+			this.focus.show();
+		}
+*/
+
 	}
 	
 	phototopo.updateHint();
@@ -1488,6 +1520,13 @@ Area.prototype.deselect = function(){
 
 	phototopo.updateHint();
 	phototopo.updateCursor();
+
+/*
+	if (this.focus){
+
+		this.focus.hide();
+	}
+*/
 
 };
 

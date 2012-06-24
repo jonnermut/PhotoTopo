@@ -1,32 +1,26 @@
 
-
-
-
-
-get snapping working
-
-
 make label
+
+slide down properotes panel
+
+text:input
+
+left|middle|right
+top|center|bottom
+
+hide|show|pointer
+width:same|flexi
+
+reset position - back to centroid
 
 position label
  - when adding points after the third point, if no label then auto create
  - drag about
- - toggle align as a context menu
-
-
-area visibility
- - toggle?
- - hide the polygon
-
-get select working
- - highlight the border
- - grey out the rest
- - fudge some z-indexes
-
 
 
 DONE
 
+get snapping working
 get split vertex working
 get add vertix working
  - if a selected vertex, add a new vertex after it
