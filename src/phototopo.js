@@ -1346,6 +1346,7 @@ Area.prototype.getJSON = function(){
 
 	return {
 		id: this.id,
+		type: 'area',
 		points: data
 	}
 }
@@ -1394,13 +1395,13 @@ Area.prototype.redraw = function(){
 	var l = this.label;
 	if (!this.labelEl){
 		this.labelEl = this.phototopo.canvas.text(l.x, l.y,l.text);
-	} else {
-		this.labelEl.attr({
-			x: l.x,
-			y: l.y,
-			text: l.text
-		});
 	}
+	this.labelEl.attr({
+		x: l.x,
+		y: l.y,
+		text: l.text
+	}).attr( this == pt.selectedRoute ? pt.styles.areaLabelSelected : pt.styles.areaLabel )
+	
 
 	this.labelLine && this.labelLine.remove();
 
@@ -1416,10 +1417,10 @@ Area.prototype.redraw = function(){
 			v.redraw();
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
-		this.polygon.attr('path', svg_path);
-		this.polygon.attr( this == pt.selectedRoute ? pt.styles.areaFillSelected : pt.styles.areaFill );
-		this.polygon.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden );
-		this.polygon.show();
+		this.polygon.attr('path', svg_path)
+			.attr( this == pt.selectedRoute ? pt.styles.areaFillSelected : pt.styles.areaFill )
+			.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden )
+			.show();
 
 		// if we want a line
 		if (l.line == 'y'){
@@ -2157,6 +2158,9 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		areaFillEditHidden: {
 			'stroke-opacity': .3
+		},
+		areaLabel: {
+			'stroke': 'black',
 		},
 		areaLabelLine: {
 			'stroke': 'black',

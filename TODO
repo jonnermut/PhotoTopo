@@ -1,5 +1,14 @@
 
-move all selection deselection drawing code to redraw 
+render label
+
+
+hover/click on label
+hover/click on line
+
+mak hidden truly hidden on select as well
+
+
+
 
 
 make label
@@ -23,6 +32,7 @@ position label
 
 DONE
 
+move all selection deselection drawing code to redraw 
 get snapping working
 get split vertex working
 get add vertix working
