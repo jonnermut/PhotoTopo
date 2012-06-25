@@ -1373,7 +1373,7 @@ Area.prototype.load = function(data, viewScale){
 					this.label.valign  = op.charAt(1) || 'b';
 					this.label.visible = op.charAt(2) || 'v';
 					this.label.line    = op.charAt(3) || 'n';
-					this.label.text = parts.slice(3).join(' ');
+					this.label.text = decodeURIComponent( parts[3] );
 				}
 				continue;
 			}
@@ -1387,21 +1387,64 @@ Area.prototype.load = function(data, viewScale){
 	this.deselect();
 }
 
+Area.prototype.drawLabel = function(){
+
+}
+
 Area.prototype.redraw = function(){
 
 	var v,e,c,svg_path,pt;
 	pt = this.phototopo;
 
 	var l = this.label;
+
 	if (!this.labelEl){
-		this.labelEl = this.phototopo.canvas.text(l.x, l.y,l.text);
+		this.labelEl = pt.canvas.text(0, 0,l.text);
 	}
+
 	this.labelEl.attr({
-		x: l.x,
-		y: l.y,
-		text: l.text
-	}).attr( this == pt.selectedRoute ? pt.styles.areaLabelSelected : pt.styles.areaLabel )
+		text: l.text,
+	});
+
+	var padding = 3;
+	var bbox = this.labelEl.getBBox();
+	var width = bbox.width * 1 + padding*2;
+	var height = bbox.height * 1 + padding *2;
+
+
+	// x,y are always the top left corner of the box
+	// tx,ty are the anchor for the text
+	var x = l.x*1;
+	var tx = x;
+	if (l.halign == 'l'){                 tx += width/2; }
+	if (l.halign == 'c'){ x -= width/2;   tx -= 0;       }
+	if (l.halign == 'r'){ x -= width;     tx -= width/2; }
+	var y = l.y*1;
+	var ty = y;
+	if (l.valign == 'b'){ y -= height;    ty -= height/2; }
+	if (l.valign == 'm'){ y -= height/2;                  }
+	if (l.valign == 't'){                 ty += height/2; }
+
+	this.labelEl.attr({
+		x: tx,
+		y: ty,
+		'font-size': 12,
+		'font-family': 'Helvetica'
+	}).attr( this == pt.selectedRoute ? pt.styles.areaLabelTextSelected : pt.styles.areaLabelText )
+
 	
+	if(!this.labelBox){
+		this.labelBox = pt.canvas.rect(x,y,width,height,0);
+	}
+	this.labelBox.attr({
+		x: x,
+		y: y,
+		width: width,
+		height: height,
+	})
+	.attr( this == pt.selectedRoute ? pt.styles.areaLabelSelected : pt.styles.areaLabel )
+	this.labelBox.insertBefore(this.labelEl);
+
 
 	this.labelLine && this.labelLine.remove();
 
@@ -1567,7 +1610,7 @@ Area.prototype.showOptions = function(){
 	e.show();
 	e.find('button').removeClass('active');
 
-	e.find('textarea').val(decodeURIComponent(this.label.text) );
+	e.find('textarea').val(this.label.text);
 
 	// find all values and set
 	// set it
@@ -2159,8 +2202,19 @@ PhotoTopo.RouteLabel = function(){};
 		areaFillEditHidden: {
 			'stroke-opacity': .3
 		},
+		areaLabelText: {
+			'fill': 'black',
+		},
+		areaLabelTextSelected: {
+			'fill': 'white',
+		},
 		areaLabel: {
+			'fill': labelColor,
 			'stroke': 'black',
+		},
+		areaLabelSelected: {
+			'stroke': 'white',
+			'fill': selectBlue
 		},
 		areaLabelLine: {
 			'stroke': 'black',
