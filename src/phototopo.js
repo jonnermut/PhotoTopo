@@ -1401,7 +1401,8 @@ Area.prototype.redraw = function(){
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
 		this.polygon.attr('path', svg_path);
-		this.polygon.attr( pt.options.editable ? pt.styles.areaFillEditHidden :this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.styles.areaFillHidden );
+		this.polygon.attr( this == pt.selectedRoute ? pt.styles.areaFillSelected : pt.styles.areaFill );
+		this.polygon.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden );
 		this.polygon.show();
 
 	} else {
@@ -1427,7 +1428,6 @@ Area.prototype.select = function(selectedPoint){
 	
 	phototopo.selectedRoute = this;
 	
-	
 	if (!selectedPoint){
 		if (this.vertices.length > 0){
 			selectedPoint = this.vertices[this.vertices.length-1];
@@ -1442,17 +1442,17 @@ Area.prototype.select = function(selectedPoint){
 		phototopo.options.onselect(this);
 	}
 	
-	// now highlight the new route and make sure it is at the front
+	// now highlight the new route and make sure it is at the front of the other area, but behind any routes
 	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].border.attr(styles.areaBorderSelected).toFront();
+		this.vertices[c].border.insertBefore(phototopo.layerAreas);
 	}
-	this.polygon.attr(styles.areaFillSelected).toFront();
 
 	if (this.vertices[0] && this.vertices[0].ghost){
 		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].ghost.toFront();
+			this.vertices[c].ghost.insertBefore(phototopo.layerAreas);
 		}
 	}
+	this.polygon.insertBefore(phototopo.layerAreas);
 
 	function silk(i){
 		return '<img src="https://static.thecrag.com/silk/'+i+'.png">';
@@ -1524,6 +1524,7 @@ Area.prototype.select = function(selectedPoint){
 
 	}
 	
+	this.redraw();
 	phototopo.updateHint();
 	phototopo.updateCursor();
 
@@ -1559,19 +1560,8 @@ Area.prototype.deselect = function(){
 	pt.selectedRoute = null;
 	pt.selectedPoint = null;
 
-
-	var borderStyle = this.label.visible == 'v' ? pt.styles.areaBorderVisible : pt.options.editable ? pt.styles.areaBorderEditHidden : pt.styles.areaBorderHidden;
-
-	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].border.attr(pt.styles.areaBorder).attr(borderStyle).insertBefore(pt.layerAreas);
-	}
-	this.polygon.attr(pt.styles.areaFill).insertBefore(pt.layerAreas);
+	this.redraw();
 	
-	if (this.vertices[0] && this.vertices[0].ghost){
-		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].ghost.insertBefore(pt.layerAreas);
-		}
-	}
 	if (pt.options.editable === true){
 		for(c=0; c< this.vertices.length; c++){
 			this.vertices[c].circle.attr(pt.styles.handle).insertBefore(pt.layerAreas);
@@ -1669,6 +1659,7 @@ Vertex.prototype.redraw = function(){
 	this.svg_path = 'M'+e(this.x)+' '+e(this.y)+' L'+e(this.next.x)+' '+e(this.next.y);
 	var pt = this.area.phototopo;
 	if (this.border){
+		this.border.attr( pt.selectedRoute === this.area ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
 		var borderStyle = area.label.visible == 'v' ? pt.styles.areaBorderVisible : pt.options.editable ? pt.styles.areaBorderEditHidden : pt.styles.areaBorderHidden;
 		this.border.attr(borderStyle);
 		this.border.attr('path', this.svg_path);
