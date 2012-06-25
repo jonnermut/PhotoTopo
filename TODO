@@ -1,15 +1,33 @@
 
-render label
-
-
-hover/click on label
-hover/click on line
 
 mak hidden truly hidden on select as well
 
+fix border colour clash when label over border
+
+fix two borders clash when share side
+
+make label draggable
+
+convert line to two lines with arrow heads, make the shadow behind the box and the line above
+
+make anchors snappable to each other as well as other points
+
+option to stretch width to docked side
+
+add a label shadow layer
+consolidate all stacking layers into simple common code
 
 
 
+
+reset position - back to centroid
+
+position label
+ - when adding points after the third point, if no label then auto create
+ - drag about
+
+
+DONE
 
 make label
 
@@ -22,16 +40,9 @@ top|center|bottom
 
 hide|show|pointer
 width:same|flexi
-
-reset position - back to centroid
-
-position label
- - when adding points after the third point, if no label then auto create
- - drag about
-
-
-DONE
-
+render label
+hover/click on label
+hover/click on line
 move all selection deselection drawing code to redraw 
 get snapping working
 get split vertex working

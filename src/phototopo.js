@@ -1297,7 +1297,8 @@ function Area(phototopo, id){
 	this.polygon = phototopo.canvas.path().attr(phototopo.styles.areaFill);
 
 	var area = this;
-	this.polygon.click(function(event){
+	
+	this.click = function(event){
 		if (area.phototopo.selectedRoute === area){
 			area.deselect();
 			return;
@@ -1307,20 +1308,24 @@ function Area(phototopo, id){
 		if (opts.onclick){
 			opts.onclick(area);
 		}
-	});
-	this.polygon.mouseover(function(e){
+	};
+	this.mouseover = function(e){
 		var opts = phototopo.options;
 		if (opts.onmouseover){
 			opts.onmouseover(area);
 		}
-	});
-	this.polygon.mouseout(function(e){
+	};
+
+	this.mouseout = function(e){
 		var opts = phototopo.options;
 		if (opts.onmouseout){
 			opts.onmouseout(area);
 		}
-	});
+	};
 
+	this.polygon.click(    this.click);
+	this.polygon.mouseover(this.mouseover);
+	this.polygon.mouseout( this.mouseout);
 
 }
 
@@ -1400,6 +1405,9 @@ Area.prototype.redraw = function(){
 
 	if (!this.labelEl){
 		this.labelEl = pt.canvas.text(0, 0,l.text);
+		this.labelEl.click(    this.click);
+	//	this.labelEl.mouseover(this.mouseover);
+	//	this.labelEl.mouseout( this.mouseout);
 	}
 
 	this.labelEl.attr({
@@ -1435,6 +1443,9 @@ Area.prototype.redraw = function(){
 	
 	if(!this.labelBox){
 		this.labelBox = pt.canvas.rect(x,y,width,height,0);
+		this.labelBox.click(    this.click);
+		this.labelBox.mouseover(this.mouseover);
+		this.labelBox.mouseout( this.mouseout);
 	}
 	this.labelBox.attr({
 		x: x,
@@ -1479,6 +1490,9 @@ Area.prototype.redraw = function(){
 				.attr( this == pt.selectedRoute ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
 				.show();
 			this.labelLine.insertBefore(this.labelBox);
+			this.labelLine.click(    this.click);
+			this.labelLine.mouseover(this.mouseover);
+			this.labelLine.mouseout( this.mouseout);
 		
 		} else {
 			this.labelLine && this.labelLine.remove();
@@ -2207,11 +2221,12 @@ PhotoTopo.RouteLabel = function(){};
 			'fill': 'black',
 		},
 		areaLabelTextSelected: {
-			'fill': 'white',
+			'fill': 'white'
 		},
 		areaLabel: {
 			'fill': labelColor,
 			'stroke': 'black',
+			'stroke-width': 0
 		},
 		areaLabelSelected: {
 			'stroke': 'white',
