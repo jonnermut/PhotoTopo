@@ -1488,71 +1488,13 @@ Area.prototype.select = function(selectedPoint){
 	}
 	this.polygon.insertBefore(phototopo.layerAreas);
 
-	function silk(i){
-		return '<img src="https://static.thecrag.com/silk/'+i+'.png">';
-	}
 
-	if (phototopo.options.editable === true){
+	if (phototopo.options.editable == true){
 		for(c=0; c< this.vertices.length; c++){
 			this.vertices[c].circle.attr(styles.handleSelected).toFront();
 		}
 
-		var e = phototopo.areaOptionsEl;
-		if (!phototopo.areaOptionsEl){
-			phototopo.areaOptionsEl = $('<div class="areaoptions form-inline"">'+
-				'<label>Label:'+
-				'<div class="btn-group"><textarea name="label" style="width:200px;" rows="2"></textarea></div></label>'+
-				' <label>Align: '+
-				'<div class="btn-group">'+
-					'<button name="halign" value="l" class="btn btn-mini">'+silk('text_align_left'   )+'</button>'+ 
-					'<button name="halign" value="c" class="btn btn-mini">'+silk('text_align_center' )+'</button>'+ 
-					'<button name="halign" value="r" class="btn btn-mini">'+silk('text_align_right'  )+'</button>'+ 
-				'</div></label>'+ 
-				' <label>Vertical: '+
-				'<div class="btn-group">'+
-					'<button name="valign" value="t" class="btn btn-mini">'+silk('shape_align_top'   )+'</button>'+ 
-					'<button name="valign" value="m" class="btn btn-mini">'+silk('shape_align_middle')+'</button>'+ 
-					'<button name="valign" value="b" class="btn btn-mini">'+silk('shape_align_bottom')+'</button>'+ 
-				'</div></label>'+ 
-				' <label>Shape: '+
-				'<div class="btn-group">'+
-					'<button name="visible" value="v" class="btn btn-mini">Visible</button>'+ 
-					'<button name="visible" value="h" class="btn btn-mini">Hidden</button>'+ 
-				'</div></label>'+ 
-				' <label>Pointer: '+
-				'<div class="btn-group">'+
-					'<button name="line" value="y" class="btn btn-mini">Yes</button>'+ 
-					'<button name="line" value="n" class="btn btn-mini">No</button>'+ 
-				'</div></label>'+ 
-				'</div>'
-			);
-			
-			$(phototopo.areaOptionsEl).find('[name=label]').change(function(e){
-				phototopo.selectedRoute.label.text = $(e.target).val();
-				phototopo.saveData();
-			});
-			$(phototopo.areaOptionsEl).find('button').click(function(e){
-				var b = $(e.target).closest('button');
-				var key = b.attr('name');
-				if (!phototopo.selectedRoute){ return; }
-				phototopo.selectedRoute.label[key] = b.val();
-				phototopo.selectedRoute.showOptions();
-				phototopo.selectedRoute.redraw();
-				// serialize data
-				phototopo.saveData();
-				e.preventDefault();
-				e.stopPropagation();
-			});
-			phototopo.areaOptionsEl.appendTo(phototopo.photoEl);
-			phototopo.areaOptionsEl.show();
-		}
-
-		// reset and load data
-//		e.find('button').remoceClass(
-
-		// show defaults
 		this.showOptions();	
-
 
 	} else {
 
@@ -1566,18 +1508,73 @@ Area.prototype.select = function(selectedPoint){
 
 Area.prototype.showOptions = function(){
 
-	var el = this.phototopo.areaOptionsEl;
+	var pt = this.phototopo;
+	if (pt.loading){ return; }
 
-	el.find('button').removeClass('active');
+	function silk(i){
+		return '<img src="https://static.thecrag.com/silk/'+i+'.png">';
+	}
 
-	el.find('textarea').val(unescape(this.label.text) );
+	var e = pt.areaOptionsEl;
+	if (!e){
+		e = $('<div class="areaoptions form-inline"">'+
+			'<label>Label:'+
+			'<div class="btn-group"><textarea name="label" style="width:200px;" rows="2"></textarea></div></label>'+
+			' <label>Align: '+
+			'<div class="btn-group">'+
+				'<button name="halign" value="l" class="btn btn-mini">'+silk('text_align_left'   )+'</button>'+ 
+				'<button name="halign" value="c" class="btn btn-mini">'+silk('text_align_center' )+'</button>'+ 
+				'<button name="halign" value="r" class="btn btn-mini">'+silk('text_align_right'  )+'</button>'+ 
+			'</div></label>'+ 
+			' <label>Vertical: '+
+			'<div class="btn-group">'+
+				'<button name="valign" value="t" class="btn btn-mini">'+silk('shape_align_top'   )+'</button>'+ 
+				'<button name="valign" value="m" class="btn btn-mini">'+silk('shape_align_middle')+'</button>'+ 
+				'<button name="valign" value="b" class="btn btn-mini">'+silk('shape_align_bottom')+'</button>'+ 
+			'</div></label>'+ 
+			' <label>Shape: '+
+			'<div class="btn-group">'+
+				'<button name="visible" value="v" class="btn btn-mini">Visible</button>'+ 
+				'<button name="visible" value="h" class="btn btn-mini">Hidden</button>'+ 
+			'</div></label>'+ 
+			' <label>Pointer: '+
+			'<div class="btn-group">'+
+				'<button name="line" value="y" class="btn btn-mini">Yes</button>'+ 
+				'<button name="line" value="n" class="btn btn-mini">No</button>'+ 
+			'</div></label>'+ 
+			'</div>'
+		);
+		
+		$(e).find('[name=label]').change(function(e){
+			pt.selectedRoute.label.text = $(e.target).val();
+			pt.saveData();
+		});
+		$(e).find('button').click(function(e){
+			var b = $(e.target).closest('button');
+			var key = b.attr('name');
+			if (!pt.selectedRoute){ return; }
+			pt.selectedRoute.label[key] = b.val();
+			pt.selectedRoute.showOptions();
+			pt.selectedRoute.redraw();
+			// serialize data
+			pt.saveData();
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		e.appendTo(pt.photoEl);
+		pt.areaOptionsEl = e;
+	}
+	e.show();
+	e.find('button').removeClass('active');
+
+	e.find('textarea').val(unescape(this.label.text) );
 
 	// find all values and set
 	// set it
 	var props =['halign','valign','visible','line'];
 	for(var c=0; c<4; c++){
 		var prop = props[c];
-		var b = el.find('button[value='+this.label[prop]+']').addClass('active');
+		var b = e.find('button[value='+this.label[prop]+']').addClass('active');
 	}
 
 }
@@ -1607,7 +1604,7 @@ Area.prototype.deselect = function(){
 	pt.updateCursor();
 
 	if (pt.areaOptionsEl){
-//		pt.areaOptionsEl.hide();
+		pt.areaOptionsEl.hide();
 	}
 
 };
