@@ -1335,7 +1335,7 @@ Area.prototype.getJSON = function(){
 		this.label.valign +
 		this.label.visible +
 		this.label.line + ' '+
-		escape(this.label.text)+',';
+		encodeURIComponent(this.label.text)+',';
 	for(c=0; c<this.vertices.length; c++){
 		vertex = this.vertices[c];
 		if (c!== 0){
@@ -1517,7 +1517,7 @@ Area.prototype.showOptions = function(){
 
 	var e = pt.areaOptionsEl;
 	if (!e){
-		e = $('<div class="areaoptions form-inline"">'+
+		e = $('<div class="areaoptions well form-inline"">'+
 			'<label>Label:'+
 			'<div class="btn-group"><textarea name="label" style="width:200px;" rows="2"></textarea></div></label>'+
 			' <label>Align: '+
@@ -1567,7 +1567,7 @@ Area.prototype.showOptions = function(){
 	e.show();
 	e.find('button').removeClass('active');
 
-	e.find('textarea').val(unescape(this.label.text) );
+	e.find('textarea').val(decodeURIComponent(this.label.text) );
 
 	// find all values and set
 	// set it
@@ -2113,16 +2113,18 @@ PhotoTopo.RouteLabel = function(){};
 	// point groups
 	this.pointGroups = {};
 
+	var selectBlue = '#3D80DF';
+	var labelColor = '#ffee00';
 
 	this.styles = {
 		areaBorder: {
 			'stroke': 'black', // default if it can't inherit from label colour
-			'stroke-width': 6,
+			'stroke-width': 5, 
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 		},
 		areaBorderSelected: {
-			'stroke': '#3D80DF' // default if it can't inherit from label colour
+			'stroke': selectBlue // default if it can't inherit from label colour
 		},
 		areaBorderVisible: {
 			'stroke-dasharray': '',
@@ -2132,19 +2134,20 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-opacity': 0
 		},
 		areaBorderEditHidden: {
-			'stroke-dasharray': ' .',
-			'stroke-opacity': .3
+			'stroke-dasharray': '..',
+			'stroke-opacity': .7
 		},
 		areaFill: {
-			'stroke': 'white',
+			'stroke': labelColor,
 			'stroke-width': 2,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1,
 			'fill-opacity': .01,
-			'fill': '#3D80DF'
+			'fill': selectBlue
 		},
 		areaFillSelected: {
+			'stroke': 'white',
 			'fill-opacity': .2
 		},
 		areaFillVisible: {
@@ -2164,11 +2167,11 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-width': 2,
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1,
-			'fill': 'white'
+			'fill': labelColor
 		},
 		areaLabelLineSelected: {
 			'stroke': 'white',
-			'fill': '#3D80DF'
+			'fill': selectBlue
 		},
 		outline: {
 			'stroke': 'black', // default if it can't inherit from label colour
@@ -2196,7 +2199,7 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		strokeSelected: {
 			'stroke-width': this.options.thickness,
-			'stroke': '#3D80DF' // default if it can't inherit from label colour
+			'stroke': selectBlue // default if it can't inherit from label colour
 		},
 		strokeVisible: {
 			'stroke-dasharray': 'none' // If none makes svg bug? if inheret makes another bug where the hidden is 'stuck' after its visible
@@ -2214,7 +2217,7 @@ PhotoTopo.RouteLabel = function(){};
 			'fill': 'white'
 		},
 		handleSelected: {
-			'fill': '#3D80DF',
+			'fill': selectBlue,
 			'stroke': 'white' // default if it can't inherit from label colour
 		},
 		handleSelectedActive: {
