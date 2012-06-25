@@ -1389,11 +1389,27 @@ Area.prototype.load = function(data, viewScale){
 Area.prototype.redraw = function(){
 
 	var v,e,c,svg_path,pt;
+	pt = this.phototopo;
+
+	var l = this.label;
+	if (!this.labelEl){
+		this.labelEl = this.phototopo.canvas.text(l.x, l.y,l.text);
+	} else {
+		this.labelEl.attr({
+			x: l.x,
+			y: l.y,
+			text: l.text
+		});
+	}
+
+	this.labelLine && this.labelLine.remove();
 
 	if (this.vertices.length > 0){
+
+	
 		v = this.vertices[this.vertices.length-1];
+
 		e = v.area.fixPixel;
-		pt = v.area.phototopo;
 		svg_path = 'M'+e(v.x)+' '+e(v.y);
 		for(c=0;c<this.vertices.length;c++){
 			v = this.vertices[c];
@@ -1405,8 +1421,25 @@ Area.prototype.redraw = function(){
 		this.polygon.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden );
 		this.polygon.show();
 
+		// if we want a line
+		if (l.line == 'y'){
+			var bbox = this.polygon.getBBox();
+
+			var end = {x: bbox.x+bbox.width/2, y:bbox.y+bbox.height/2 };
+			var dx = end.x-l.x;
+			var dy = end.y-l.y;
+			var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+			var length = Math.sqrt(dx*dx+dy*dy);
+			this.labelLine = this.phototopo.canvas.rect(l.x,l.y,4,length)
+				.rotate(angle-90,l.x,l.y)
+				.attr( this == pt.selectedRoute ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
+				.show();
+		
+		} else {
+			this.labelLine && this.labelLine.remove();
+		}
 	} else {
-		this.polygon.hide();
+		this.polygon   && this.polygon.hide();
 	}
 }
 
@@ -2124,6 +2157,17 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		areaFillEditHidden: {
 			'stroke-opacity': .3
+		},
+		areaLabelLine: {
+			'stroke': 'black',
+			'stroke-width': 2,
+			'stroke-linecap': 'round',
+			'stroke-opacity': 1,
+			'fill': 'white'
+		},
+		areaLabelLineSelected: {
+			'stroke': 'white',
+			'fill': '#3D80DF'
 		},
 		outline: {
 			'stroke': 'black', // default if it can't inherit from label colour
