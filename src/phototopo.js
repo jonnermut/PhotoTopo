@@ -1478,6 +1478,7 @@ Area.prototype.redraw = function(){
 				.rotate(angle-90,l.x,l.y)
 				.attr( this == pt.selectedRoute ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
 				.show();
+			this.labelLine.insertBefore(this.labelBox);
 		
 		} else {
 			this.labelLine && this.labelLine.remove();
