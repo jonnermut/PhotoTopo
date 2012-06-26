@@ -14,6 +14,8 @@ position label
  - when adding points after the third point, if no label then auto create
  - drag about
 
+make label text input live update the label
+ - refactor updatelabel into seperate method
 
 DONE
 
