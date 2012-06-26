@@ -1452,13 +1452,42 @@ Area.prototype.redraw = function(){
 	var height = bbox.height * 1 + padding *2;
 
 
+	// is it magic docked?
+	var dock = null;
+	var dockW = -1;
+	if (l.wid == 'd'){
+		// find out what point it is docked with
+		for(c=0;c<this.vertices.length;c++){
+			v = this.vertices[c];
+			if (v.x == l.x && v.y == l.y){
+				dock = v;
+			}
+		}
+
+		// ok now find the width of any horizontal
+		if (dock){
+			if (dock.y == dock.next.y){
+				dockW = Math.abs(dock.x - dock.next.x);
+			}
+			if (dock.y == dock.prev.y){
+				dockW = Math.abs(dock.x - dock.prev.x);
+			}
+		}
+		// only dock if it is longer!
+		if (dockW > width){
+			width = dockW;
+		}
+	}
+
+
+
 	// x,y are always the top left corner of the box
 	// tx,ty are the anchor for the text
 	var x = l.x*1;
 	var tx = x;
-	if (l.halign == 'l'){                 tx += width/2; }
+	if (l.halign == 'l'){                 tx += padding; }
 	if (l.halign == 'c'){ x -= width/2;   tx -= 0;       }
-	if (l.halign == 'r'){ x -= width;     tx -= width/2; }
+	if (l.halign == 'r'){ x -= width;     tx -= padding; }
 	var y = l.y*1;
 	var ty = y;
 	if (l.valign == 'b'){ y -= height;    ty -= height/2; }
@@ -1469,7 +1498,8 @@ Area.prototype.redraw = function(){
 		x: tx,
 		y: ty,
 		'font-size': 12,
-		'font-family': 'Helvetica'
+		'font-family': 'Helvetica',
+		'text-anchor': (l.halign == 'l' ? 'start' : l.halign == 'c' ? 'middle' : 'end')
 	}).attr( this == pt.selectedRoute ? pt.styles.areaLabelTextSelected : pt.styles.areaLabelText )
 
 	
@@ -1746,7 +1776,7 @@ Area.prototype.showOptions = function(){
 	// find all values and set
 	// set it
 	var props =['halign','valign','visible','line','wid'];
-	for(var c=0; c<props.length; c++){
+	for(var c=0; c<props.lengttart; c++){
 		var prop = props[c];
 		var b = e.find('button[value='+this.label[prop]+']').addClass('active');
 	}

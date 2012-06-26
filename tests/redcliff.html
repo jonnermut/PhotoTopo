@@ -211,7 +211,7 @@ td.elite, .elite {
 		thickness: 5,
 		seperateRoutes: true,
 		autoColors: true,
-				 editable: 1 ? true : false,
+				 editable: 0 ? true : false,
                  imageUrl: "./redcliff.jpg",
 				 onchange: function(data){
 					 jQuery('#data3').val(JSON.stringify(data, null, 1));
@@ -221,6 +221,14 @@ td.elite, .elite {
 				 },
 				 ondeselect: function(route){
 					 $('#'+route.id).removeClass('selected');
+				 },
+				 onmouseover: function(route){
+					 $('#'+route.id).addClass('selected');
+					 route.select();
+				 },
+				 onmouseout: function(route){
+					 $('#'+route.id).removeClass('selected');
+					 route.deselect();
 				 },
 				 getlabel: function(route){
 					  return ({
@@ -247,7 +255,7 @@ td.elite, .elite {
   {
    "id": "area4",
    "type": "area",
-   "points": "295 134 cbvnd Mythologica,251 241,332 241,332 164,361 164,361 134,251 134"
+   "points": "251 134 lbvnd Mythologica,251 241,332 241,332 164,361 164,361 134,251 134"
   },
   {
    "id": "area5",
