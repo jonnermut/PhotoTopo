@@ -1290,6 +1290,7 @@ function Area(phototopo, id){
 		line:    'y',
 		valign:  'b',
 		halign:  'l',
+		wid:     'd',
 		text:    'label'
 	};
 
@@ -1339,7 +1340,9 @@ Area.prototype.getJSON = function(){
 		this.label.halign + 
 		this.label.valign +
 		this.label.visible +
-		this.label.line + ' '+
+		this.label.line +
+		this.label.wid +
+		' '+
 		encodeURIComponent(this.label.text)+',';
 	for(c=0; c<this.vertices.length; c++){
 		vertex = this.vertices[c];
@@ -1378,6 +1381,7 @@ Area.prototype.load = function(data, viewScale){
 					this.label.valign  = op.charAt(1) || 'b';
 					this.label.visible = op.charAt(2) || 'v';
 					this.label.line    = op.charAt(3) || 'n';
+					this.label.wid     = op.charAt(4) || 'a';
 					this.label.text = decodeURIComponent( parts[3] );
 				}
 				continue;
@@ -1434,7 +1438,7 @@ Area.prototype.redraw = function(){
 	if (!this.labelEl){
 		this.labelEl = pt.canvas.text(0, 0,l.text);
 		this.labelEl.click(    this.click);
-	//	this.labelEl.mouseover(this.mouseover);
+		this.labelEl.mouseover(this.mouseover);
 	//	this.labelEl.mouseout( this.mouseout);
 	}
 
@@ -1442,7 +1446,7 @@ Area.prototype.redraw = function(){
 		text: l.text,
 	});
 
-	var padding = 3;
+	var padding = 2;
 	var bbox = this.labelEl.getBBox();
 	var width = bbox.width * 1 + padding*2;
 	var height = bbox.height * 1 + padding *2;
@@ -1707,6 +1711,11 @@ Area.prototype.showOptions = function(){
 				'<button name="line" value="y" class="btn btn-mini">Yes</button>'+ 
 				'<button name="line" value="n" class="btn btn-mini">No</button>'+ 
 			'</div></label>'+ 
+			' <label>Width: '+
+			'<div class="btn-group">'+
+				'<button name="wid" value="a" class="btn btn-mini">Auto</button>'+ 
+				'<button name="wid" value="d" class="btn btn-mini">Dock</button>'+ 
+			'</div></label>'+ 
 			'</div>'
 		);
 		
@@ -1736,8 +1745,8 @@ Area.prototype.showOptions = function(){
 
 	// find all values and set
 	// set it
-	var props =['halign','valign','visible','line'];
-	for(var c=0; c<4; c++){
+	var props =['halign','valign','visible','line','wid'];
+	for(var c=0; c<props.length; c++){
 		var prop = props[c];
 		var b = e.find('button[value='+this.label[prop]+']').addClass('active');
 	}
