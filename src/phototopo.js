@@ -1443,6 +1443,7 @@ Area.prototype.redraw = function(){
 	
 	if(!this.labelBox){
 		this.labelBox = pt.canvas.rect(x,y,width,height,0);
+		this.labelBoxShadow = pt.canvas.rect(x,y,width,height,0);
 		this.labelBox.click(    this.click);
 		this.labelBox.mouseover(this.mouseover);
 		this.labelBox.mouseout( this.mouseout);
@@ -1455,6 +1456,15 @@ Area.prototype.redraw = function(){
 	})
 	.attr( this == pt.selectedRoute ? pt.styles.areaLabelSelected : pt.styles.areaLabel )
 	this.labelBox.insertBefore(this.labelEl);
+
+	this.labelBoxShadow.attr({
+		x: x,
+		y: y,
+		width: width,
+		height: height,
+	})
+	.attr( this == pt.selectedRoute ? pt.styles.areaLabelShadowSelected : pt.styles.areaLabelShadow )
+	this.labelBoxShadow.insertBefore(this.labelBox);
 
 
 	this.labelLine && this.labelLine.remove();
@@ -2176,13 +2186,13 @@ PhotoTopo.RouteLabel = function(){};
 
 	this.styles = {
 		areaBorder: {
-			'stroke': 'black', // default if it can't inherit from label colour
-			'stroke-width': 5, 
+			'stroke': 'black',
+			'stroke-width': 4, 
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
 		},
 		areaBorderSelected: {
-			'stroke': selectBlue // default if it can't inherit from label colour
+			'stroke': 'white'
 		},
 		areaBorderVisible: {
 			'stroke-dasharray': '',
@@ -2205,7 +2215,7 @@ PhotoTopo.RouteLabel = function(){};
 			'fill': selectBlue
 		},
 		areaFillSelected: {
-			'stroke': 'white',
+			'stroke': selectBlue,
 			'fill-opacity': .2
 		},
 		areaFillVisible: {
@@ -2225,16 +2235,23 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		areaLabel: {
 			'fill': labelColor,
-			'stroke': 'black',
-			'stroke-width': 0
+			'stroke': labelColor,
+			'stroke-width': 2
 		},
 		areaLabelSelected: {
-			'stroke': 'white',
+			'stroke': selectBlue,
 			'fill': selectBlue
+		},
+		areaLabelShadow: {
+			'stroke-width': 4,
+			'stroke': 'black'
+		},
+		areaLabelShadowSelected: {
+			'stroke': 'white'
 		},
 		areaLabelLine: {
 			'stroke': 'black',
-			'stroke-width': 2,
+			'stroke-width': 1,
 			'stroke-linecap': 'round',
 			'stroke-opacity': 1,
 			'fill': labelColor
