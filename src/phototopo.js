@@ -591,7 +591,7 @@ Point.prototype.updateLabelPosition = function(){
  */
 Point.prototype.setStyle = function(){
 
-	var node = this.route ? this.route : this.area;
+	var node = this.route ? this.route : this.polygon ? this : this.area;
 
 	var styles = node.phototopo.styles;
 	if (this.circle){
@@ -1396,6 +1396,34 @@ Area.prototype.drawLabel = function(){
 
 }
 
+
+Area.prototype.moveTo = function(x,y){
+
+//	var pos = this.snap(x,y);
+
+//	x = pos.x;
+//	y = pos.y;
+
+	if (this.x === x && this.y === y){
+		return { x: x, y: y };
+	}
+	if (isNaN(x) || isNaN(y) ){
+		return { x: this.x, y: this.y };
+	}
+
+	this.label.x = x;
+	this.label.y = y;
+
+	this.redraw();
+
+	this.phototopo.saveData();
+
+	return { x: x, y: y };
+
+
+};
+
+
 Area.prototype.redraw = function(){
 
 	var v,e,c,svg_path,pt;
@@ -1465,6 +1493,76 @@ Area.prototype.redraw = function(){
 	})
 	.attr( this == pt.selectedRoute ? pt.styles.areaLabelShadowSelected : pt.styles.areaLabelShadow )
 	this.labelBoxShadow.insertBefore(pt.layerShadows);
+
+
+	function dragStart(){
+		var selectedRoute = this.point.phototopo.selectedRoute;
+		$(this.point.phototopo.photoEl).addClass('dragging');
+
+		this.ox = this.attr("cx");
+		this.oy = this.attr("cy");
+			
+		// don't allow draging of points if another route is selected
+		if (selectedRoute && selectedRoute !== this.point){
+			return;
+		}
+		circle.animate(styles.handleHover, 100);
+		this.point.select();
+	}
+
+	function dragMove(dx, dy){
+		var selectedRoute = this.point.phototopo.selectedRoute, pos;
+		if (selectedRoute && selectedRoute !== this.point){
+			return;
+		}
+		pos = circle.point.moveTo(this.ox*1 + dx, this.oy*1 + dy);
+		circle.attr({cx: pos.x, cy: pos.y});
+	}
+
+	function dragEnd(){
+		var selectedRoute = this.point.phototopo.selectedRoute;
+		$(this.point.phototopo.photoEl).removeClass('dragging');
+
+		if (selectedRoute && selectedRoute !== this.point){
+			return;
+		}
+		this.point.setStyle();
+	}
+
+	var circle;
+	var styles = pt.styles;
+	if (pt.options.editable){
+
+		if (!this.circle){
+			this.circle = pt.canvas.circle(l.x, l.y, 5);
+			circle = this.circle;
+			circle.point = this;
+			circle.attr(styles.handle);
+		
+			circle.drag(dragMove, dragStart, dragEnd); 
+			circle.mouseover(function(){
+
+				$(this.point.phototopo.photoEl).addClass('point');
+				this.point.setStyle();
+				this.point.onmouseover(this.point);
+				this.animate(styles.handleHover, 100);
+			});
+			circle.mouseout(function(){
+				if (!this.point)return;
+				$(this.point.phototopo.photoEl).removeClass('point');
+				this.point.onmouseout(this.point);
+				this.point.setStyle();
+			});
+		} else {
+			this.circle.attr({x:l.x,y:l.y});	
+		}
+		
+	}
+
+
+
+
+
 
 	this.labelLine && this.labelLine.remove();
 
@@ -1739,6 +1837,7 @@ Area.prototype.addAfter = function(afterVert, x, y){
 
 Area.prototype.onmouseover = Route.prototype.onmouseover;
 Area.prototype.onmouseout  = Route.prototype.onmouseout;
+Area.prototype.setStyle =    Point.prototype.setStyle;
 
 function Vertex(area, x, y){
 	this.area = area;
@@ -1874,18 +1973,6 @@ Vertex.prototype.redraw = function(){
 		circle.dblclick(function(){
 			this.point.remove();
 		});
-	
-	
-		$(circle.node).contextMenu({
-			menu: 'phototopoContextMenu'
-		},
-			function(action, el, pos) {
-				point.setType(action);
-				point.pointGroup.redraw();
-				point.route.phototopo.saveData();
-
-		});
-		
 		
 	}
 
