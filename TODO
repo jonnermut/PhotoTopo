@@ -2,10 +2,6 @@ more stuff
 
 mak hidden truly hidden on select as well
 
-fix border colour clash when label over border
-
-fix two borders clash when share side
-
 make label draggable
 
 convert line to two lines with arrow heads, make the shadow behind the box and the line above
@@ -13,11 +9,6 @@ convert line to two lines with arrow heads, make the shadow behind the box and t
 make anchors snappable to each other as well as other points
 
 option to stretch width to docked side
-
-add a label shadow layer
-consolidate all stacking layers into simple common code
-
-
 
 
 reset position - back to centroid
@@ -30,14 +21,14 @@ position label
 DONE
 
 make label
-
+add a label shadow layer
+consolidate all stacking layers into simple common code
+fix border colour clash when label over border
+fix two borders clash when share side
 slide down properotes panel
-
 text:input
-
 left|middle|right
 top|center|bottom
-
 hide|show|pointer
 width:same|flexi
 render label

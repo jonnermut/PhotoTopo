@@ -1464,8 +1464,7 @@ Area.prototype.redraw = function(){
 		height: height,
 	})
 	.attr( this == pt.selectedRoute ? pt.styles.areaLabelShadowSelected : pt.styles.areaLabelShadow )
-	this.labelBoxShadow.insertBefore(this.labelBox);
-
+	this.labelBoxShadow.insertBefore(pt.layerShadows);
 
 	this.labelLine && this.labelLine.remove();
 
@@ -1761,6 +1760,7 @@ Vertex.prototype.redraw = function(){
 		this.border.attr( pt.selectedRoute === this.area ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
 		var borderStyle = area.label.visible == 'v' ? pt.styles.areaBorderVisible : pt.options.editable ? pt.styles.areaBorderEditHidden : pt.styles.areaBorderHidden;
 		this.border.attr(borderStyle);
+		this.border.insertBefore(pt.layerShadows);
 		this.border.attr('path', this.svg_path);
 		if (this.ghost){
 			this.ghost.attr('path', this.svg_path);
@@ -2138,8 +2138,12 @@ PhotoTopo.RouteLabel = function(){};
 	
 	this.canvas = Raphael(this.options.elementId, this.options.width, this.options.height);
 
-	this.layerAreas = this.canvas.rect(1,1,0,0);
-	this.layerLabels = this.canvas.rect(1,1,0,0);
+	/*
+	 * These are the layers
+	 */
+	this.layerShadows = this.canvas.rect(1,1,0,0); // for the area label shadows
+	this.layerAreas   = this.canvas.rect(1,1,0,0); // for the area label polygons
+	this.layerLabels  = this.canvas.rect(1,1,0,0); // for the text labels
 
 
 
