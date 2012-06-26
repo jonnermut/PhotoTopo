@@ -1,8 +1,5 @@
-more stuff
 
 mak hidden truly hidden on select as well
-
-make label draggable
 
 convert line to two lines with arrow heads, make the shadow behind the box and the line above
 
@@ -20,6 +17,7 @@ position label
 
 DONE
 
+make label draggable
 make label
 add a label shadow layer
 consolidate all stacking layers into simple common code
