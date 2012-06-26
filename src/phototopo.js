@@ -1399,10 +1399,10 @@ Area.prototype.drawLabel = function(){
 
 Area.prototype.moveTo = function(x,y){
 
-//	var pos = this.snap(x,y);
+	var pos = this.snap(x,y);
 
-//	x = pos.x;
-//	y = pos.y;
+	x = pos.x;
+	y = pos.y;
 
 	if (this.x === x && this.y === y){
 		return { x: x, y: y };
@@ -1998,8 +1998,8 @@ Vertex.prototype.snap = function(x,y){
 
 	var threshold = 10;
 
-	var myarea = this.area;
-	var pt = this.area.phototopo;
+	var myarea = this.area ? this.area : this;
+	var pt = myarea.phototopo;
 
 	for(var c in pt.routes){
 		var verts = pt.routes[c].vertices;
@@ -2021,6 +2021,7 @@ Vertex.prototype.snap = function(x,y){
 
 	return {x:foundX,y:foundY};
 }
+Area.prototype.snap =        Vertex.prototype.snap;
 
 Vertex.prototype.moveTo = function(x,y){
 
