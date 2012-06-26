@@ -1556,9 +1556,9 @@ Area.prototype.redraw = function(){
 		} else {
 			this.circle.attr({x:l.x,y:l.y});	
 		}
-		
+		this.circle.toFront();
+		this.setStyle();
 	}
-
 
 
 
