@@ -2484,8 +2484,11 @@ PhotoTopo.RouteLabel = function(){};
  */
 PhotoTopo.prototype.defaultOptions = {
 	'autoSize': true,
-	'thickness': 5,
-	'labelSize': 16,
+	'overhead' : false,
+	'thickness': 1.5,
+	'labelSize': 12,
+	'autoColors': true,
+	'seperateRoutes': true,
 	'labelBorder': 1,
 	'viewScale': 1,
 	'nojs': false,

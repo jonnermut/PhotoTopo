@@ -142,17 +142,11 @@ jQuery(function(){
 	elementId:'topo_80361708',
 	width: 186,
 	height: 160,
-	thickness: 1.5,
 	viewScale: 0.62,
-	seperateRoutes: true,
-	autoColors: true,
-	editable: false,
 	overhead: true,
 	baseUrl: '../src/',
 	imageUrl: "keith_boulder.jpg",
 	routes: topo80361708,
-	labelSize: 12,
-	labelBorder: 1,
 	onmouseover: function(r){
 		var name = r.orig.stars+' '+r.orig.name+' '+r.orig.grade+' '+r.orig.style;
 		$('body').trigger('node.over', {id:r.id});
