@@ -10,6 +10,11 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/jquery-ui.min.js" type="text/javascript"></script>
 
 
+
+<link rel="stylesheet" type="text/css" media="all"   href="http://static.thecrag.com/cids/portal-1.1.14.css" />
+
+
+
 <!-- json for serialization -->
 <script type="application/javascript" src="../dependencies/json/json2.js"></script> 
 
@@ -17,6 +22,7 @@
 <script type="application/javascript" src="../dependencies/raphael-1.5.0/raphael-min.js"></script>
 
 
+<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" type="text/css" />
 
 <!-- context menu -->
 
@@ -24,101 +30,308 @@
 <link type="text/css" href="../dependencies/jquery.contextMenu-1.01/jquery.contextMenu.css" rel="stylesheet" />
 
 
-<!-- plugin code -->
-
-<link type="text/css" rel="stylesheet" href="../src/overheadtopo.css" />
-<script type="application/javascript" src="../src/overheadtopo.js"></script>
-
+<link type="text/css" rel="stylesheet" href="../src/phototopo.css" />
+<script type="application/javascript" src="../src/phototopo.js"></script>
 
 
 </head>
 
-<body>
+
+
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:og="http://opengraphprotocol.org/schema/">
+<head>
+<title>Karma boulder | theCrag</title>
+<body id="default">
 
 
 
-<h1>Test 1: Read only, default config</h1>
-
-<div id="overheadtopo1"></div>
-<p>Should test:</p>
-<ul>
-<li>single points should be a clickable square</li>
-<li>3 or more points should be a polygon</li>
-<li>mouseover, mouseout, onclick events</li>
-</ul>
 <script>
- jQuery(function(){
-         var pt = new OverheadTopo({
-                 elementId: 'overheadtopo1',
-                 imageUrl: "overhead-boulder-topo.gif",
-                 routes: [
-  {
-   "id": "route1",
-   "title": "test point with direction",
-   "points": "20 220",
-   "direction": 45
-  },
-  {
-   "id": "route2",
-   "title": "test point without direction",
-   "points": "20 220,40 150"
-  },
-  {
-   "id": "route3",
-   "title": "test polygon",
-   "points": "80 260,120 200,100 130,130 60"
-  },
-                 ]
-         });
- 
- });
- </script>
+$(function(){
+	$('.routetable tr').hover(
+		function(){
+			$('body').trigger('node.over', {id: $(this).attr('id') });
+   		},
+   		function(){
+			$('body').trigger('node.out', {id: $(this).attr('id') });
+		}
+	);
+});
+</script>
 
-<table id="route_table" class="routes">
-  <tr>
-    <th colspan="3" align="right">Rating</th>
-    <th align="center">Grade</th>
-    <th align="left">Name</th>
-    <th align="right">H</th>
-    <th>Popularity</th>
-    <th align="left">Style</th>
-  </tr>
-  <tr id="route1">
-    <td><span class="single_lead"></span></td>
-    <td><span class="num">71</span></td>
-    <td align="right"><img src="../img/mini-star.png" alt="" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
-    <td align="center"><div class="beginner">14</div></td>
-    <td>Good morning little school girl
-      <p>Start on the high crimp then easy ledges with perfect bolts to cam finish</p></td>
-    <td align="right">15m</td>
-    <td><div class="rp"><div style="width: 75px;"></div></div></td>
-    <td>Free</td>
-  </tr>
-  <tr id="route2">
-    <td><span class="single_unticked"></span></td>
-    <td><span class="num">72</span></td>
-    <td align="right"><img src="../img/mini-danger.png" alt="Star" width="10" height="10" /></td>
-    <td align="center"><div class="intermediate">18</div></td>
-    <td>Some horrid climb
-      <p>Don't bother with this  rubish.</p></td>
-    <td align="right">9m</td>
-    <td><div class="rp"><div style="width: 5px;"></div></div></td>
-    <td>Sport <span class="clip"></span> 4</td>
-  </tr>
-  <tr id="route3">
-    <td><span class="single_solo"></span></td>
-    <td><span class="num">73</span></td>
-    <td align="right"><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /><img src="../img/mini-star.png" alt="Star" width="10" height="10" /></td>
-    <td align="center"><div class="advanced">23</div></td>
-    <td>Yoda
-      <p>Chunky oblique blocks with solid moves.</p></td>
-    <td align="right">15m</td>
-    <td><div class="rp"><div style="width: 35px;"></div></div></td>
-    <td>Sport <img src="../img/clip.png" alt="6 bolts" width="15" height="18" align="absmiddle"/> 6</td>
-  </tr>
+
+<script type="text/javascript">
+function clickHandlerFactory(area, topo){
+	return function(route){
+		if (route){
+			//window.location.hash = '#'+route.id;
+//			window.location = '/route/'+route.id;
+		} else {
+//			window.location = '/area/27577233/topo#t'+topo;
+		}
+	}
+}
+</script>
+
+
+    <h2>Routes
+</h2>
+
+
+
+
+ <table class="routetable selectable">
+<tr>
+<td colspan="8">
+<div class="actionable">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="fixedheightsmall" id="topo_80361708" style="display: inline-block; vertical-align: top; width: 186px; height: 160px;"></span></span>
+<script type="text/javascript">
+if (!window.route2topo){
+	window.route2topo = {};
+}
+var topo80361708 = [
+
+{
+	id:'27577677',
+	grade: 'V1',
+	gb: '3',
+	name: 'Warmup',
+	stars: '',
+	style: 'Boulder',
+	order: 1,
+	points:'236 13,215 63'
+}
+,
+{
+	id:'27577785',
+	grade: 'V9',
+	gb: '4',
+	name: 'Rama',
+	stars: '★★',
+	style: 'Boulder',
+	order: 2,
+	points:'23 74,62 102'
+}
+,
+{
+	id:'27577899',
+	grade: 'V3',
+	gb: '3',
+	name: 'Keith the Moravian Swearing Bear',
+	stars: '★',
+	style: 'Boulder',
+	order: 3,
+	points:'34 225,71 178'
+}
+];
+jQuery(function(){
+	var pt = new PhotoTopo({
+	elementId:'topo_80361708',
+	width: 186,
+	height: 160,
+	thickness: 1.5,
+	viewScale: 0.62,
+	seperateRoutes: true,
+	autoColors: true,
+	editable: false,
+	baseUrl: '../src/',
+	imageUrl: "keith_boulder.jpg",
+	routes: topo80361708,
+	labelSize: 12,
+	labelBorder: 1,
+	onmouseover: function(r){
+		var name = r.orig.stars+' '+r.orig.name+' '+r.orig.grade+' '+r.orig.style;
+		$('body').trigger('node.over', {id:r.id});
+
+	},
+	onmouseout: function(route){
+		$('body').trigger('node.out', {id: route.id});
+	},
+	onclick: clickHandlerFactory("27577233", "80361708"),
+	getlabel: function(route){
+		var r = {
+			label:   $('#n'+route.id +' td:nth-child(1)').text().replace(/(\r|\n|\.)/gm, ''),
+			classes: 'gb'+route.gb
+		}
+		return r;
+	}
+	});
+	var x = route2topo;
+	if ( 'n27577677' in route2topo){
+		route2topo['n27577677'].push(pt);
+	} else {
+		route2topo['n27577677'] = [pt];
+	}
+	if ( 'n27577785' in route2topo){
+		route2topo['n27577785'].push(pt);
+	} else {
+		route2topo['n27577785'] = [pt];
+	}
+	if ( 'n27577899' in route2topo){
+		route2topo['n27577899'].push(pt);
+	} else {
+		route2topo['n27577899'] = [pt];
+	}
+});
+</script>
+
+
+
+
+
+
+
+<div class="edit"><a title="Edit topo #1" class="btn btn-mini" href="/area/27577233/topo?A%3AMode=1%2Dedit"><img src="http://static.thecrag.com/silk/pencil.png" width="16" height="16" alt=""></a> </div>
+
+</div>
+</td>
+</tr>
+
+
+
+        <tr>
+          <th scope="col" colspan="2"></th>
+          <th scope="col">Route</th>
+          <th scope="col">Grade</th>
+          <th scope="col">Popularity</th>
+          <th scope="col">Style</th>
+        </tr>
+
+        <tr id="n27577677">
+
+          <td scope="col" class="num toponum">
+<input type="checkbox" value="27577677" name="D:AscentNodeID" />
+<span class="hastopo">1</span>
+
+</td>
+
+          <td scope="col" class="rt_tick">
+<a href="/processmap/logascent/27577677"><span class="tick_unticked" title="Tick this route"></span></a>
+</td>
+	<td scope="col" class="rt_name">
+<a href="/route/27577677" title="Selected comments -  - No comments"> Warmup</a>
+
+<p>Up rough nodules, down climb for other problems</p>
+
+
+</td>
+
+	<td scope="col" class="grade"><div class="gb3">V1</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (0%) - 1 ascent"><div style="width: 0%;"></div></div>
+</td>
+	<td scope="col" class="flags">
+<div class="actionable">
+<div class="edit"><a title="Edit route" class="btn btn-mini" href="/processmap/updateroutedetails/27577677?R=/area/27577233"><img src="http://static.thecrag.com/silk/pencil.png" width="16" height="16" alt="Edit"></a></div>
+</div>
+<span class="tags boulder ">Boulder</span> 3m
+</td>
+        </tr>
+
+
+
+
+
+
+
+
+
+
+
+        <tr id="n27577785">
+
+          <td scope="col" class="num toponum">
+<input type="checkbox" value="27577785" name="D:AscentNodeID" />
+<span class="hastopo">2</span>
+
+</td>
+
+          <td scope="col" class="rt_tick">
+<a href="/processmap/logascent/27577785"><span class="tick_unticked" title="Tick this route"></span></a>
+</td>
+	<td scope="col" class="rt_name">
+<a href="/route/27577785" title="Selected comments -  - No comments"><img alt="*" src="http://static.thecrag.com/cids/images/mini-star-1.1.0.png" width="10" height="10" /><img alt="*" src="http://static.thecrag.com/cids/images/mini-star-1.1.0.png" width="10" height="10" /> Rama</a>
+
+<p>Up left side of overhang</p>
+
+
+</td>
+
+	<td scope="col" class="grade"><div class="gb4">V9</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (0%) - No  ascents"><div style="width: 0%;"></div></div>
+</td>
+	<td scope="col" class="flags">
+<div class="actionable">
+<div class="edit"><a title="Edit route" class="btn btn-mini" href="/processmap/updateroutedetails/27577785?R=/area/27577233"><img src="http://static.thecrag.com/silk/pencil.png" width="16" height="16" alt="Edit"></a></div>
+</div>
+<span class="tags boulder ">Boulder</span> 4m
+</td>
+        </tr>
+
+
+
+
+
+
+
+
+
+
+
+        <tr id="n27577899">
+
+          <td scope="col" class="num toponum">
+<input type="checkbox" value="27577899" name="D:AscentNodeID" />
+<span class="hastopo">3</span>
+
+</td>
+
+          <td scope="col" class="rt_tick">
+<a href="/processmap/logascent/27577899"><span class="tick_unticked" title="Tick this route"></span></a>
+</td>
+	<td scope="col" class="rt_name">
+<a href="/route/27577899" title="Selected comments -  - No comments"><img alt="*" src="http://static.thecrag.com/cids/images/mini-star-1.1.0.png" width="10" height="10" /> Keith the Moravian Swearing Bear</a>
+
+<p>Mantle at right side of overhang    </p>
+
+
+</td>
+
+	<td scope="col" class="grade"><div class="gb3">V3</div></td>
+	<td scope="col"><div class="rpthin" title="Relative Popularity (0%) - No  ascents"><div style="width: 0%;"></div></div>
+</td>
+	<td scope="col" class="flags">
+<div class="actionable">
+<div class="edit"><a title="Edit route" class="btn btn-mini" href="/processmap/updateroutedetails/27577899?R=/area/27577233"><img src="http://static.thecrag.com/silk/pencil.png" width="16" height="16" alt="Edit"></a></div>
+</div>
+<span class="tags boulder ">Boulder</span> 4m
+</td>
+        </tr>
 
 
 </table>
 
+
+
+
+</article>
+
+
+
+
 </body>
 </html>
+
+
