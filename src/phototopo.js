@@ -561,53 +561,43 @@ Point.prototype.updateLabelPosition = function(){
 		offsetX, offsetY=0,
 		width, top, left,
 		topo = this.route.phototopo,
-		labelWidth = topo.options.labelSize,
-		overhead = topo.options.overhead;
+		labelWidth = topo.options.labelSize;
 	if (!label){ return; }
 
-	
 	width = (labelWidth) / 2;
 	
-	if (overhead){
-		offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
-		// find out which compas direction the route is heading in
-		if (this.nextPoint){
-			var dy = this.nextPoint.y - this.y;
-			var dx = this.nextPoint.x - this.x;
-			if (Math.abs(dx) < Math.abs(dy)){
-				// top
-				offsetY = width;
-				if (dy > 0){
-					offsetX = -offsetX;
-					offsetY = -offsetY;
-				}
-			} else {
-				offsetY = offsetX;
-				offsetX = -width;
-				if (dy < 0){
-					offsetY = -offsetY;
-					offsetX = -offsetX;
-				}
+	offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
+	// find out which compas direction the route is heading in
+	if (this.nextPoint){
+		var dy = this.nextPoint.y - this.y;
+		var dx = this.nextPoint.x - this.x;
+		var adx = Math.abs(dx);
+		var ady = Math.abs(dy);
+		if (adx < ady){
+			// top
+			offsetY = width * 2;
+			// bottom
+			if (dy > 0){
+				offsetX = -offsetX;
+				offsetY = -offsetY;
+			}
+		} else {
+			// left
+			offsetY = offsetX;
+			offsetX = -width * 2;
+			// right
+			if (dx < 0){
+				offsetY = -offsetY;
+				offsetX = -offsetX;
 			}
 		}
-
-	} else {
-		offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
-		offsetY = topo.options.thickness;
 	}
 
 	left = this.x - width + offsetX;
-	top  = this.y + offsetY;
-
-	if (overhead){
-		top -= width;
-	} else {
-		top += offsetY;
-	}
+	top  = this.y - width + offsetY;
 
 	left = Math.round(left);
 	top = Math.round(top);
-
 	
 	label.attr({x:left, y:top});
 
@@ -2515,7 +2505,6 @@ PhotoTopo.RouteLabel = function(){};
  */
 PhotoTopo.prototype.defaultOptions = {
 	'autoSize': true,
-	'overhead' : false,
 	'thickness': 1.5,
 	'labelSize': 12,
 	'autoColors': true,
