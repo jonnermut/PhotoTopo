@@ -1,4 +1,14 @@
 
+how to sort lines:
+
+first compare by left to right x pos - easy
+
+- if they are the same then compare by the angle to the first bolt
+- they are still the same then get the angle you just had and work out the angle of 'bend' to the next point and compare tha
+- keep doing that again!
+
+
+
 mak hidden truly hidden on select as well
 
 convert line to two lines with arrow heads, make the shadow behind the box and the line above
