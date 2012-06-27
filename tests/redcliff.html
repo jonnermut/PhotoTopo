@@ -202,16 +202,18 @@ td.elite, .elite {
 </div>
 </div>
 <script>
+var pt;
+var editable = false;
  jQuery(function(){
 	PhotoTopo.prototype.defaultOptions.baseUrl = '../src/';
-         var pt = new PhotoTopo({
+         pt = new PhotoTopo({
                  elementId: 'phototopo3',
                  width: 500,
                  height: 375,
 		thickness: 5,
 		seperateRoutes: true,
 		autoColors: true,
-				 editable: 0 ? true : false,
+		 editable: editable,
                  imageUrl: "./redcliff.jpg",
 				 onchange: function(data){
 					 jQuery('#data3').val(JSON.stringify(data, null, 1));
@@ -240,7 +242,7 @@ td.elite, .elite {
   {
    "id": "area1",
    "type": "area",
-   "points": "38 171 cbvna TR%0ABoulder,24 221,55 221,55 192,24 192"
+   "points": "38 171 cbhya TR%0ABoulder,34 221,55 221,55 192,34 192"
   },
   {
    "id": "area2",
@@ -298,8 +300,20 @@ td.elite, .elite {
   <tr id="area5"><td colspan="8">Send in the clowns</tr>
   <tr id="area6"><td colspan="8">Bumblies wall</tr>
 </table>
+<script>
+ 	$('#route_table_3 tr').hover(
+		function(){
+			$(this).addClass("selected");
+			pt.selectRoute($(this).attr('id'));
+   		},
+   		function(){
+			$(this).removeClass("selected");
+			pt.selectRoute();
+		}
+	);
+</script>
 <p>
-  <textarea id="data3" cols="300" rows="50" style="font-size: 9px;width:100%"></textarea>
+  <textarea id="data3" cols="300" rows="50" style="font-size: 9px;width:100%; display:none"></textarea>
 </p>
 
 

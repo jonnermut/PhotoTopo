@@ -1,11 +1,12 @@
 
+add arrow head line style
+
 mak hidden truly hidden on select as well
 
 convert line to two lines with arrow heads, make the shadow behind the box and the line above
 
 make anchors snappable to each other as well as other points
 
-option to stretch width to docked side
 
 
 reset position - back to centroid
@@ -17,6 +18,7 @@ position label
 
 DONE
 
+option to stretch width to docked side
 make label draggable
 make label
 add a label shadow layer
