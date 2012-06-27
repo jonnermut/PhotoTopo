@@ -558,24 +558,52 @@ Point.prototype.remove = function(){
 Point.prototype.updateLabelPosition = function(){
 
 	var	label = this.labelEl,
-		offsetX, offsetY,
+		offsetX, offsetY=0,
 		width, top, left,
 		topo = this.route.phototopo,
 		labelWidth = topo.options.labelSize;
-
 	if (!label){ return; }
 
+	width = (labelWidth) / 2;
 	
 	offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
-
-	width = (labelWidth) / 2;
-	offsetY = topo.options.thickness;	
+	// find out which compas direction the route is heading in
+	if (this.nextPoint){
+		var dy = this.nextPoint.y - this.y;
+		var dx = this.nextPoint.x - this.x;
+		var adx = Math.abs(dx);
+		var ady = Math.abs(dy);
+		if (adx < ady){
+			// top
+			offsetY = width * 2;
+			// bottom
+			if (dy > 0){
+				offsetX = -offsetX;
+				offsetY = -offsetY;
+			}
+		} else {
+			// left
+			offsetY = offsetX;
+			offsetX = -width * 2;
+			// right
+			if (dx < 0){
+				offsetY = -offsetY;
+				offsetX = -offsetX;
+			}
+		}
+	}
 
 	left = this.x - width + offsetX;
-	top  = this.y + offsetY;
+	top  = this.y - width + offsetY;
 
 	left = Math.round(left);
 	top = Math.round(top);
+
+	
+	if (top  < 0){ top  = 0; }
+	if (left < 0){ left = 0; }
+	if (top  > topo.options.height - labelWidth){ top  = topo.options.height - labelWidth; }
+	if (left > topo.options.width  - labelWidth){ left = topo.options.width  - labelWidth; }
 
 	
 	label.attr({x:left, y:top});
@@ -2524,8 +2552,10 @@ PhotoTopo.RouteLabel = function(){};
  */
 PhotoTopo.prototype.defaultOptions = {
 	'autoSize': true,
-	'thickness': 5,
-	'labelSize': 16,
+	'thickness': 1.5,
+	'labelSize': 12,
+	'autoColors': true,
+	'seperateRoutes': true,
 	'labelBorder': 1,
 	'viewScale': 1,
 	'nojs': false,

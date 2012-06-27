@@ -1,5 +1,14 @@
 
 add arrow head line style
+how to sort lines:
+
+first compare by left to right x pos - easy
+
+- if they are the same then compare by the angle to the first bolt
+- they are still the same then get the angle you just had and work out the angle of 'bend' to the next point and compare tha
+- keep doing that again!
+
+
 
 mak hidden truly hidden on select as well
 
@@ -15,6 +24,8 @@ position label
  - when adding points after the third point, if no label then auto create
  - drag about
 
+make label text input live update the label
+ - refactor updatelabel into seperate method
 
 DONE
 
