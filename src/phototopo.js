@@ -572,7 +572,13 @@ Point.prototype.updateLabelPosition = function(){
 	offsetY = topo.options.thickness;	
 
 	left = this.x - width + offsetX;
-	top  = this.y + offsetY;
+	top  = this.y;
+
+	if (topo.options.overhead){
+		top -= width;
+	} else {
+		top += offsetY;
+	}
 
 	left = Math.round(left);
 	top = Math.round(top);
