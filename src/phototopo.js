@@ -558,7 +558,7 @@ Point.prototype.remove = function(){
 Point.prototype.updateLabelPosition = function(){
 
 	var	label = this.labelEl,
-		offsetX, offsetY,
+		offsetX, offsetY=0,
 		width, top, left,
 		topo = this.route.phototopo,
 		labelWidth = topo.options.labelSize,
@@ -566,24 +566,38 @@ Point.prototype.updateLabelPosition = function(){
 	if (!label){ return; }
 
 	
+	width = (labelWidth) / 2;
 	
-	offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
-	// if overhead and the routes are upside down then reverse the label order
 	if (overhead){
-		// find out wether the route is going up or down
+		offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
+		// find out which compas direction the route is heading in
 		if (this.nextPoint){
 			var dy = this.nextPoint.y - this.y;
-			if (dy > 0){
-				offsetX = -offsetX;
+			var dx = this.nextPoint.x - this.x;
+			if (Math.abs(dx) < Math.abs(dy)){
+				// top
+				offsetY = width;
+				if (dy > 0){
+					offsetX = -offsetX;
+					offsetY = -offsetY;
+				}
+			} else {
+				offsetY = offsetX;
+				offsetX = -width;
+				if (dy < 0){
+					offsetY = -offsetY;
+					offsetX = -offsetX;
+				}
 			}
 		}
+
+	} else {
+		offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
+		offsetY = topo.options.thickness;
 	}
 
-	width = (labelWidth) / 2;
-	offsetY = topo.options.thickness;	
-
 	left = this.x - width + offsetX;
-	top  = this.y;
+	top  = this.y + offsetY;
 
 	if (overhead){
 		top -= width;
