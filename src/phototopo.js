@@ -561,12 +561,23 @@ Point.prototype.updateLabelPosition = function(){
 		offsetX, offsetY,
 		width, top, left,
 		topo = this.route.phototopo,
-		labelWidth = topo.options.labelSize;
-
+		labelWidth = topo.options.labelSize,
+		overhead = topo.options.overhead;
 	if (!label){ return; }
 
 	
+	
 	offsetX = this.pointGroup.getSplitOffset(this) * labelWidth;
+	// if overhead and the routes are upside down then reverse the label order
+	if (overhead){
+		// find out wether the route is going up or down
+		if (this.nextPoint){
+			var dy = this.nextPoint.y - this.y;
+			if (dy > 0){
+				offsetX = -offsetX;
+			}
+		}
+	}
 
 	width = (labelWidth) / 2;
 	offsetY = topo.options.thickness;	
@@ -574,7 +585,7 @@ Point.prototype.updateLabelPosition = function(){
 	left = this.x - width + offsetX;
 	top  = this.y;
 
-	if (topo.options.overhead){
+	if (overhead){
 		top -= width;
 	} else {
 		top += offsetY;
