@@ -598,6 +598,13 @@ Point.prototype.updateLabelPosition = function(){
 
 	left = Math.round(left);
 	top = Math.round(top);
+
+	
+	if (top  < 0){ top  = 0; }
+	if (left < 0){ left = 0; }
+	if (top  > topo.options.height - labelWidth){ top  = topo.options.height - labelWidth; }
+	if (left > topo.options.width  - labelWidth){ left = topo.options.width  - labelWidth; }
+
 	
 	label.attr({x:left, y:top});
 
