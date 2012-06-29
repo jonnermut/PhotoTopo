@@ -1650,7 +1650,7 @@ Area.prototype.redraw = function(){
 
 		// if we want a line
 		if (l.line == 'y' || l.line == 'p'){
-			var bbox = this.polygon.getBBox();
+			bbox = this.polygon.getBBox();
 
 			var end = {x: bbox.x+bbox.width/2, y:bbox.y+bbox.height/2 };
 			var svg = "M"+l.x+' '+l.y+', L'+end.x+' '+end.y;
@@ -1837,7 +1837,7 @@ Area.prototype.showOptions = function(){
 	var props =['halign','valign','visible','line','wid'];
 	for(var c=0; c<props.lengttart; c++){
 		var prop = props[c];
-		var b = e.find('button[value='+this.label[prop]+']').addClass('active');
+		e.find('button[value='+this.label[prop]+']').addClass('active');
 	}
 
 }
@@ -1884,9 +1884,7 @@ Area.prototype.deselect = function(){
  */
 Area.prototype.addVertex = function(x,y,offset){
 
-	var c, v, path;
-
-	v = new Vertex(this, x, y);
+	var v = new Vertex(this, x, y);
 
 	// if offset is not specified then add it at the end of th path
 	if (offset === undefined || offset === null){
@@ -1908,8 +1906,6 @@ Area.prototype.addVertex = function(x,y,offset){
 	v.next.prev = v;
 	v.redraw();
 	v.prev.redraw();
-	
-
 
 	this.redraw();	
 	this.phototopo.saveData();
