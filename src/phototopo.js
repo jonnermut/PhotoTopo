@@ -867,7 +867,6 @@ Path.prototype.redraw = function(point){
 		phototopo = this.point1.route.phototopo,
 		path_finish = '',
 		off1, off2, thickness,
-		ddx, ddy,
 		delta, angle, aWidth, aHeight, size,
 		ex, ey;
 
@@ -940,8 +939,8 @@ Path.prototype.redraw = function(point){
 		
 
 	function offset(angle, x, y, dx, dy){
-		ddx = Math.round((x - Math.sin(angle)*dx - Math.cos(angle)*dy)*10)/10;
-		ddy = Math.round((y + Math.cos(angle)*dx - Math.sin(angle)*dy)*10)/10;
+		var ddx = Math.round((x - Math.sin(angle)*dx - Math.cos(angle)*dy)*10)/10;
+		var ddy = Math.round((y + Math.cos(angle)*dx - Math.sin(angle)*dy)*10)/10;
 		return 'L'+ddx+' '+ddy+' ';
 	}
 
@@ -1625,8 +1624,12 @@ Area.prototype.redraw = function(){
 
 
 
+	function offset(angle, x, y, dx, dy){
+		var ddx = Math.round((x - Math.sin(angle)*dx - Math.cos(angle)*dy)*10)/10;
+		var ddy = Math.round((y + Math.cos(angle)*dx - Math.sin(angle)*dy)*10)/10;
+		return 'L'+ddx+' '+ddy+' ';
+	}
 
-	this.labelLine && this.labelLine.remove();
 
 	if (this.vertices.length > 0){
 
@@ -1646,28 +1649,55 @@ Area.prototype.redraw = function(){
 			.show();
 
 		// if we want a line
-		if (l.line == 'y'){
+		if (l.line == 'y' || l.line == 'p'){
 			var bbox = this.polygon.getBBox();
 
 			var end = {x: bbox.x+bbox.width/2, y:bbox.y+bbox.height/2 };
-			var dx = end.x-l.x;
-			var dy = end.y-l.y;
-			var angle = Math.atan2(dy, dx) * 180 / Math.PI;
-			var length = Math.sqrt(dx*dx+dy*dy);
-			this.labelLine = this.phototopo.canvas.rect(l.x,l.y,4,length)
-				.rotate(angle-90,l.x,l.y)
+			var svg = "M"+l.x+' '+l.y+', L'+end.x+' '+end.y;
+
+			if (l.line == 'p'){
+				var angle = Math.atan2(end.y - l.y, end.x - l.x);
+				var path_finish = '';
+				var size = 1;
+				var ex = end.x, ey = end.y;
+				var aWidth  = size*1.5;
+				var aHeight = size*1.5;
+				path_finish += offset(angle, ex, ey,       0,  size*1.2   ); // middle
+				path_finish += offset(angle, ex, ey, -aWidth,  aHeight    ); // bottom left
+				path_finish += offset(angle, ex, ey,  aWidth,  aHeight    ); // bottom right
+				path_finish += offset(angle, ex, ey,       0, -size*2.3   ); // top
+				path_finish += offset(angle, ex, ey, -aWidth,  aHeight    ); // bottom left
+				path_finish += offset(angle, ex, ey,  aWidth,  aHeight    ); // bottom right
+				svg += path_finish;
+			}
+
+			if (!this.labelLine){
+				this.labelLine = this.phototopo.canvas.path(svg);
+				this.labelLine.insertBefore(this.labelBox);
+				this.labelLineShad = this.phototopo.canvas.path(svg);
+				this.labelLineShad.insertBefore(this.labelLine);
+				this.labelLine.click(    this.click);
+				this.labelLine.mouseover(this.mouseover);
+				this.labelLine.mouseout( this.mouseout);
+			} else {
+				this.labelLine.attr('path', svg);
+				this.labelLineShad.attr('path', svg);
+			}
+			this.labelLine
 				.attr( this == pt.selectedRoute ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
-				.show();
-			this.labelLine.insertBefore(this.labelBox);
-			this.labelLine.click(    this.click);
-			this.labelLine.mouseover(this.mouseover);
-			this.labelLine.mouseout( this.mouseout);
+				.show()
+			this.labelLineShad
+				.attr( this == pt.selectedRoute ? pt.styles.areaBorderSelected : pt.styles.areaBorder )
+				.show()
 		
 		} else {
-			this.labelLine && this.labelLine.remove();
+			this.labelLine && this.labelLine.hide();
+			this.labelLineShad && this.labelLineShad.hide();
 		}
 	} else {
 		this.polygon   && this.polygon.hide();
+		this.labelLine && this.labelLine.hide();
+		this.labelLineShad && this.labelLineShad.hide();
 	}
 }
 
@@ -1766,8 +1796,9 @@ Area.prototype.showOptions = function(){
 			'</div></label>'+ 
 			' <label>Pointer: '+
 			'<div class="btn-group">'+
-				'<button name="line" value="y" class="btn btn-mini">Yes</button>'+ 
 				'<button name="line" value="n" class="btn btn-mini">No</button>'+ 
+				'<button name="line" value="y" class="btn btn-mini">Yes</button>'+ 
+				'<button name="line" value="p" class="btn btn-mini">Arrow</button>'+ 
 			'</div></label>'+ 
 			' <label>Width: '+
 			'<div class="btn-group">'+
@@ -2351,6 +2382,7 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-linecap': 'round',
 		},
 		areaBorderSelected: {
+			'stroke-width': 4, 
 			'stroke': 'white'
 		},
 		areaBorderVisible: {
@@ -2409,15 +2441,16 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke': 'white'
 		},
 		areaLabelLine: {
-			'stroke': 'black',
-			'stroke-width': 1,
-			'stroke-linecap': 'round',
-			'stroke-opacity': 1,
-			'fill': labelColor
+			'stroke': labelColor,
+			'stroke-width': 2,
+			'stroke-linejoin': 'miter',
+			'stroke-linecap': 'round'
 		},
 		areaLabelLineSelected: {
-			'stroke': 'white',
-			'fill': selectBlue
+			'stroke-width': 2,
+			'stroke': selectBlue,
+			'stroke-linejoin': 'miter',
+			'stroke-linecap': 'round'
 		},
 		outline: {
 			'stroke': 'black', // default if it can't inherit from label colour
