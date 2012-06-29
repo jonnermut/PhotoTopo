@@ -2217,6 +2217,7 @@ Area.prototype.fixPixel = function(n){
 
 function PhotoTopo(opts){
 
+	PhotoTopo.topos.push(this);
 
 
 /**
@@ -2295,8 +2296,7 @@ PhotoTopo.RouteLabel = function(){};
 		}
 	}
 
-	this.options = $.extend({}, this.defaultOptions);
-	this.options = $.extend(this.options, opts);
+	this.options = $.extend({}, this.defaultOptions, opts);
 
 	missingError(this.options, 'No options hash');
 	missingError(this.options.elementId, 'No elementId');
@@ -2653,6 +2653,10 @@ PhotoTopo.prototype.setHint = function(hintHTML){
  * @param {Boolean} [toggle] if true and the route is already selected will delesect
  */
 PhotoTopo.prototype.selectRoute = function(routeId, toggle){
+
+	// can also be called staticly
+	// in this case iterate through all topos and select in them all
+	var master = this;
 	
 	if (this.routes[routeId]){
 		if (toggle && this.routes[routeId] === this.selectedRoute){
@@ -2668,6 +2672,17 @@ PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 	}
 };
 
+/*
+ * Same as above but a static class method
+ */
+PhotoTopo.topos = [];
+PhotoTopo.selectRoute = function(nodeId){
+
+	for(var c=0;c<PhotoTopo.topos.length;c++){
+		PhotoTopo.topos[c].selectRoute(nodeId);
+	}
+
+}
 
 
 /**

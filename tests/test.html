@@ -447,11 +447,11 @@ var routes = [
  	$('#route_table tr').hover(
 		function(){
 			$(this).addClass("selected");
-			pt.selectRoute($(this).attr('id'));
+			PhotoTopo.selectRoute($(this).attr('id'));
    		},
    		function(){
 			$(this).removeClass("selected");
-			pt.selectRoute();
+			PhotoTopo.selectRoute();
 		}
 	);
 	$('#route_table tr').each(function(){
