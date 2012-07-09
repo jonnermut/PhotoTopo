@@ -591,6 +591,10 @@ Point.prototype.updateLabelPosition = function(){
 				offsetX = -offsetX;
 			}
 		}
+	} else {
+		// no second point so position under
+		offsetY = width * 2;
+		offsetX = -offsetX;
 	}
 
 	left = this.x - width + offsetX;
@@ -1375,12 +1379,10 @@ Area.prototype.getJSON = function(){
 		this.label.line +
 		this.label.wid +
 		' '+
-		encodeURIComponent(this.label.text)+',';
+		encodeURIComponent(this.label.text);
 	for(c=0; c<this.vertices.length; c++){
 		vertex = this.vertices[c];
-		if (c!== 0){
-			data += ',';
-		}
+		data += ',';
 		data += vertex.x + ' ' + vertex.y;
 	}
 
@@ -1405,6 +1407,7 @@ Area.prototype.load = function(data, viewScale){
 		points = data.points.split(',');
 		for(pc = 0; pc < points.length; pc++){
 			parts = points[pc].split(/\s/);
+			if (parts[0] == ''){ continue; }
 			if (pc==0){
 				if (parts.length>3){
 					this.label.x = Math.round(parts[0] * viewScale * 10)/10;
