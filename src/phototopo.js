@@ -1140,7 +1140,7 @@ Route.prototype.getJSON = function(){
 	return {
 		id: this.id,
 		points: points,
-		svg_path: path, 
+//		svg_path: path, 
 		order: this.order
 	};
 };
@@ -1305,9 +1305,10 @@ Route.prototype.onclick = function(point){
  * An area
  * @constructor 
  */
-function Area(phototopo, id){
+function Area(phototopo, id,order){
 	this.phototopo = phototopo;
 	this.id = id;
+	this.order = order;
 	this.vertices = [];
 	this.edges = [];
 	this.label = {
@@ -1327,12 +1328,16 @@ function Area(phototopo, id){
 	var area = this;
 	
 	this.click = function(event){
-		if (area.phototopo.selectedRoute === area){
-			area.deselect();
+
+		var opts = phototopo.options;
+		if (opts.editable){
+			if (area.phototopo.selectedRoute === area){
+				area.deselect();
+				return;
+			}
+			area.select();
 			return;
 		}
-		area.select(); // should this only be in edit mode?
-		var opts = phototopo.options;
 		if (opts.onclick){
 			opts.onclick(area);
 		}
@@ -1381,7 +1386,8 @@ Area.prototype.getJSON = function(){
 
 	return {
 		id: this.id,
-		type: 'area',
+//		type: 'area',
+		order: this.order,
 		points: data
 	}
 }
@@ -1401,8 +1407,8 @@ Area.prototype.load = function(data, viewScale){
 			parts = points[pc].split(/\s/);
 			if (pc==0){
 				if (parts.length>3){
-					this.label.x = parts[0];
-					this.label.y = parts[1];
+					this.label.x = Math.round(parts[0] * viewScale * 10)/10;
+					this.label.y = Math.round(parts[1] * viewScale * 10)/10;
 					var op = parts[2];
 					this.label.halign  = op.charAt(0) || 'l';
 					this.label.valign  = op.charAt(1) || 'b';
@@ -1416,7 +1422,7 @@ Area.prototype.load = function(data, viewScale){
 			if (parts[0] === ''){
 				parts.splice(0,1);
 			}
-			this.addVertex(parts[0]*viewScale, parts[1]*viewScale);
+			this.addVertex(Math.round( parts[0]*viewScale * 10)/10, Math.round(parts[1]*viewScale*10)/10 );
 		}
 	}
 	this.select();
@@ -1510,16 +1516,17 @@ Area.prototype.redraw = function(){
 
 	// x,y are always the top left corner of the box
 	// tx,ty are the anchor for the text
-	var x = l.x*1;
+	var x = l.x * 1;
 	var tx = x;
 	if (l.halign == 'l'){                 tx += padding; }
 	if (l.halign == 'c'){ x -= width/2;   tx -= 0;       }
 	if (l.halign == 'r'){ x -= width;     tx -= padding; }
-	var y = l.y*1;
+	var y = l.y * 1;
 	var ty = y;
 	if (l.valign == 'b'){ y -= height;    ty -= height/2; }
 	if (l.valign == 'm'){ y -= height/2;                  }
 	if (l.valign == 't'){                 ty += height/2; }
+
 
 	this.labelEl.attr({
 		x: tx,
@@ -1769,7 +1776,7 @@ Area.prototype.showOptions = function(){
 	if (pt.loading){ return; }
 
 	function silk(i){
-		return '<img src="https://static.thecrag.com/silk/'+i+'.png">';
+		return '<img src="https://static.thecrag.com/silk/'+i+'.png" width="16">';
 	}
 
 	var e = pt.areaOptionsEl;
@@ -2033,10 +2040,10 @@ Vertex.prototype.redraw = function(){
 
 	if (pt.options.editable){
 
-		this.circle = pt.canvas.circle(this.x, this.y, 5);
+		this.circle = pt.canvas.circle(this.x, this.y, 10);
 		circle = this.circle;
 		circle.point = this;
-		circle.attr(styles.handle);
+		circle.attr(styles.handleArea);
 		
 		circle.drag(dragMove, dragStart, dragEnd); 
 		circle.mouseover(function(){
@@ -2484,7 +2491,13 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		handle: {
 			'stroke': 'black', // default if it can't inherit from label colour
-			'r': this.options.thickness * 1.2,
+			'r': this.options.thickness * 2,
+			'fill': 'yellow',
+			'stroke-width': this.options.thickness * 0.4
+		},
+		handleArea: {
+			'stroke': 'black', // default if it can't inherit from label colour
+			'r': 7,
 			'fill': 'yellow',
 			'stroke-width': this.options.thickness * 0.4
 		},
@@ -2521,7 +2534,7 @@ PhotoTopo.RouteLabel = function(){};
 			alert('Error: duplicate route=['+data.id+'] '+this.options.elementId);
 		}
 		if (data.type == 'area'){
-			var area = this.routes[data.id] = new Area(this, data.id);
+			var area = this.routes[data.id] = new Area(this, data.id, data.order);
 			area.load(data, viewScale);
 			continue;
 		}
@@ -2670,6 +2683,7 @@ PhotoTopo.prototype.selectRoute = function(routeId, toggle){
 			this.selectedRoute.deselect();
 		}
 	}
+	return null;
 };
 
 /*
@@ -2706,14 +2720,13 @@ PhotoTopo.prototype.saveData = function(){
 	if (!this.options.onchange ){
 		return;
 	}
-	
+
 	for(routeId in this.routes){
 		route = this.routes[routeId];
 		data.routes[data.routes.length] = route.getJSON();
 	}
 
 	this.options.onchange(data);
-
 };
 
 /**
