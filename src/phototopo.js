@@ -1608,7 +1608,7 @@ Area.prototype.redraw = function(){
 			this.circle = pt.canvas.circle(l.x, l.y, 5);
 			circle = this.circle;
 			circle.point = this;
-			circle.attr(styles.handle);
+			circle.attr(styles.handleArea);
 		
 			circle.drag(dragMove, dragStart, dragEnd); 
 			circle.mouseover(function(){
@@ -1845,7 +1845,7 @@ Area.prototype.showOptions = function(){
 	// find all values and set
 	// set it
 	var props =['halign','valign','visible','line','wid'];
-	for(var c=0; c<props.lengttart; c++){
+	for(var c=0; c<props.length; c++){
 		var prop = props[c];
 		e.find('button[value='+this.label[prop]+']').addClass('active');
 	}
@@ -1868,7 +1868,7 @@ Area.prototype.deselect = function(){
 	
 	if (pt.options.editable === true){
 		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].circle.attr(pt.styles.handle).insertBefore(pt.layerAreas);
+			this.vertices[c].circle.attr(pt.styles.handleArea).insertBefore(pt.layerAreas);
 			this.vertices[c].setStyle();
 		}
 	}
@@ -2043,7 +2043,7 @@ Vertex.prototype.redraw = function(){
 
 	if (pt.options.editable){
 
-		this.circle = pt.canvas.circle(this.x, this.y, 10);
+		this.circle = pt.canvas.circle(this.x, this.y, 5);
 		circle = this.circle;
 		circle.point = this;
 		circle.attr(styles.handleArea);
@@ -2500,7 +2500,7 @@ PhotoTopo.RouteLabel = function(){};
 		},
 		handleArea: {
 			'stroke': 'black', // default if it can't inherit from label colour
-			'r': 7,
+			'r': 4,
 			'fill': 'yellow',
 			'stroke-width': this.options.thickness * 0.4
 		},

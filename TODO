@@ -21,7 +21,6 @@ mak sure using minned version in prod
 
 add ghost vertex path for easyier splitting
 
-inconsistent handle sizes for new points vs existing area points
 
 
 
@@ -55,6 +54,7 @@ make label text input live update the label
 
 DONE
 
+inconsistent handle sizes for new points vs existing area points
 add arrow head line style
 option to stretch width to docked side
 make label draggable
