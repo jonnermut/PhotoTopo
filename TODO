@@ -1,10 +1,5 @@
 
-unlink button working
 
-NON EDIT:
-
-
-hide show routes button toggle
 
 EDIT:
 label
@@ -13,13 +8,8 @@ label offset
 delete a whole route line
 
 
-bugs with click handler on area label
-
-
 hover select
 
-Bug with label number dup: see 4 5 and 9:
-http://dev.thecrag.com/28792341/topo?edit=207637846
 
 add label colour callback for areas
 
@@ -32,6 +22,8 @@ mak sure using minned version in prod
 add ghost vertex path for easyier splitting
 
 inconsistent handle sizes for new points vs existing area points
+
+
 
 
 how to sort lines:

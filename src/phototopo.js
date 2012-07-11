@@ -2656,9 +2656,9 @@ PhotoTopo.prototype.updateHint = function(){
  */
 PhotoTopo.prototype.setHint = function(hintHTML){
 	if (!this.hintEl){
-		this.hintEl = $('<div class="hint ui-state-highlight"></div>').show('slide').appendTo(this.photoEl)[0];
+		this.hintEl = $('<div></div>').show('slide').appendTo(this.photoEl)[0];
 	}
-	this.hintEl.innerHTML = '<span class="ui-icon ui-icon-info" style="float: left;"></span><strong>Hint:</strong> '+hintHTML;
+	this.hintEl.innerHTML = '<strong class="label label-info">Help</strong> '+hintHTML;
 	$(this.hintEl).offset(0,0);
 };
 
