@@ -1720,6 +1720,9 @@ Area.prototype.redraw = function(){
 				this.labelLine.insertBefore(this.labelBox);
 				this.labelLineShad = this.phototopo.canvas.path(svg);
 				this.labelLineShad.insertBefore(this.labelLine);
+				this.labelLineShad.click(    this.click);
+				this.labelLineShad.mouseover(this.mouseover);
+				this.labelLineShad.mouseout( this.mouseout);
 				this.labelLine.click(    this.click);
 				this.labelLine.mouseover(this.mouseover);
 				this.labelLine.mouseout( this.mouseout);
