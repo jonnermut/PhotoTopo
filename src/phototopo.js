@@ -1781,6 +1781,7 @@ Area.prototype.select = function(selectedPoint){
 	}
 	
 	// now highlight the new route and make sure it is at the front of the other area, but behind any routes
+	this.polygon.insertBefore(phototopo.layerAreas);
 	for(c=0; c< this.vertices.length; c++){
 		this.vertices[c].border.insertBefore(phototopo.layerAreas);
 	}
@@ -1790,7 +1791,6 @@ Area.prototype.select = function(selectedPoint){
 			this.vertices[c].ghost.insertBefore(phototopo.layerAreas);
 		}
 	}
-	this.polygon.insertBefore(phototopo.layerAreas);
 
 
 	if (phototopo.options.editable == true){
