@@ -1,5 +1,21 @@
 
 
+onchange text label update
+
+if second point is moved then restyle first label
+
+if econd pointis removed hen restyle first label
+
+if data is missing get -1 1 llabel instead
+
+
+if point it -1 -1 then don't show
+
+if first vertex is added and no label x/y then add it
+
+
+
+
 
 EDIT:
 label

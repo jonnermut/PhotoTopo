@@ -1316,14 +1316,14 @@ function Area(phototopo, id,order){
 	this.vertices = [];
 	this.edges = [];
 	this.label = {
-		x: 10,
-		y: 10,
+		x: -1,
+		y: -1,
 		visible: 'v',
-		line:    'y',
+		line:    'n',
 		valign:  'b',
 		halign:  'l',
 		wid:     'd',
-		text:    'label'
+		text:    ''
 	};
 
 
@@ -1371,6 +1371,7 @@ function Area(phototopo, id,order){
 Area.prototype.getJSON = function(){
 
 	var data = '', vertex,c;
+	if (this.label.x){
 	data += this.label.x + ' '+
 		this.label.y + ' '+
 		this.label.halign + 
@@ -1380,6 +1381,7 @@ Area.prototype.getJSON = function(){
 		this.label.wid +
 		' '+
 		encodeURIComponent(this.label.text);
+	}
 	for(c=0; c<this.vertices.length; c++){
 		vertex = this.vertices[c];
 		data += ',';
@@ -1397,7 +1399,7 @@ Area.prototype.getJSON = function(){
 /*
  *
  */
-Area.prototype.load = function(data, viewScale){
+Area.prototype.load = function(data, viewScale, label){
 	// load up points
 	// load up label
 
@@ -1427,6 +1429,8 @@ Area.prototype.load = function(data, viewScale){
 			}
 			this.addVertex(Math.round( parts[0]*viewScale * 10)/10, Math.round(parts[1]*viewScale*10)/10 );
 		}
+	} else {
+		this.label.text = label;
 	}
 	this.select();
 	this.deselect();
@@ -1436,11 +1440,13 @@ Area.prototype.drawLabel = function(){
 
 }
 
-
-Area.prototype.moveTo = function(x,y){
+/*
+ *
+ * handle - option bool, should it move the handle as well?
+ */
+Area.prototype.moveTo = function(x,y,handle){
 
 	var pos = this.snap(x,y);
-
 	x = pos.x;
 	y = pos.y;
 
@@ -1453,6 +1459,10 @@ Area.prototype.moveTo = function(x,y){
 
 	this.label.x = x;
 	this.label.y = y;
+
+	if (handle && this.circle){
+		this.circle.attr({cx:x,cy:y});
+	}
 
 	this.redraw();
 
@@ -1892,8 +1902,13 @@ Area.prototype.deselect = function(){
  * y
  * offset - insert at the nth position, otherwise add to end
  */
-Area.prototype.addVertex = function(x,y,offset){
+Area.prototype.addVertex = function(x,y,offset,snap){
 
+	if(snap){
+		var pos = this.snap(x,y);
+		x = pos.x;
+		y = pos.y;
+	}
 	var v = new Vertex(this, x, y);
 
 	// if offset is not specified then add it at the end of th path
@@ -1919,6 +1934,9 @@ Area.prototype.addVertex = function(x,y,offset){
 
 	this.redraw();	
 	this.phototopo.saveData();
+	if (this.label.x == -1){
+		this.moveTo(x,y,true);
+	}
 
 	return v;
 };
@@ -1929,7 +1947,7 @@ Area.prototype.addAfter = function(afterVert, x, y){
 	var c;
 	for(c=0; c<= this.vertices.length; c++){
 		if (this.vertices[c] === afterVert){
-			var v = this.addVertex(x,y,c);
+			var v = this.addVertex(x,y,c,true);
 			v.select();
 			return;
 		}

@@ -203,14 +203,14 @@ td.elite, .elite {
 </div>
 <script>
 var pt;
-var editable = false;
+var editable = true;
  jQuery(function(){
 	PhotoTopo.prototype.defaultOptions.baseUrl = '../src/';
          pt = new PhotoTopo({
                  elementId: 'phototopo3',
                  width: 500,
                  height: 375,
-		thickness: 5,
+		thickness: 2,
 		seperateRoutes: true,
 		autoColors: true,
 		 editable: editable,
@@ -224,11 +224,11 @@ var editable = false;
 				 ondeselect: function(route){
 					 $('#'+route.id).removeClass('selected');
 				 },
-				 onmouseover: function(route){
+				 ionmouseover: function(route){
 					 $('#'+route.id).addClass('selected');
 					 route.select();
 				 },
-				 onmouseout: function(route){
+				 ionmouseout: function(route){
 					 $('#'+route.id).removeClass('selected');
 					 route.deselect();
 				 },
@@ -247,7 +247,8 @@ var editable = false;
   {
    "id": "area2",
    "type": "area",
-   "points": "96 129 cbvna Orange%0Aoverhang,82 221,106 221,106 150,82 150"
+   "points": "-1 -1 lbvnd Test",
+   "points2": "96 129 cbvna Orange%0Aoverhang,82 221,106 221,106 150,82 150"
   },
   {
    "id": "area3",
@@ -301,7 +302,7 @@ var editable = false;
   <tr id="area6"><td colspan="8">Bumblies wall</tr>
 </table>
 <script>
- 	$('#route_table_3 tr').hover(
+ 	$('#iiiroute_table_3 tr').hover(
 		function(){
 			$(this).addClass("selected");
 			pt.selectRoute($(this).attr('id'));
