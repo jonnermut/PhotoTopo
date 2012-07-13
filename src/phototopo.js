@@ -1805,9 +1805,9 @@ Area.prototype.showOptions = function(){
 			'</div></label>'+ 
 			' <label>Vertical: '+
 			'<div class="btn-group">'+
-				'<button name="valign" value="t" class="btn btn-mini">'+silk('shape_align_top'   )+'</button>'+ 
-				'<button name="valign" value="m" class="btn btn-mini">'+silk('shape_align_middle')+'</button>'+ 
 				'<button name="valign" value="b" class="btn btn-mini">'+silk('shape_align_bottom')+'</button>'+ 
+				'<button name="valign" value="m" class="btn btn-mini">'+silk('shape_align_middle')+'</button>'+ 
+				'<button name="valign" value="t" class="btn btn-mini">'+silk('shape_align_top'   )+'</button>'+ 
 			'</div></label>'+ 
 			' <label>Shape: '+
 			'<div class="btn-group">'+
@@ -1820,10 +1820,10 @@ Area.prototype.showOptions = function(){
 				'<button name="line" value="y" class="btn btn-mini">Yes</button>'+ 
 				'<button name="line" value="p" class="btn btn-mini">Arrow</button>'+ 
 			'</div></label>'+ 
-			' <label>Width: '+
+			' <label>Auto width: '+
 			'<div class="btn-group">'+
-				'<button name="wid" value="a" class="btn btn-mini">Auto</button>'+ 
-				'<button name="wid" value="d" class="btn btn-mini">Dock</button>'+ 
+				'<button name="wid" value="d" class="btn btn-mini">Expand</button>'+ 
+				'<button name="wid" value="a" class="btn btn-mini">Shrink</button>'+ 
 			'</div></label>'+ 
 			'</div>'
 		);
