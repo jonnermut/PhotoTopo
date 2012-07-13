@@ -1499,7 +1499,7 @@ Area.prototype.redrawLabel = function(){
 	// is it magic docked?
 	var dock = null;
 	var dockW = -1;
-	var docked = false;
+	this.docked = false;
 	if (l.wid == 'd'){
 		// find out what point it is docked with
 		for(c=0;c<this.vertices.length;c++){
@@ -1521,7 +1521,7 @@ Area.prototype.redrawLabel = function(){
 		// only dock if it is longer!
 		if (dockW > width){
 			width = dockW;
-			docked = true;
+			this.docked = width;
 		}
 	}
 
@@ -1532,7 +1532,7 @@ Area.prototype.redrawLabel = function(){
 	var x = l.x * 1;
 	var tx = x;
 	if (l.halign == 'l'){                 tx += padding; }
-	if (docked){
+	if (this.docked){
 		if (l.halign == 'c'){ tx += width/2;                 }
 		if (l.halign == 'r'){ tx += width-padding;           }
 	} else {
@@ -1689,11 +1689,18 @@ Area.prototype.redraw = function(){
 		if (l.line == 'y' || l.line == 'p'){
 			bbox = this.polygon.getBBox();
 
+			var sx = l.x;
+			var sy = l.y;
+
+			if (this.docked){
+				if (l.halign == 'c'){ sx += this.docked/2; }
+				if (l.halign == 'r'){ sx += this.docked;   }
+			}
 			var end = {x: bbox.x+bbox.width/2, y:bbox.y+bbox.height/2 };
-			var svg = "M"+l.x+' '+l.y+', L'+end.x+' '+end.y;
+			var svg = "M"+sx+' '+sy+', L'+end.x+' '+end.y;
 
 			if (l.line == 'p'){
-				var angle = Math.atan2(end.y - l.y, end.x - l.x);
+				var angle = Math.atan2(end.y - sy, end.x - sx);
 				var path_finish = '';
 				var size = 1;
 				var ex = end.x, ey = end.y;
