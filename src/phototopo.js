@@ -545,6 +545,9 @@ Point.prototype.remove = function(){
 	if (p.prevPoint){
 		p.prevPoint.pointGroup.redraw();
 	}
+	if (p.prevPoint && !p.prevPoint.prevPoint){
+		p.prevPoint.updateLabelPosition();
+	}
 	this.route.phototopo.saveData();
 	$(this.route.phototopo.photoEl).removeClass('point');
 	this.route.phototopo.updateCursor();
@@ -713,6 +716,9 @@ Point.prototype.moveTo = function(x,y){
 	if (this.labelEl){
 		this.updateLabelPosition();
 	}
+	if (this.prevPoint && !this.prevPoint.prevPoint){
+		this.prevPoint.updateLabelPosition();
+	}
 
 	this.updateIconPosition();
 
@@ -743,8 +749,6 @@ function Path(point1, point2){
 		var id=0;
 		return id++;
 	}
-
-
 
 
 	var offset, path, phototopo, options,nojs;
@@ -828,8 +832,8 @@ function Path(point1, point2){
 	
 	function PathClick(event){
 		var route = phototopo.selectedRoute,
-			opts = phototopo.options;
-			path = event.target.raphael.path;
+			opts = phototopo.options,
+			path = this.path;
 		if (!phototopo.options.editable){
 			this.path.point1.select();
 			if (opts.onclick){
