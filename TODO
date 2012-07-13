@@ -1,13 +1,5 @@
 
 
-
-if second point is moved then restyle first label
-
-if econd pointis removed hen restyle first label
-
-
-
-
 EDIT:
 delete a whole route line
 
@@ -16,11 +8,8 @@ add label colour callback for areas
 
 fix scale factor when editing and viewing
 
-add default label from area node name
-
 mak sure using minned version in prod
 
-add ghost vertex path for easyier splitting
 
 
 
