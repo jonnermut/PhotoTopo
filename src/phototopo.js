@@ -1583,7 +1583,11 @@ Area.prototype.redrawLabel = function(){
 	})
 	.attr( this == pt.selectedRoute ? pt.styles.areaLabelShadowSelected : pt.styles.areaLabelShadow )
 	this.labelBoxShadow.insertBefore(pt.layerShadows);
-
+	if (this != pt.selectedRoute && this.autoColor){
+		this.labelBox.attr('fill', this.autoColor);
+		this.labelBox.attr('stroke', this.autoColor);
+		this.labelBoxShadow.attr('fill', this.autoColor);
+	}
 
 	function dragStart(){
 		var selectedRoute = this.point.phototopo.selectedRoute;
@@ -1689,6 +1693,10 @@ Area.prototype.redraw = function(){
 			.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden )
 			.show();
 
+		if (this != pt.selectedRoute && this.autoColor){
+			this.polygon.attr('stroke', this.autoColor);
+//			circle.attr('stroke', this.autoColorBorder);
+		}
 		// if we want a line
 		if (l.line == 'y' || l.line == 'p'){
 			bbox = this.polygon.getBBox();
@@ -2590,13 +2598,13 @@ PhotoTopo.RouteLabel = function(){};
 		if (data.type == 'area'){
 			var area = this.routes[data.id] = new Area(this, data.id, data.order);
 			area.load(data, viewScale);
-			continue;
+		} else {
+			this.routes[data.id] = new Route(this, data.id, data.order);
+			this.routes[data.id].orig = data;
 		}
-		this.routes[data.id] = new Route(this, data.id, data.order);
-		this.routes[data.id].orig = data;
 		if (this.options.getlabel){
 			label = this.options.getlabel(data);
-			if (this.options.autoColors){
+			if (this.options.autoColors && label.classes){
 				tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
 				this.photoEl.appendChild(tempEl[0]);
 				autoColor       = tempEl.children().css('background-color');
@@ -2608,6 +2616,7 @@ PhotoTopo.RouteLabel = function(){};
 				this.routes[data.id].autoColorBorder = autoColorBorder;
 			}
 		}
+		if (data.type == 'area') continue;
 		if (data.manualColor){
 			this.routes[data.id].autoColor = data.manualColor;
 		}

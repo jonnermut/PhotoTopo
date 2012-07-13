@@ -45,6 +45,12 @@ body {
 
 <style type="text/css">
 
+
+.inside {
+	color: white;
+	background: red;
+}
+
 table td, th {
 	font-family: "lucida grande", verdana, sans-serif;
 	font-size: 12px;
@@ -237,10 +243,16 @@ var editable = true;
 					}
 				 },
 				 getlabel: function(route){
+					if (route.type == 'route'){
 					  return ({
 						 classes: $('#'+route.id +' td:nth-child(4) div').attr('class'),
 						 label:   $('#'+route.id +' td:nth-child(2)').text()
 					 });
+					} else {
+					  return ({
+						 classes: route.id == 'area3' ? 'inside' : ''
+					 });
+					}
 				 },
                  routes: [
   {
@@ -322,7 +334,7 @@ if (!editable)
   <textarea id="data3" cols="300" rows="50" style="font-size: 9px;width:100%; display:none"></textarea>
 </p>
 
-
+<p class="inside">inside</p>
 
 </body>
 </html>
