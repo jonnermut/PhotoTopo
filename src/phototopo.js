@@ -1464,7 +1464,7 @@ Area.prototype.moveTo = function(x,y,handle){
 		this.circle.attr({cx:x,cy:y});
 	}
 
-	this.redrawLabel();
+	this.redraw();
 
 	this.phototopo.saveData();
 
@@ -1499,6 +1499,7 @@ Area.prototype.redrawLabel = function(){
 	// is it magic docked?
 	var dock = null;
 	var dockW = -1;
+	var docked = false;
 	if (l.wid == 'd'){
 		// find out what point it is docked with
 		for(c=0;c<this.vertices.length;c++){
@@ -1520,6 +1521,7 @@ Area.prototype.redrawLabel = function(){
 		// only dock if it is longer!
 		if (dockW > width){
 			width = dockW;
+			docked = true;
 		}
 	}
 
@@ -1530,8 +1532,13 @@ Area.prototype.redrawLabel = function(){
 	var x = l.x * 1;
 	var tx = x;
 	if (l.halign == 'l'){                 tx += padding; }
-	if (l.halign == 'c'){ x -= width/2;   tx -= 0;       }
-	if (l.halign == 'r'){ x -= width;     tx -= padding; }
+	if (docked){
+		if (l.halign == 'c'){ tx += width/2;                 }
+		if (l.halign == 'r'){ tx += width-padding;           }
+	} else {
+		if (l.halign == 'c'){ x -= width/2;   tx -= 0;       }
+		if (l.halign == 'r'){ x -= width;     tx -= padding; }
+	}
 	var y = l.y * 1;
 	var ty = y;
 	if (l.valign == 'b'){ y -= height;    ty -= height/2; }
@@ -1594,7 +1601,7 @@ Area.prototype.redrawLabel = function(){
 		if (selectedRoute && selectedRoute !== this.point){
 			return;
 		}
-		pos = circle.point.moveTo(this.ox*1 + dx, this.oy*1 + dy);
+		pos = circle.point.moveTo(Math.round(this.ox*1 + dx), Math.round(this.oy*1 + dy));
 		circle.attr({cx: pos.x, cy: pos.y});
 	}
 
@@ -2057,7 +2064,7 @@ Vertex.prototype.redraw = function(){
 		if (selectedRoute && selectedRoute !== this.point.area){
 			return;
 		}
-		pos = circle.point.moveTo(this.ox + dx, this.oy + dy);
+		pos = circle.point.moveTo(Math.round(this.ox*1 + dx), Math.round(this.oy*1 + dy));
 		circle.attr({cx: pos.x, cy: pos.y});
 	}
 
