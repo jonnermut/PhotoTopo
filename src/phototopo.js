@@ -1464,7 +1464,7 @@ Area.prototype.moveTo = function(x,y,handle){
 		this.circle.attr({cx:x,cy:y});
 	}
 
-	this.redraw();
+	this.redrawLabel();
 
 	this.phototopo.saveData();
 
@@ -1473,13 +1473,11 @@ Area.prototype.moveTo = function(x,y,handle){
 
 };
 
-
-Area.prototype.redraw = function(){
-
-	var v,e,c,svg_path,pt;
-	pt = this.phototopo;
+Area.prototype.redrawLabel = function(){
 
 	var l = this.label;
+	var c,v;
+	var pt = this.phototopo;
 
 	if (!this.labelEl){
 		this.labelEl = pt.canvas.text(0, 0,l.text);
@@ -1641,6 +1639,18 @@ Area.prototype.redraw = function(){
 		this.setStyle();
 	}
 
+}
+
+Area.prototype.redraw = function(){
+
+	var v,e,c,svg_path;
+	var l = this.label;
+	var pt = this.phototopo;
+
+
+	this.redrawLabel();
+
+	var bbox = this.labelEl.getBBox();
 
 
 
@@ -1828,8 +1838,10 @@ Area.prototype.showOptions = function(){
 			'</div>'
 		);
 		
-		$(e).find('[name=label]').change(function(e){
+		$(e).find('[name=label]').keyup(function(e){
 			pt.selectedRoute.label.text = $(e.target).val();
+			pt.selectedRoute.showOptions();
+			pt.selectedRoute.redrawLabel();
 			pt.saveData();
 		});
 		$(e).find('button').click(function(e){
