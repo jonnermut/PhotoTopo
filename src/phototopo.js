@@ -1693,7 +1693,7 @@ Area.prototype.redraw = function(){
 		this.polygon.attr('path', svg_path)
 			.attr( selected ? pt.styles.areaFillSelected : pt.styles.areaFill )
 			.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden )
-			.insertBefore(selected ? pt.layerShadowsSel : pt.layerShadows )
+			.insertBefore(selected ? pt.layerAreasSel : pt.layerAreas )
 			.show();
 
 		if (this != pt.selectedRoute && this.autoColor){
@@ -1793,21 +1793,6 @@ Area.prototype.select = function(selectedPoint){
 
 	if (phototopo.options.onselect){
 		phototopo.options.onselect(this);
-	}
-	
-	// now highlight the area and make sure it is at the front of the other area, but behind any routes
-	this.polygon.insertBefore(phototopo.layerAreasSel);
-
-	// then the edge shadows
-	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].border.insertBefore(phototopo.layerShadowsSel);
-	}
-
-	// then the ghosts so the hovers work correctly
-	if (this.vertices[0] && this.vertices[0].ghost){
-		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].ghost.insertBefore(phototopo.layerAreasSel);
-		}
 	}
 
 	// move all the drag handles up
@@ -2024,15 +2009,16 @@ Vertex.prototype.redraw = function(){
 	var e = area.fixPixel;
 	this.svg_path = 'M'+e(this.x)+' '+e(this.y)+' L'+e(this.next.x)+' '+e(this.next.y);
 	var pt = this.area.phototopo;
-//	var selected = area == pt.selectedRoute;
+	var selected = area == pt.selectedRoute;
+
+	// border === shadow
 	if (this.border){
-		this.border.attr( pt.selectedRoute === this.area ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
-		//this.border.attr( selected ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
+		this.border.attr( selected ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
 		var borderStyle = area.label.visible == 'v' ? pt.styles.areaBorderVisible : pt.options.editable ? pt.styles.areaBorderEditHidden : pt.styles.areaBorderHidden;
 		this.border.attr(borderStyle);
 		this.border.insertBefore(pt.layerShadows);
 		//this.border.insertBefore(selected ? pt.layerAreas : pt.layerAreas);
-		//this.border.insertBefore(selected ? pt.layerShadowsSel : pt.layerShadows);
+		this.border.insertBefore(selected ? pt.layerShadowsSel : pt.layerShadows);
 		this.border.attr('path', this.svg_path);
 		if (this.ghost){
 			this.ghost.attr('path', this.svg_path);
