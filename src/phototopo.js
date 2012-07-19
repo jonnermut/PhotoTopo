@@ -2604,7 +2604,7 @@ PhotoTopo.RouteLabel = function(){};
 		}
 		if (this.options.getlabel){
 			label = this.options.getlabel(data);
-			if (this.options.autoColors && label.classes){
+			if (this.options.autoColors && !!label.classes){
 				tempEl = $("<div class='labels'><div class='"+label.classes+"'/></div>");
 				this.photoEl.appendChild(tempEl[0]);
 				autoColor       = tempEl.children().css('background-color');
@@ -2616,7 +2616,6 @@ PhotoTopo.RouteLabel = function(){};
 				this.routes[data.id].autoColorBorder = autoColorBorder;
 			}
 		}
-		if (data.type == 'area') continue;
 		if (data.manualColor){
 			this.routes[data.id].autoColor = data.manualColor;
 		}
@@ -2626,6 +2625,7 @@ PhotoTopo.RouteLabel = function(){};
 		if (data.manualColorBorder){
 			this.routes[data.id].autoColorBorder = data.manualColorBorder;
 		}
+		if (data.type == 'area') continue;
 		if (data.points){
 			points = data.points.split(',');
 			for(pc = 0; pc < points.length; pc++){
