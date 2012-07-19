@@ -1665,8 +1665,8 @@ Area.prototype.redraw = function(){
 
 	var selected = this == pt.selectedRoute;
 
-	this.redrawLabel();
 
+	this.redrawLabel();
 	var bbox = this.labelEl.getBBox();
 
 
@@ -1745,12 +1745,14 @@ Area.prototype.redraw = function(){
 				this.labelLine.attr('path', svg);
 				this.labelLineShad.attr('path', svg);
 			}
-			this.labelLine
-				.attr( this == pt.selectedRoute ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
-				.show()
 			this.labelLineShad
-				.attr( this == pt.selectedRoute ? pt.styles.areaBorderSelected : pt.styles.areaBorder )
-				.show()
+				.attr( selected ? pt.styles.areaBorderSelected : pt.styles.areaBorder )
+				.insertBefore(this.labelBox)
+				.show();
+			this.labelLine
+				.attr( selected ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
+				.insertBefore(selected ? pt.layerLabelsSel : pt.layerLabels )
+				.show();
 		
 		} else {
 			this.labelLine && this.labelLine.hide();
