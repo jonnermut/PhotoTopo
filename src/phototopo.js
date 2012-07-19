@@ -1197,17 +1197,17 @@ Route.prototype.select = function(selectedPoint){
 	
 	// now highlight the new route and make sure it is at the front
 	for(c=0; c< this.paths.length; c++){
-		this.paths[c].outline.attr(styles.outlineSelected).insertBefore(phototopo.layerLabels);
+		this.paths[c].outline.attr(styles.outlineSelected).insertBefore(phototopo.layerRoutesSel);
 	}
 	for(c=0; c< this.paths.length; c++){
-		this.paths[c].curve.attr(styles.strokeSelected).insertBefore(phototopo.layerLabels);
+		this.paths[c].curve.attr(styles.strokeSelected).insertBefore(phototopo.layerRoutesSel);
 	}
 	if (phototopo.options.editable === true){
 		for(c=0; c< this.paths.length; c++){
-			this.paths[c].point2.circle.attr(styles.handleSelected).insertBefore(phototopo.layerLabels);
+			this.paths[c].point2.circle.attr(styles.handleSelected).insertBefore(phototopo.layerRoutesSel);
 		}
 		if (this.points[0]){
-			this.points[0].circle.attr(styles.handleSelected).insertBefore(phototopo.layerLabels);
+			this.points[0].circle.attr(styles.handleSelected).insertBefore(phototopo.layerRoutesSel);
 		}
 	}
 	
@@ -1498,7 +1498,7 @@ Area.prototype.redrawLabel = function(){
 	var bbox = this.labelEl.getBBox();
 	var width = bbox.width * 1 + padding*2;
 	var height = bbox.height * 1 + padding *2;
-
+	var selected = (this === pt.selectedRoute);
 
 	// is it magic docked?
 	var dock = null;
@@ -1557,6 +1557,7 @@ Area.prototype.redrawLabel = function(){
 		'font-family': 'Helvetica',
 		'text-anchor': (l.halign == 'l' ? 'start' : l.halign == 'c' ? 'middle' : 'end')
 	}).attr( this == pt.selectedRoute ? pt.styles.areaLabelTextSelected : pt.styles.areaLabelText )
+	this.labelEl.insertBefore(selected ? pt.layerLabelsSel : pt.layerLabels);
 
 	
 	if(!this.labelBox){
@@ -1572,7 +1573,7 @@ Area.prototype.redrawLabel = function(){
 		width: width,
 		height: height,
 	})
-	.attr( this == pt.selectedRoute ? pt.styles.areaLabelSelected : pt.styles.areaLabel )
+	.attr( selected ? pt.styles.areaLabelSelected : pt.styles.areaLabel )
 	this.labelBox.insertBefore(this.labelEl);
 
 	this.labelBoxShadow.attr({
@@ -1581,9 +1582,9 @@ Area.prototype.redrawLabel = function(){
 		width: width,
 		height: height,
 	})
-	.attr( this == pt.selectedRoute ? pt.styles.areaLabelShadowSelected : pt.styles.areaLabelShadow )
-	this.labelBoxShadow.insertBefore(pt.layerShadows);
-	if (this != pt.selectedRoute && this.autoColor){
+	.attr( selected ? pt.styles.areaLabelShadowSelected : pt.styles.areaLabelShadow )
+	this.labelBoxShadow.insertBefore(selected ? pt.layerShadowsSel : pt.layerShadows);
+	if (!selected && this.autoColor){
 		this.labelBox.attr('fill', this.autoColor);
 		this.labelBox.attr('stroke', this.autoColor);
 		this.labelBoxShadow.attr('fill', this.autoColor);
@@ -1662,6 +1663,7 @@ Area.prototype.redraw = function(){
 	var l = this.label;
 	var pt = this.phototopo;
 
+	var selected = this == pt.selectedRoute;
 
 	this.redrawLabel();
 
@@ -1689,8 +1691,9 @@ Area.prototype.redraw = function(){
 			svg_path += ' L'+e(v.x)+' '+e(v.y);
 		}
 		this.polygon.attr('path', svg_path)
-			.attr( this == pt.selectedRoute ? pt.styles.areaFillSelected : pt.styles.areaFill )
+			.attr( selected ? pt.styles.areaFillSelected : pt.styles.areaFill )
 			.attr( this.label.visible == 'v' ? pt.styles.areaFillVisible : pt.options.editable ? pt.styles.areaFillEditHidden : pt.styles.areaFillHidden )
+			.insertBefore(selected ? pt.layerShadowsSel : pt.layerShadows )
 			.show();
 
 		if (this != pt.selectedRoute && this.autoColor){
@@ -1792,19 +1795,22 @@ Area.prototype.select = function(selectedPoint){
 		phototopo.options.onselect(this);
 	}
 	
-	// now highlight the new route and make sure it is at the front of the other area, but behind any routes
-	this.polygon.insertBefore(phototopo.layerAreas);
+	// now highlight the area and make sure it is at the front of the other area, but behind any routes
+	this.polygon.insertBefore(phototopo.layerAreasSel);
+
+	// then the edge shadows
 	for(c=0; c< this.vertices.length; c++){
-		this.vertices[c].border.insertBefore(phototopo.layerAreas);
+		this.vertices[c].border.insertBefore(phototopo.layerShadowsSel);
 	}
 
+	// then the ghosts so the hovers work correctly
 	if (this.vertices[0] && this.vertices[0].ghost){
 		for(c=0; c< this.vertices.length; c++){
-			this.vertices[c].ghost.insertBefore(phototopo.layerAreas);
+			this.vertices[c].ghost.insertBefore(phototopo.layerAreasSel);
 		}
 	}
 
-
+	// move all the drag handles up
 	if (phototopo.options.editable == true){
 		for(c=0; c< this.vertices.length; c++){
 			this.vertices[c].circle.attr(styles.handleSelected).toFront();
@@ -2018,14 +2024,19 @@ Vertex.prototype.redraw = function(){
 	var e = area.fixPixel;
 	this.svg_path = 'M'+e(this.x)+' '+e(this.y)+' L'+e(this.next.x)+' '+e(this.next.y);
 	var pt = this.area.phototopo;
+//	var selected = area == pt.selectedRoute;
 	if (this.border){
 		this.border.attr( pt.selectedRoute === this.area ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
+		//this.border.attr( selected ? pt.styles.areaBorderSelected : pt.styles.areaBorder );
 		var borderStyle = area.label.visible == 'v' ? pt.styles.areaBorderVisible : pt.options.editable ? pt.styles.areaBorderEditHidden : pt.styles.areaBorderHidden;
 		this.border.attr(borderStyle);
 		this.border.insertBefore(pt.layerShadows);
+		//this.border.insertBefore(selected ? pt.layerAreas : pt.layerAreas);
+		//this.border.insertBefore(selected ? pt.layerShadowsSel : pt.layerShadows);
 		this.border.attr('path', this.svg_path);
 		if (this.ghost){
 			this.ghost.attr('path', this.svg_path);
+//				.insertBefore(selected ? pt.layerAreas : pt.layerAreas );
 		}
 		return;
 	}
@@ -2394,7 +2405,14 @@ PhotoTopo.RouteLabel = function(){};
 	 */
 	this.layerShadows = this.canvas.rect(1,1,0,0); // for the area label shadows
 	this.layerAreas   = this.canvas.rect(1,1,0,0); // for the area label polygons
+	this.layerRoutes  = this.canvas.rect(1,1,0,0); // for the route lines
 	this.layerLabels  = this.canvas.rect(1,1,0,0); // for the text labels
+
+	// selected layers
+	this.layerShadowsSel = this.canvas.rect(1,1,0,0); // for the area label shadows
+	this.layerAreasSel   = this.canvas.rect(1,1,0,0); // for the area label polygons
+	this.layerRoutesSel  = this.canvas.rect(1,1,0,0); // for the route lines
+	this.layerLabelsSel  = this.canvas.rect(1,1,0,0); // for the text labels
 
 
 

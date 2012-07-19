@@ -209,7 +209,7 @@ td.elite, .elite {
 </div>
 <script>
 var pt;
-var editable = true;
+var editable = false;
  jQuery(function(){
 	PhotoTopo.prototype.defaultOptions.baseUrl = '../src/';
          pt = new PhotoTopo({
@@ -246,7 +246,7 @@ var editable = true;
 					if (route.type == 'route'){
 					  return ({
 						 classes: $('#'+route.id +' td:nth-child(4) div').attr('class'),
-						 label:   $('#'+route.id +' td:nth-child(2)').text()
+						 label:   $('#'+route.id +' td:nth-child(1)').text()
 					 });
 					} else {
 					  return ({
@@ -269,7 +269,7 @@ var editable = true;
   {
    "id": "area3",
    "type": "area",
-   "points": "161 134 lbvnd Shark'sfin,161 241,239 241,239 134,161 134"
+   "points": "161 134 lbvnd Shark'sfin,161 281,269 281,269 134,161 134"
   },
   {
    "id": "area4",
@@ -285,6 +285,16 @@ var editable = true;
    "id": "area6",
    "type": "area",
    "points": "464 177 cbvyd Bumblies,449 256,494 256,494 198,449 198"
+  },
+  {
+   "id": "route1",
+   "type": "route",
+   "points": "200 270, 140 200"
+  },
+  {
+   "id": "route2",
+   "type": "route",
+   "points": "140 250, 180 200"
   }
                  ]
          });
@@ -316,6 +326,8 @@ var editable = true;
   <tr id="area4"><td colspan="8">Mythologica</tr>
   <tr id="area5"><td colspan="8">Send in the clowns</tr>
   <tr id="area6"><td colspan="8">Bumblies wall</tr>
+  <tr id="route1"><td>1<td colspan="7">A route inside sharks fin</tr>
+  <tr id="route2"><td>2<td colspan="7">A route inside sharks fin</tr>
 </table>
 <script>
 if (!editable)
