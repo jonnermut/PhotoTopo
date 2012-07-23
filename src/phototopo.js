@@ -1751,7 +1751,7 @@ Area.prototype.redraw = function(){
 				.show();
 			this.labelLine
 				.attr( selected ? pt.styles.areaLabelLineSelected : pt.styles.areaLabelLine )
-				.insertBefore(selected ? pt.layerLabelsSel : pt.layerLabels )
+				.insertAfter( this.labelLineShad)
 				.show();
 		
 		} else {
