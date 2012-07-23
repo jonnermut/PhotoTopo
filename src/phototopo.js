@@ -578,7 +578,7 @@ Point.prototype.updateLabelPosition = function(){
 		var ady = Math.abs(dy);
 		if (adx < ady){
 			// top
-			offsetY = width * 2;
+			offsetY = width * 1.2;
 			// bottom
 			if (dy > 0){
 				offsetX = -offsetX;
@@ -587,7 +587,7 @@ Point.prototype.updateLabelPosition = function(){
 		} else {
 			// left
 			offsetY = offsetX;
-			offsetX = -width * 2;
+			offsetX = -width * 1.2;
 			// right
 			if (dx < 0){
 				offsetY = -offsetY;
