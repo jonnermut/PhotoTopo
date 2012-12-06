@@ -329,9 +329,49 @@ Point.prototype.setType = function(type){
 	if (this.nextPath){
 		this.nextPath.redraw();
 	}
+
+	
 	if (!this.iconEl){
+	
+		// custom belay icon
+		if (type=='belay' || type=='lower')
+		{
+		
+			if (type=='lower')
+			{
+				var extraPath = topo.canvas.path('M' + this.x + ',' + this.y + 'l0,32');
+				extraPath.attr( {
+					'stroke': 'blue', 
+					'stroke-width': 3,
+					'arrow-end': 'block-wide-long'
+				});
+				extraPath.glowEl = extraPath.glow({color:'#ffffff',width:6}); 
+			}
+		
+			this.iconEl = topo.canvas.circle(this.x, this.y, 10);
+			this.iconEl.attr( {
+			'stroke': 'white', 
+			'r': 8,
+			'fill': 'blue',
+			'stroke-width': 2
+			});
+			
+
+						
+			this.iconEl.glowEl = this.iconEl.glow({color:'#ffffff',width:4}); 
+		}
+		else
+		{
+		
 		this.iconEl = topo.canvas.image(topo.options.baseUrl+'images/'+type+'.png', 0, 0, 16, 16);
+		}
+		
 		this.iconEl.toFront();
+		
+		if (this.circle)
+			this.circle.toFront();
+		
+		
 		this.iconEl.point = this;
 		point = this;
 		this.iconEl.hover(
@@ -392,15 +432,24 @@ Point.prototype.setLabel = function(classes, text){
 		}
 	};
 
+	// draw the label elements
 	if (!this.labelEl){
-		label = canvas.rect(this.x,this.y,size,size,0);
-		label.attr({fill: 'yellow', width: size, height: size, stroke: 'black', 'stroke-width': topo.options.labelBorder });
+		//label = canvas.rect(this.x,this.y,size,size,0);
+				
+		label = canvas.circle(this.x,this.y,size/2);
+		//label.attr({fill: 'yellow', width: size, height: size, stroke: 'black', 'stroke-width': topo.options.labelBorder });
+		
+		label.attr({fill: '#000000', stroke: 'none', 'stroke-width': 1 });
+		
+
 		labelText = canvas.text(1,1,text);
 		labelText.attr({
 			width: size,
 			height: size,
 			'font-size': size*.68,
-			'font-family': 'Helvetica'
+			//'font-family': 'Impact,Tahoma,Helvetica',
+			'font-weight': 'bold',
+			fill:'#ffffff'
 		});
 		this.labelText = labelText;
 
@@ -416,9 +465,10 @@ Point.prototype.setLabel = function(classes, text){
 		if (!this.route.phototopo.loading){ 
 			this.updateLabelPosition();
 		}
+		
 
 	}
-
+/*
 	if (classes.indexOf('selected') !== -1){
 		    label.attr({fill: styles.strokeSelected.stroke, stroke: styles.outlineSelected.stroke });
 		labelText.attr({fill: styles.outlineSelected.stroke });
@@ -435,10 +485,14 @@ Point.prototype.setLabel = function(classes, text){
 			labelText.attr({fill: styles.outline.stroke });
 		}
 	}
+	*/
 	label.toFront();
 	labelText.toFront();
 	// TODO
 	this.labelEl.className = 'pt_label '+classes;
+	
+	if (this.circle)
+			this.circle.toFront();
 };
 
 
@@ -560,6 +614,7 @@ Point.prototype.remove = function(){
  */
 Point.prototype.updateLabelPosition = function(){
 
+
 	var	label = this.labelEl,
 		offsetX, offsetY=0,
 		width, top, left,
@@ -576,6 +631,7 @@ Point.prototype.updateLabelPosition = function(){
 		var dx = this.nextPoint.x - this.x;
 		var adx = Math.abs(dx);
 		var ady = Math.abs(dy);
+		
 		if (adx < ady){
 			// top
 			offsetY = width * 1.2;
@@ -585,6 +641,7 @@ Point.prototype.updateLabelPosition = function(){
 				offsetY = -offsetY;
 			}
 		} else {
+		
 			// left
 			offsetY = offsetX;
 			offsetX = -width * 1.2;
@@ -613,11 +670,17 @@ Point.prototype.updateLabelPosition = function(){
 	if (left > topo.options.width  - labelWidth){ left = topo.options.width  - labelWidth; }
 
 	
-	label.attr({x:left, y:top});
+	//label.attr({x:left, y:top});
+	label.attr({cx:left + width, cy:top + width});
 
 	left = left + width;
 	top = top + width;
 	this.labelText.attr({x:left, y:top});
+	
+	if (label.glowEl)
+		label.glowEl.remove();
+	
+	label.glowEl = label.glow({color: '#ffffff', width:4});
 
 };
 
@@ -785,6 +848,12 @@ function Path(point1, point2){
 	this.curve      = phototopo.canvas.path(path);
 
 	this.outline.attr(phototopo.styles.outline);
+	
+	// TODO - glow on line?
+	if (!phototopo.options.editable){
+		this.ghost.glow({width:10});
+	}
+	
 	if (this.point1.route.autoColorBorder){
 		this.outline.attr('stroke', this.point1.route.autoColorBorder);
 	}
@@ -806,8 +875,8 @@ function Path(point1, point2){
 
 	if (phototopo.options.editable){
 // commented it out and it still works fine! TODO
-//		this.point1.circle.toFront();
-//		this.point2.circle.toFront();
+		this.point1.circle.toFront();
+		this.point2.circle.toFront();
 	}
 
 	function mouseover(event){
@@ -2443,7 +2512,9 @@ PhotoTopo.RouteLabel = function(){};
 	this.pointGroups = {};
 
 	var selectBlue = '#3D80DF';
-	var labelColor = '#ffee00';
+	//var labelColor = '#ffee00';
+	//var labelColor = '#ffffff';
+	var labelColor = '#000000';
 
 	this.styles = {
 		areaBorder: {
@@ -2524,11 +2595,13 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-linecap': 'round'
 		},
 		outline: {
-			'stroke': 'black', // default if it can't inherit from label colour
-			'stroke-width': this.options.thickness * 1.7,
+			//'stroke': 'black', // default if it can't inherit from label colour
+			'stroke': 'none',
+			//'stroke-width': this.options.thickness * 1.7,
+			'stroke-width':1,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
-			'stroke-opacity': 1 
+			'stroke-opacity': 0.7 
 		},
 		outlineSelected: {
 			'stroke': 'white' // default if it can't inherit from label colour
@@ -2541,7 +2614,7 @@ PhotoTopo.RouteLabel = function(){};
 			'stroke-opacity': 0.01 
 		},
 		stroke: {
-			'stroke': 'yellow',
+			'stroke': 'white',
 			'stroke-width': this.options.thickness,
 			'stroke-linejoin': 'miter',
 			'stroke-linecap': 'round',
@@ -2560,13 +2633,13 @@ PhotoTopo.RouteLabel = function(){};
 		handle: {
 			'stroke': 'black', // default if it can't inherit from label colour
 			'r': this.options.thickness * 2,
-			'fill': 'yellow',
+			'fill': 'red',
 			'stroke-width': this.options.thickness * 0.4
 		},
 		handleArea: {
 			'stroke': 'black', // default if it can't inherit from label colour
 			'r': 4,
-			'fill': 'yellow',
+			'fill': 'red',
 			'stroke-width': this.options.thickness * 0.4
 		},
 		handleHover: {
