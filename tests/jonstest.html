@@ -183,7 +183,7 @@ Editable
 						console.log('route "'+route.id+'" clicked');
 					} else {
 						console.log('background clicked');
-						pt.selectRoute();
+						//pt.selectRoute();
 					}
 				 },
 				 
@@ -199,6 +199,7 @@ Editable
                  
                  routes: [
   					{"id":"13","points":"208 693,216 523,250 402 belay,250 333,238 270,245 167 lower","order":"13"}
+  					,{"id":"14","points":"","order":"14"}
   				]
          });      
          
@@ -218,6 +219,19 @@ Editable
 		p.options.editable = !p.options.editable;
 		p.setRouteVisibility(false);
 		p.setRouteVisibility(true);
+		
+	});
+	
+	$('#newLine').click(function(){
+		var p = pt;
+		p.selectRoute('14');
+		//p.options.routes.push( {'id':'20', points:'50 50, 100 50'});
+		//p.redraw();
+	});
+	
+	$('#deselect').click(function(){
+		var p = pt;
+		p.selectRoute();
 		
 	});
 	
@@ -409,13 +423,17 @@ td.elite, .elite {
 
 
 </style>
-<!--
+
 <div>
 		<button name="toggle routes" id="toggle">Toggle routes</button>
+		<!--
 		<button id="toggleEditable">Toggle editable</button>
-	
+		-->
+		<button id="newLine">New Line</button>
+		<button id="deselect">Deselect</button>
 </div>
 
+<!--
 <table id="route_table_3" class="routes">
   <tr>
     <th>&nbsp;</th>
