@@ -334,30 +334,41 @@ Point.prototype.setType = function(type){
 	if (!this.iconEl){
 	
 		// custom belay icon
-		if (type=='belay' || type=='lower')
+		if (type=='lower')
 		{
+
 		
-			if (type=='lower')
-			{
-				var extraPath = topo.canvas.path('M' + this.x + ',' + this.y + 'l0,32');
-				extraPath.attr( {
-					'stroke': 'blue', 
-					'stroke-width': 3,
-					'arrow-end': 'block-wide-long'
+		var p = "M" + (this.x + 4) + "," + (this.y + 20)
+		+ "h12 l-16,20 l-16,-20 h12 v-12.55"
+		+ "c-8.239-2.7-14-9.76-14-18.179"
+		+ "c0-9.94,8.05-17.99,18-17.99"
+		+ "c9.939,0,18,8.05,18,18.57"
+		+ "c0,8.88-6.419,16.25-14.859,17.73"
+		+ "v12.55z";
+
+				this.iconEl = topo.canvas.path(p);
+				this.iconEl.attr( {
+					'fill': '#262262', 
+					
+					'stroke': 'white',
+					'stroke-width': 1
 				});
-				extraPath.glowEl = extraPath.glow({color:'#ffffff',width:6}); 
-			}
+				this.iconEl.scale(0.5,0.5);
+				this.iconEl.glowEl = this.iconEl.glow({color:'#ffffff',width:6}); 
+			
 		
-			this.iconEl = topo.canvas.circle(this.x, this.y, 10);
+
+		}
+		else if (type=='belay' )
+		{
+			this.iconEl = topo.canvas.circle(this.x, this.y, 8);
 			this.iconEl.attr( {
 			'stroke': 'white', 
 			'r': 8,
-			'fill': 'blue',
+			'fill': '#262262',
 			'stroke-width': 2
 			});
-			
-
-						
+		
 			this.iconEl.glowEl = this.iconEl.glow({color:'#ffffff',width:4}); 
 		}
 		else

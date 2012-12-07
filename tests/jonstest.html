@@ -85,6 +85,43 @@ Editable
 <div id="phototopo2"></div>
 
 <script>
+/* Original crag specific mouse behaviours
+if (window.PhotoTopo){
+PhotoTopo.prototype.defaultOptions.onmouseover = function(r){
+	$('body').trigger('node.over', {id:r.id});
+	if (!r.orig.grade){ return; }
+	var name = r.orig.stars+' '+r.orig.name+' '+r.orig.grade+' '+r.orig.style;
+	$('body')
+	.poshytip('enable')
+	.poshytip('update', (
+		((r.label && r.label.label && r.label.label != ' ') ? (r.label.label + ') ') : '') + name
+	))
+	.poshytip('show');
+
+};
+PhotoTopo.prototype.defaultOptions.onmouseout = function(route){
+	$('body').poshytip('disable').poshytip('hide');
+	$('body').trigger('node.out', {id: route.id});
+};
+PhotoTopo.prototype.defaultOptions.getlabel = function(node){
+	if (node.type == 'area'){
+		return {
+			classes: node.id == window.defaultSelect ? 'inside' : ''
+		}
+	}
+	var r = {
+		label:   $('#n'+node.id +' td:nth-child(1)').text().replace(/(\r|\n|\.)/gm, ''),
+		classes: 'gb'+node.gb
+	}
+	return r;
+};
+
+}
+*/
+</script>
+
+
+<script>
  jQuery(function(){
          var pt = new PhotoTopo({
                  elementId: 'phototopo1',
@@ -198,7 +235,7 @@ Editable
                  
                  
                  routes: [
-  					{"id":"13","points":"208 693,216 523,250 402 belay,250 333,238 270,245 167 lower","order":"13"}
+  					{"id":"13","points":"208 693,216 523,250 402 belay,250 333,238 270,245 167 lower","order":"13",type:'route',grade:'21',gb:'4',name:'Remembrance',stars:'★★★',style:'Sport'}
   					,{"id":"14","points":"","order":"14"}
   				]
          });      
